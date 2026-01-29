@@ -41,7 +41,7 @@ extension Serialization.Parsing.Whole where Context == Void {
 extension Serialization.Parsing.Prefix.Witness where Context == Void {
     /// Convenience for context-free prefix parsing.
     @inlinable
-    public func call(_ representation: Representation) throws(Failure) -> Serialization.Parsing.Prefix.Result<Output> {
+    public func call(_ representation: Representation) throws(Failure) -> Serialization.Parsing.Prefix.Result<Output, Count> {
         try self.call(representation, ())
     }
 }

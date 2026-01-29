@@ -107,7 +107,7 @@ import Testing
     @Suite("Parsing.Prefix.Witness")
     struct ParsingPrefixWitnessTests {
         @Test func parsesPrefixAndReturnsCount() throws {
-            let parser: Serialization.Parsing.Prefix.Witness<Int, [UInt8], Void, Never> = .init { bytes, _ in
+            let parser: Serialization.Parsing.Prefix.Witness<Int, Int, [UInt8], Void, Never> = .init { bytes, _ in
                 var value = 0
                 var count = 0
                 for byte in bytes where byte >= 0x30 && byte <= 0x39 {
@@ -122,7 +122,7 @@ import Testing
         }
 
         @Test func countEnablesRemainderComputation() throws {
-            let parser: Serialization.Parsing.Prefix.Witness<Int, [UInt8], Void, Never> = .init { bytes, _ in
+            let parser: Serialization.Parsing.Prefix.Witness<Int, Int, [UInt8], Void, Never> = .init { bytes, _ in
                 var value = 0
                 var count = 0
                 for byte in bytes where byte >= 0x30 && byte <= 0x39 {
@@ -143,13 +143,13 @@ import Testing
     @Suite("Parsing.Prefix.Result")
     struct ParsingPrefixResultTests {
         @Test func storesValueAndCount() {
-            let result = Serialization.Parsing.Prefix.Result(value: "hello", count: 5)
+            let result: Serialization.Parsing.Prefix.Result<String, Int> = .init(value: "hello", count: 5)
             #expect(result.value == "hello")
             #expect(result.count == 5)
         }
 
         @Test func isSendable() {
-            let result = Serialization.Parsing.Prefix.Result(value: 42, count: 2)
+            let result: Serialization.Parsing.Prefix.Result<Int, Int> = .init(value: 42, count: 2)
             // Verify Sendable by passing to concurrent context
             Task {
                 _ = result.value

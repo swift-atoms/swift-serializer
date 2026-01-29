@@ -6,21 +6,23 @@ extension Serialization.Parsing.Prefix {
     /// and the count of elements consumed, allowing the caller to derive
     /// the remainder in their preferred representation type.
     ///
+    /// The `Count` type parameter allows typed counts (e.g., `Index<UInt8>.Count`)
+    /// for type-safe arithmetic, while still supporting `Int` where needed.
+    ///
     /// ## Example
     ///
     /// ```swift
-    /// let intParser: Serialization.Parsing.Prefix.Witness<Int, [UInt8], Void, ParseError> = .init { bytes, _ in
+    /// let intParser: Serialization.Parsing.Prefix.Witness<Int, Index<UInt8>.Count, [UInt8], Void, ParseError> = .init { bytes, _ in
     ///     let (value, consumed) = parseInteger(from: bytes)
     ///     return .init(value: value, count: consumed)
     /// }
     /// let result = try intParser.call(bytes)
-    /// let remainder = bytes.dropFirst(result.count)
     /// ```
-    public struct Witness<Output: Sendable, Representation: Sendable, Context: Sendable, Failure: Swift.Error & Sendable>: Sendable {
-        public let call: @Sendable (_ representation: Representation, _ context: Context) throws(Failure) -> Result<Output>
+    public struct Witness<Output: Sendable, Count: Sendable, Representation: Sendable, Context: Sendable, Failure: Swift.Error & Sendable>: Sendable {
+        public let call: @Sendable (_ representation: Representation, _ context: Context) throws(Failure) -> Result<Output, Count>
 
         @inlinable
-        public init(call: @escaping @Sendable (_ representation: Representation, _ context: Context) throws(Failure) -> Result<Output>) {
+        public init(call: @escaping @Sendable (_ representation: Representation, _ context: Context) throws(Failure) -> Result<Output, Count>) {
             self.call = call
         }
     }
