@@ -20,7 +20,13 @@ let package = Package(
     targets: [
         .target(
             name: "Serialization Primitives"
-        )
+        ),
+        .testTarget(
+            name: "Serialization Primitives Tests",
+            dependencies: [
+                "Serialization Primitives",
+            ]
+        ),
     ],
     swiftLanguageModes: [.v6]
 )
@@ -31,6 +37,7 @@ for target in package.targets where ![.system, .binary, .plugin, .macro].contain
         .enableUpcomingFeature("ExistentialAny"),
         .enableUpcomingFeature("InternalImportsByDefault"),
         .enableUpcomingFeature("MemberImportVisibility"),
+        .enableUpcomingFeature("NonisolatedNonsendingByDefault"),
         .enableExperimentalFeature("Lifetimes"),
         .enableExperimentalFeature("SuppressedAssociatedTypes"),
         .enableExperimentalFeature("SuppressedAssociatedTypesWithDefaults"),
