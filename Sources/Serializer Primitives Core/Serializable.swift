@@ -23,3 +23,30 @@ public protocol Serializable {
     /// The canonical serializer instance.
     static var serializer: Serializer { get }
 }
+
+// MARK: - Byte Buffer Convenience
+
+extension Serializable where Serializer.Buffer == [UInt8], Serializer.Output == Self {
+    /// The ASCII byte representation of this value using its canonical serializer.
+    @inlinable
+    public var asciiBytes: [UInt8] {
+        var buffer: [UInt8] = []
+        try! Self.serializer.serialize(self, into: &buffer)
+        return buffer
+    }
+}
+
+extension Serializable
+where Serializer.Buffer == [UInt8], Serializer.Output == Self,
+      Serializer.Failure == Never
+{
+    /// The ASCII byte representation of this value using its canonical serializer.
+    ///
+    /// Infallible version for serializers that cannot fail.
+    @inlinable
+    public var asciiBytes: [UInt8] {
+        var buffer: [UInt8] = []
+        Self.serializer.serialize(self, into: &buffer)
+        return buffer
+    }
+}
