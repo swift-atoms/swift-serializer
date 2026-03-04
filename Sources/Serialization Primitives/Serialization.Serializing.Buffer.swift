@@ -18,7 +18,7 @@ extension Serialization.Serializing {
     /// byteSerializer.call(0xDEADBEEF, into: &bytes)
     /// // bytes == [0xDE, 0xAD, 0xBE, 0xEF]
     /// ```
-    public struct Buffer<Output: Sendable, Element: Sendable, Context: Sendable>: Sendable {
+    public struct Buffer<Output, Element, Context>: Sendable {
         public let call: @Sendable (_ value: Output, _ context: Context, _ buffer: inout [Element]) -> Void
 
         @inlinable

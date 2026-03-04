@@ -13,7 +13,7 @@ extension Serialization.Serializing {
     /// }
     /// let json = try jsonSerializer.call(user)
     /// ```
-    public struct Value<Output: Sendable, Representation: Sendable, Context: Sendable, Failure: Swift.Error & Sendable>: Sendable {
+    public struct Value<Output, Representation, Context, Failure: Swift.Error>: Sendable {
         public let call: @Sendable (_ value: Output, _ context: Context) throws(Failure) -> Representation
 
         @inlinable

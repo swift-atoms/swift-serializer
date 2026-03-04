@@ -18,7 +18,7 @@ extension Serialization.Parsing.Prefix {
     /// }
     /// let result = try intParser.call(bytes)
     /// ```
-    public struct Witness<Output: Sendable, Count: Sendable, Representation: Sendable, Context: Sendable, Failure: Swift.Error & Sendable>: Sendable {
+    public struct Witness<Output, Count, Representation, Context, Failure: Swift.Error>: Sendable {
         public let call: @Sendable (_ representation: Representation, _ context: Context) throws(Failure) -> Result<Output, Count>
 
         @inlinable

@@ -13,7 +13,7 @@ extension Serialization.Parsing {
     /// }
     /// let user = try jsonParser.call(jsonString)
     /// ```
-    public struct Whole<Output: Sendable, Representation: Sendable, Context: Sendable, Failure: Swift.Error & Sendable>: Sendable {
+    public struct Whole<Output, Representation, Context, Failure: Swift.Error>: Sendable {
         public let call: @Sendable (_ representation: Representation, _ context: Context) throws(Failure) -> Output
 
         @inlinable

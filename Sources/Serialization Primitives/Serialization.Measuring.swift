@@ -15,7 +15,7 @@ extension Serialization {
     /// buffer.reserveCapacity(measuring.call(packet))
     /// serializer.call(packet, into: &buffer)
     /// ```
-    public struct Measuring<Output: Sendable, Context: Sendable>: Sendable {
+    public struct Measuring<Output, Context>: Sendable {
         public let call: @Sendable (_ value: Output, _ context: Context) -> Int
 
         @inlinable

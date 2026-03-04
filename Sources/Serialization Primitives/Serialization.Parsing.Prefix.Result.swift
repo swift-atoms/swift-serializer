@@ -15,7 +15,7 @@ extension Serialization.Parsing.Prefix {
     /// print("Parsed: \(result.value)")
     /// print("Consumed: \(result.count) bytes")
     /// ```
-    public struct Result<Output: Sendable, Count: Sendable>: Sendable {
+    public struct Result<Output, Count> {
         /// The parsed value.
         public let value: Output
 
@@ -29,3 +29,5 @@ extension Serialization.Parsing.Prefix {
         }
     }
 }
+
+extension Serialization.Parsing.Prefix.Result: Sendable where Output: Sendable, Count: Sendable {}
