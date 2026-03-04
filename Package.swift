@@ -3,7 +3,7 @@
 import PackageDescription
 
 let package = Package(
-    name: "swift-serialization-primitives",
+    name: "swift-serializer-primitives",
     platforms: [
         .macOS(.v26),
         .iOS(.v26),
@@ -12,14 +12,38 @@ let package = Package(
         .visionOS(.v26)
     ],
     products: [
+        // MARK: - Core
+        .library(
+            name: "Serializer Primitives Core",
+            targets: ["Serializer Primitives Core"]
+        ),
+        // MARK: - Witnesses
         .library(
             name: "Serialization Primitives",
             targets: ["Serialization Primitives"]
-        )
+        ),
+        // MARK: - Umbrella
+        .library(
+            name: "Serializer Primitives",
+            targets: ["Serializer Primitives"]
+        ),
     ],
     targets: [
+        // MARK: - Core
+        .target(
+            name: "Serializer Primitives Core"
+        ),
+        // MARK: - Witnesses
         .target(
             name: "Serialization Primitives"
+        ),
+        // MARK: - Umbrella
+        .target(
+            name: "Serializer Primitives",
+            dependencies: [
+                "Serializer Primitives Core",
+                "Serialization Primitives",
+            ]
         ),
         .testTarget(
             name: "Serialization Primitives Tests",
