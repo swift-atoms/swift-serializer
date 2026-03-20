@@ -27,6 +27,10 @@ let package = Package(
             name: "Serializer Primitives",
             targets: ["Serializer Primitives"]
         ),
+        .library(
+            name: "Serialization Primitives Test Support",
+            targets: ["Serialization Primitives Test Support"]
+        ),
     ],
     targets: [
         // MARK: - Core
@@ -50,6 +54,15 @@ let package = Package(
             dependencies: [
                 "Serialization Primitives",
             ]
+        ),
+
+        // MARK: - Test Support
+        .target(
+            name: "Serialization Primitives Test Support",
+            dependencies: [
+                "Serialization Primitives",
+            ],
+            path: "Tests/Support"
         ),
     ],
     swiftLanguageModes: [.v6]
