@@ -56,7 +56,7 @@ extension Serializer {
         /// The error type this serializer can throw.
         ///
         /// Use `Never` for infallible serializers.
-        associatedtype Failure: Swift.Error & Sendable
+        associatedtype Failure: Swift.Error
 
         /// The type of the composed serializer body, or `Never` for leaf serializers.
         associatedtype Body
