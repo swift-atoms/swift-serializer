@@ -12,6 +12,11 @@ let package = Package(
         .visionOS(.v26)
     ],
     products: [
+        // MARK: - Namespace
+        .library(
+            name: "Serializer Namespace",
+            targets: ["Serializer Namespace"]
+        ),
         // MARK: - Core
         .library(
             name: "Serializer Primitives Core",
@@ -33,9 +38,17 @@ let package = Package(
         ),
     ],
     targets: [
+        // MARK: - Namespace
+        .target(
+            name: "Serializer Namespace",
+            dependencies: []
+        ),
         // MARK: - Core
         .target(
-            name: "Serializer Primitives Core"
+            name: "Serializer Primitives Core",
+            dependencies: [
+                "Serializer Namespace",
+            ]
         ),
         // MARK: - Witnesses
         .target(
@@ -45,6 +58,7 @@ let package = Package(
         .target(
             name: "Serializer Primitives",
             dependencies: [
+                "Serializer Namespace",
                 "Serializer Primitives Core",
                 "Serialization Primitives",
             ]
