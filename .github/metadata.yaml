@@ -1,6 +1,6 @@
 # .github/metadata.yaml
 # Triaged by AI-assisted bulk pass (2026-04-29).
-description: "Serializer types for Swift."
+description: "Declarative one-way value-to-buffer serialization with composable combinators and a result-builder DSL for Swift."
 topics:
   - primitives
   - serializer
