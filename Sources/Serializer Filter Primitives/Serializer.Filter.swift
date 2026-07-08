@@ -62,7 +62,7 @@ extension Serializer.Filter: Serializer.`Protocol` {
         guard predicate(output) else {
             throw .right(.validationFailed(value: "\(output)", reason: "filter predicate"))
         }
-        do {
+        do throws(Upstream.Failure) {
             try upstream.serialize(output, into: &buffer)
         } catch {
             throw .left(error)

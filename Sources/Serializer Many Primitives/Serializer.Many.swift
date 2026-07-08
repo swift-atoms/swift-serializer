@@ -105,7 +105,7 @@ extension Serializer.Many: Serializer.`Protocol` {
         }
 
         for item in output {
-            do {
+            do throws(Element.Failure) {
                 try element.serialize(item, into: &buffer)
             } catch {
                 throw .right(error)

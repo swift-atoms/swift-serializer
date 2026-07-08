@@ -42,7 +42,7 @@ extension SequenceTests.Unit {
 
         let pair = Serializer.Sequence.Two(s1, s2)
         var buffer: [UInt8] = []
-        do {
+        do throws(Either<Never, Never>) {
             try pair.serialize(1, into: &buffer)
             #expect(buffer == [1, 101])
         } catch {
@@ -57,7 +57,7 @@ extension SequenceTests.Unit {
 
         let pair = Serializer.Sequence.Two(s1, s2)
         var buffer: [UInt8] = [99]  // pre-existing
-        do {
+        do throws(Either<Never, Never>) {
             try pair.serialize(5, into: &buffer)
             #expect(buffer == [99, 5, 15])
         } catch {
@@ -80,7 +80,7 @@ extension SequenceTests.`Edge Case` {
 
         let pair = Serializer.Sequence.Two(s1, s2)
         var buffer: [UInt8] = []
-        do {
+        do throws(Either<E0, E1>) {
             try pair.serialize(1, into: &buffer)
             Issue.record("Expected throw")
         } catch let error {
@@ -104,7 +104,7 @@ extension SequenceTests.`Edge Case` {
 
         let pair = Serializer.Sequence.Two(s1, s2)
         var buffer: [UInt8] = []
-        do {
+        do throws(Either<E0, E1>) {
             try pair.serialize(1, into: &buffer)
             Issue.record("Expected throw")
         } catch let error {
@@ -131,7 +131,7 @@ extension SequenceTests.Unit {
 
         let triple = Serializer.Sequence.Three(s1, s2, s3)
         var buffer: [UInt8] = []
-        do {
+        do throws(Either<Never, Either<Never, Never>>) {
             try triple.serialize(1, into: &buffer)
             #expect(buffer == [1, 11, 21])
         } catch {
@@ -166,7 +166,7 @@ extension SequenceTests.Integration {
     func `var body with two serializers builds Sequence.Two via buildBlock`() {
         let printer = TwoStepIntPrinter()
         var buffer: [UInt8] = []
-        do {
+        do throws(TwoStepIntPrinter.Failure) {
             try printer.serialize(1, into: &buffer)
             #expect(buffer == [1, 101])
         } catch {

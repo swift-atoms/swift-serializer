@@ -105,14 +105,14 @@ extension SerializerWitnessTests.`Edge Case` {
         }
 
         var buffer: [UInt8] = []
-        do {
+        do throws(ZeroIsForbidden) {
             try witness._serialize(7, &buffer)
             #expect(buffer == [7])
         } catch {
             Issue.record("Did not expect throw for non-zero")
         }
 
-        do {
+        do throws(ZeroIsForbidden) {
             try witness._serialize(0, &buffer)
             Issue.record("Expected ZeroIsForbidden to be thrown")
         } catch {

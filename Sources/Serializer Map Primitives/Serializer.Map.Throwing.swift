@@ -57,12 +57,12 @@ extension Serializer.Map.Throwing: Serializer.`Protocol` {
     @inlinable
     public func serialize(_ output: NewOutput, into buffer: inout Buffer) throws(Failure) {
         let upstreamInput: Upstream.Output
-        do {
+        do throws(E) {
             upstreamInput = try transform(output)
         } catch {
             throw .right(error)
         }
-        do {
+        do throws(Upstream.Failure) {
             try upstream.serialize(upstreamInput, into: &buffer)
         } catch {
             throw .left(error)

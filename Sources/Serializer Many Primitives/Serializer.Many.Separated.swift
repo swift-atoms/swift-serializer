@@ -127,13 +127,13 @@ extension Serializer.Many.Separated: Serializer.`Protocol` {
         var isFirst = true
         for item in output {
             if !isFirst {
-                do {
+                do throws(Separator.Failure) {
                     try separator.serialize((), into: &buffer)
                 } catch {
                     throw .right(.right(error))
                 }
             }
-            do {
+            do throws(Element.Failure) {
                 try element.serialize(item, into: &buffer)
             } catch {
                 throw .right(.left(error))

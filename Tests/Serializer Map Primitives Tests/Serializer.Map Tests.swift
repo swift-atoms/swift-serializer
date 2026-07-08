@@ -86,7 +86,7 @@ extension MapTests.Unit {
         var buffer: [UInt8] = []
 
         // Success: transform succeeds, upstream succeeds.
-        do {
+        do throws(Serializer.Map<Serializer.Witness<Int, [UInt8], UpstreamE>, String>.Throwing<TransformE>.Failure) {
             try mapped.serialize("ok", into: &buffer)
             #expect(buffer == [2])
         } catch {
@@ -95,7 +95,7 @@ extension MapTests.Unit {
 
         // Transform failure: throw is .right(TransformE)
         buffer.removeAll()
-        do {
+        do throws(Serializer.Map<Serializer.Witness<Int, [UInt8], UpstreamE>, String>.Throwing<TransformE>.Failure) {
             try mapped.serialize("", into: &buffer)
             Issue.record("Expected TransformE")
         } catch let error {
@@ -117,7 +117,9 @@ extension MapTests.Unit {
 /// Demonstrates `var body` with a `.map` chain on a leaf serializer. The
 /// body composes a single chained expression and returns the
 /// `Map.Transform` type.
-struct UppercaseByteCounter: Serializer.`Protocol` {
+struct UppercaseByteCounter: Serializer.`Protocol` {}
+
+extension UppercaseByteCounter {
     typealias Output = String
     typealias Buffer = [UInt8]
     typealias Failure = Never

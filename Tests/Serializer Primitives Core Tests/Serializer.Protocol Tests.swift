@@ -99,14 +99,14 @@ extension SerializerProtocolTests.`Edge Case` {
         }
 
         var buffer: [UInt8] = []
-        do {
+        do throws(E) {
             try witness.serialize(7, into: &buffer)
             #expect(buffer == [7])
         } catch {
             Issue.record("Did not expect throw for non-zero")
         }
 
-        do {
+        do throws(E) {
             try witness.serialize(0, into: &buffer)
             Issue.record("Expected E to be thrown")
         } catch {
@@ -169,7 +169,7 @@ extension SerializerProtocolTests.Integration {
         }
 
         // Success.
-        do {
+        do throws(E) {
             let result: [UInt8] = try witness.serialize(7)
             #expect(result == [7])
         } catch {
@@ -177,7 +177,7 @@ extension SerializerProtocolTests.Integration {
         }
 
         // Failure.
-        do {
+        do throws(E) {
             let _: [UInt8] = try witness.serialize(-1)
             Issue.record("Expected throw for negative")
         } catch {
@@ -196,7 +196,9 @@ extension SerializerProtocolTests.Integration {
 ///
 /// Demonstrates the `var body` style: no `serialize(_:into:)` method here —
 /// the default extension provides it via delegation to body.serialize.
-struct DecimalPrinter: Serializer.`Protocol` {
+struct DecimalPrinter: Serializer.`Protocol` {}
+
+extension DecimalPrinter {
     typealias Output = Int
     typealias Buffer = [UInt8]
     typealias Failure = Never

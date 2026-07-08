@@ -39,7 +39,7 @@ extension FilterTests.Unit {
         let filtered = upstream.filter { $0 >= 0 }
 
         var buffer: [UInt8] = []
-        do {
+        do throws(Serializer.Filter<Serializer.Witness<Int, [UInt8], Never>>.Failure) {
             try filtered.serialize(42, into: &buffer)
             #expect(buffer == [42])
         } catch {
@@ -56,7 +56,7 @@ extension FilterTests.Unit {
         let filtered = upstream.filter { $0 >= 0 }
 
         var buffer: [UInt8] = []
-        do {
+        do throws(Serializer.Filter<Serializer.Witness<Int, [UInt8], Never>>.Failure) {
             try filtered.serialize(-1, into: &buffer)
             Issue.record("Expected predicate rejection")
         } catch let error {
@@ -91,7 +91,7 @@ extension FilterTests.`Edge Case` {
         let filtered = upstream.filter { _ in true }  // always accepts
 
         var buffer: [UInt8] = []
-        do {
+        do throws(Serializer.Filter<Serializer.Witness<Int, [UInt8], UpstreamE>>.Failure) {
             try filtered.serialize(0, into: &buffer)
             Issue.record("Expected upstream error")
         } catch let error {
@@ -111,7 +111,9 @@ extension FilterTests.`Edge Case` {
 /// Serializes a non-empty String to its UTF-8 bytes; throws if empty.
 ///
 /// Demonstrates `var body` with a `.filter` chain on a leaf serializer.
-struct NonEmptyStringPrinter: Serializer.`Protocol` {
+struct NonEmptyStringPrinter: Serializer.`Protocol` {}
+
+extension NonEmptyStringPrinter {
     typealias Output = String
     typealias Buffer = [UInt8]
     typealias Failure = Either<Never, Serializer.Filter<Serializer.Witness<String, [UInt8], Never>>.Error>
@@ -130,7 +132,7 @@ extension FilterTests.Integration {
     func `var body with .filter writes through when predicate passes`() {
         let printer = NonEmptyStringPrinter()
         var buffer: [UInt8] = []
-        do {
+        do throws(NonEmptyStringPrinter.Failure) {
             try printer.serialize("hello", into: &buffer)
             #expect(buffer == Array("hello".utf8))
         } catch {
@@ -142,7 +144,7 @@ extension FilterTests.Integration {
     func `var body with .filter rejects empty string`() {
         let printer = NonEmptyStringPrinter()
         var buffer: [UInt8] = []
-        do {
+        do throws(NonEmptyStringPrinter.Failure) {
             try printer.serialize("", into: &buffer)
             Issue.record("Expected empty-string rejection")
         } catch {

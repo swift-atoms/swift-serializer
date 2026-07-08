@@ -76,7 +76,7 @@ extension Serializer.Trace: Serializer.`Protocol` {
     @inlinable
     public func serialize(_ output: Output, into buffer: inout Buffer) throws(Failure) {
         log("[\(label)] enter")
-        do {
+        do throws(Upstream.Failure) {
             try upstream.serialize(output, into: &buffer)
             log("[\(label)] success: \(output)")
         } catch {

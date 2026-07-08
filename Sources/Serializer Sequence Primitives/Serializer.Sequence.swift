@@ -54,12 +54,12 @@ extension Serializer.Sequence.Two: Serializer.`Protocol` {
     /// Serializes the value through both serializers in order.
     @inlinable
     public func serialize(_ output: Output, into buffer: inout Buffer) throws(Failure) {
-        do {
+        do throws(P0.Failure) {
             try p0.serialize(output, into: &buffer)
         } catch {
             throw .left(error)
         }
-        do {
+        do throws(P1.Failure) {
             try p1.serialize(output, into: &buffer)
         } catch {
             throw .right(error)
@@ -118,17 +118,17 @@ extension Serializer.Sequence.Three: Serializer.`Protocol` {
     /// Serializes the value through all three serializers in order.
     @inlinable
     public func serialize(_ output: Output, into buffer: inout Buffer) throws(Failure) {
-        do {
+        do throws(P0.Failure) {
             try p0.serialize(output, into: &buffer)
         } catch {
             throw .left(error)
         }
-        do {
+        do throws(P1.Failure) {
             try p1.serialize(output, into: &buffer)
         } catch {
             throw .right(.left(error))
         }
-        do {
+        do throws(P2.Failure) {
             try p2.serialize(output, into: &buffer)
         } catch {
             throw .right(.right(error))
