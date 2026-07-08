@@ -24,30 +24,32 @@ extension Tagged where Underlying: Serializable, Underlying.Serializer.Output ==
     /// types are inherited from the underlying's serializer — Tagged adds
     /// no error or buffer-shape concerns of its own.
     public struct UnderlyingSerializer: Serializer_Primitive.Serializer.`Protocol` {
-        /// The wrapped `Tagged` value this serializer accepts.
-        public typealias Output = Tagged<Tag, Underlying>
-
-        /// The buffer type is inherited from the underlying value's serializer.
-        public typealias Buffer = Underlying.Serializer.Buffer
-
-        /// The failure type is inherited from the underlying value's serializer.
-        public typealias Failure = Underlying.Serializer.Failure
-
-        /// A leaf serializer has no composed body.
-        public typealias Body = Never
-
         /// Creates the lifting serializer.
         @inlinable
         public init() {}
+    }
+}
 
-        /// Extracts the underlying value and delegates to its canonical serializer.
-        @inlinable
-        public borrowing func serialize(
-            _ output: Tagged<Tag, Underlying>,
-            into buffer: inout Underlying.Serializer.Buffer
-        ) throws(Underlying.Serializer.Failure) {
-            try Underlying.serializer.serialize(output.underlying, into: &buffer)
-        }
+extension Tagged.UnderlyingSerializer where Underlying: Serializable, Underlying.Serializer.Output == Underlying {
+    /// The wrapped `Tagged` value this serializer accepts.
+    public typealias Output = Tagged<Tag, Underlying>
+
+    /// The buffer type is inherited from the underlying value's serializer.
+    public typealias Buffer = Underlying.Serializer.Buffer
+
+    /// The failure type is inherited from the underlying value's serializer.
+    public typealias Failure = Underlying.Serializer.Failure
+
+    /// A leaf serializer has no composed body.
+    public typealias Body = Never
+
+    /// Extracts the underlying value and delegates to its canonical serializer.
+    @inlinable
+    public borrowing func serialize(
+        _ output: Tagged<Tag, Underlying>,
+        into buffer: inout Underlying.Serializer.Buffer
+    ) throws(Underlying.Serializer.Failure) {
+        try Underlying.serializer.serialize(output.underlying, into: &buffer)
     }
 }
 
