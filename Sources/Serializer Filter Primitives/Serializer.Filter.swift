@@ -35,14 +35,6 @@ extension Serializer {
     }
 }
 
-extension Serializer.Filter {
-    /// Errors thrown by a ``Serializer/Filter`` when its predicate rejects an input.
-    public enum Error: Swift.Error {
-        /// The input value did not satisfy the filter predicate.
-        case validationFailed(value: String, reason: String)
-    }
-}
-
 extension Serializer.Filter: Serializer.`Protocol` {
     /// The output type is inherited from the upstream serializer.
     public typealias Output = Upstream.Output

@@ -24,7 +24,7 @@ import Testing
 
 // MARK: - Test Suite Structure
 
-enum MapTests {
+@Suite struct `Map Tests` {
     @Suite struct Unit {}
     @Suite struct `Edge Case` {}
     @Suite struct Integration {}
@@ -33,7 +33,7 @@ enum MapTests {
 
 // MARK: - Unit Tests — Map.Transform (Pure Contravariant Transform)
 
-extension MapTests.Unit {
+extension `Map Tests`.Unit {
 
     @Test
     func `Map.Transform transforms new input then delegates to upstream`() {
@@ -67,37 +67,37 @@ extension MapTests.Unit {
 
 // MARK: - Unit Tests — Map.Throwing (Failure-Adding Transform)
 
-extension MapTests.Unit {
+extension `Map Tests`.Unit {
 
     @Test
     func `Map.Throwing wraps upstream Failure as Either.left, transform error as right`() {
-        struct UpstreamE: Swift.Error {}
-        struct TransformE: Swift.Error, Equatable {}
+        struct Upstream: Swift.Error {}
+        struct Transformation: Swift.Error, Equatable {}
 
-        let upstream = Serializer.Witness<Int, [UInt8], UpstreamE> { value, buffer throws(UpstreamE) in
+        let upstream = Serializer.Witness<Int, [UInt8], Upstream> { value, buffer throws(Upstream) in
             buffer.append(UInt8(truncatingIfNeeded: value))
         }
 
-        let mapped = upstream.tryMap { (input: String) throws(TransformE) -> Int in
-            guard !input.isEmpty else { throw TransformE() }
+        let mapped = upstream.tryMap { (input: String) throws(Transformation) -> Int in
+            guard !input.isEmpty else { throw Transformation() }
             return input.count
         }
 
         var buffer: [UInt8] = []
 
         // Success: transform succeeds, upstream succeeds.
-        do throws(Serializer.Map<Serializer.Witness<Int, [UInt8], UpstreamE>, String>.Throwing<TransformE>.Failure) {
+        do throws(Serializer.Map<Serializer.Witness<Int, [UInt8], Upstream>, String>.Throwing<Transformation>.Failure) {
             try mapped.serialize("ok", into: &buffer)
             #expect(buffer == [2])
         } catch {
             Issue.record("Did not expect throw on success path")
         }
 
-        // Transform failure: throw is .right(TransformE)
+        // Transform failure: throw is .right(Transformation)
         buffer.removeAll()
-        do throws(Serializer.Map<Serializer.Witness<Int, [UInt8], UpstreamE>, String>.Throwing<TransformE>.Failure) {
+        do throws(Serializer.Map<Serializer.Witness<Int, [UInt8], Upstream>, String>.Throwing<Transformation>.Failure) {
             try mapped.serialize("", into: &buffer)
-            Issue.record("Expected TransformE")
+            Issue.record("Expected Transformation")
         } catch let error {
             switch error {
             case .right:
@@ -117,9 +117,13 @@ extension MapTests.Unit {
 /// Demonstrates `var body` with a `.map` chain on a leaf serializer. The
 /// body composes a single chained expression and returns the
 /// `Map.Transform` type.
-struct UppercaseByteCounter: Serializer.`Protocol` {}
+enum Uppercased {}
 
-extension UppercaseByteCounter {
+extension Uppercased {
+    struct Counter {}
+}
+
+extension Uppercased.Counter: Serializer.`Protocol` {
     typealias Output = String
     typealias Buffer = [UInt8]
     typealias Failure = Never
@@ -134,11 +138,11 @@ extension UppercaseByteCounter {
     }
 }
 
-extension MapTests.Integration {
+extension `Map Tests`.Integration {
 
     @Test
     func `var body with .map chain serializes via contravariant transform`() {
-        let counter = UppercaseByteCounter()
+        let counter = Uppercased.Counter()
         var buffer: [UInt8] = []
         counter.serialize("ab", into: &buffer)
         // "ab" → uppercased "AB" → count 2 → upstream writes 2.
@@ -147,7 +151,7 @@ extension MapTests.Integration {
 
     @Test
     func `var body with .map appends, mirroring leaf-form behavior`() {
-        let counter = UppercaseByteCounter()
+        let counter = Uppercased.Counter()
         var buffer: [UInt8] = [99]
         counter.serialize("hi", into: &buffer)
         // Existing [99] preserved, then 2 appended.

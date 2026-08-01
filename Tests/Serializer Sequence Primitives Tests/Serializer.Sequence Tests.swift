@@ -20,7 +20,7 @@ import Testing
 
 // MARK: - Test Suite Structure
 
-enum SequenceTests {
+@Suite struct `Sequence Tests` {
     @Suite struct Unit {}
     @Suite struct `Edge Case` {}
     @Suite struct Integration {}
@@ -29,7 +29,7 @@ enum SequenceTests {
 
 // MARK: - Unit Tests — Two
 
-extension SequenceTests.Unit {
+extension `Sequence Tests`.Unit {
 
     @Test
     func `Sequence.Two writes both serializers into the same buffer`() {
@@ -68,7 +68,7 @@ extension SequenceTests.Unit {
 
 // MARK: - Edge Cases — Failure Propagation
 
-extension SequenceTests.`Edge Case` {
+extension `Sequence Tests`.`Edge Case` {
 
     @Test
     func `Sequence.Two surfaces left failure when first serializer throws`() {
@@ -121,7 +121,7 @@ extension SequenceTests.`Edge Case` {
 
 // MARK: - Unit Tests — Three
 
-extension SequenceTests.Unit {
+extension `Sequence Tests`.Unit {
 
     @Test
     func `Sequence.Three writes all three serializers into the same buffer`() {
@@ -145,7 +145,13 @@ extension SequenceTests.Unit {
 /// Declarative `var body` that sequences two witnesses on the same Output.
 ///
 /// Verifies `buildBlock(_:_:)` produces a `Serializer.Sequence.Two`.
-struct TwoStepIntPrinter: Serializer.`Protocol` {
+enum Duo {}
+
+extension Duo {
+    struct Printer {}
+}
+
+extension Duo.Printer: Serializer.`Protocol` {
     typealias Output = Int
     typealias Buffer = [UInt8]
     typealias Failure = Either<Never, Never>
@@ -160,13 +166,13 @@ struct TwoStepIntPrinter: Serializer.`Protocol` {
     }
 }
 
-extension SequenceTests.Integration {
+extension `Sequence Tests`.Integration {
 
     @Test
     func `var body with two serializers builds Sequence.Two via buildBlock`() {
-        let printer = TwoStepIntPrinter()
+        let printer = Duo.Printer()
         var buffer: [UInt8] = []
-        do throws(TwoStepIntPrinter.Failure) {
+        do throws(Duo.Printer.Failure) {
             try printer.serialize(1, into: &buffer)
             #expect(buffer == [1, 101])
         } catch {

@@ -12,6 +12,12 @@
 // Per [TEST-033] (proposed): one test target per source target. This test
 // target covers ONLY the `Serializer Filter Primitives` source target —
 // `Serializer.Filter` and the `.filter(_:)` extension method.
+//
+// `Serializer.Filter<Upstream>` is a generic type, so its test suite cannot
+// be attached via `extension Serializer.Filter { @Suite ... }` — that shape
+// either hard-errors (unspecialized) or compiles but is silently never
+// discovered (specialized). Per the testing skill's "host types that break
+// the extension pattern" guidance, this uses a top-level backticked suite.
 
 import Serializer_Filter_Primitives
 import Serializer_Witness_Primitives
@@ -19,7 +25,7 @@ import Testing
 
 // MARK: - Test Suite Structure
 
-enum FilterTests {
+@Suite struct `Filter Tests` {
     @Suite struct Unit {}
     @Suite struct `Edge Case` {}
     @Suite struct Integration {}
@@ -28,7 +34,7 @@ enum FilterTests {
 
 // MARK: - Unit Tests
 
-extension FilterTests.Unit {
+extension `Filter Tests`.Unit {
 
     @Test
     func `Filter delegates when predicate accepts the value`() {
@@ -78,26 +84,26 @@ extension FilterTests.Unit {
 
 // MARK: - Edge Cases
 
-extension FilterTests.`Edge Case` {
+extension `Filter Tests`.`Edge Case` {
 
     @Test
     func `Filter wraps upstream failure as Either.left`() {
-        struct UpstreamE: Swift.Error, Equatable {}
+        struct Failing: Swift.Error, Equatable {}
 
-        let upstream = Serializer.Witness<Int, [UInt8], UpstreamE> { _, _ throws(UpstreamE) in
-            throw UpstreamE()
+        let upstream = Serializer.Witness<Int, [UInt8], Failing> { _, _ throws(Failing) in
+            throw Failing()
         }
 
         let filtered = upstream.filter { _ in true }  // always accepts
 
         var buffer: [UInt8] = []
-        do throws(Serializer.Filter<Serializer.Witness<Int, [UInt8], UpstreamE>>.Failure) {
+        do throws(Serializer.Filter<Serializer.Witness<Int, [UInt8], Failing>>.Failure) {
             try filtered.serialize(0, into: &buffer)
             Issue.record("Expected upstream error")
         } catch let error {
             switch error {
             case .left(let upstreamE):
-                #expect(upstreamE == UpstreamE())
+                #expect(upstreamE == Failing())
 
             case .right:
                 Issue.record("Expected .left (upstream error), got .right (filter error)")
@@ -108,12 +114,17 @@ extension FilterTests.`Edge Case` {
 
 // MARK: - Integration — `var body` with .filter
 
-/// Serializes a non-empty String to its UTF-8 bytes; throws if empty.
-///
-/// Demonstrates `var body` with a `.filter` chain on a leaf serializer.
-struct NonEmptyStringPrinter: Serializer.`Protocol` {}
+/// Namespace for the non-empty-string integration fixture.
+enum Populated {}
 
-extension NonEmptyStringPrinter {
+extension Populated {
+    /// Serializes a non-empty String to its UTF-8 bytes; throws if empty.
+    ///
+    /// Demonstrates `var body` with a `.filter` chain on a leaf serializer.
+    struct Printer {}
+}
+
+extension Populated.Printer: Serializer.`Protocol` {
     typealias Output = String
     typealias Buffer = [UInt8]
     typealias Failure = Either<Never, Serializer.Filter<Serializer.Witness<String, [UInt8], Never>>.Error>
@@ -126,13 +137,13 @@ extension NonEmptyStringPrinter {
     }
 }
 
-extension FilterTests.Integration {
+extension `Filter Tests`.Integration {
 
     @Test
     func `var body with .filter writes through when predicate passes`() {
-        let printer = NonEmptyStringPrinter()
+        let printer = Populated.Printer()
         var buffer: [UInt8] = []
-        do throws(NonEmptyStringPrinter.Failure) {
+        do throws(Populated.Printer.Failure) {
             try printer.serialize("hello", into: &buffer)
             #expect(buffer == Array("hello".utf8))
         } catch {
@@ -142,9 +153,9 @@ extension FilterTests.Integration {
 
     @Test
     func `var body with .filter rejects empty string`() {
-        let printer = NonEmptyStringPrinter()
+        let printer = Populated.Printer()
         var buffer: [UInt8] = []
-        do throws(NonEmptyStringPrinter.Failure) {
+        do throws(Populated.Printer.Failure) {
             try printer.serialize("", into: &buffer)
             Issue.record("Expected empty-string rejection")
         } catch {

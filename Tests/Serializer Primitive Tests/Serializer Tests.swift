@@ -25,7 +25,7 @@ import Testing
 
 /// Test namespace for the ``Serializer/Witness`` storage declared in the
 /// `Serializer Namespace` source target.
-enum SerializerWitnessTests {
+@Suite struct `Witness Tests` {
     @Suite struct Unit {}
     @Suite struct `Edge Case` {}
     @Suite struct Integration {}
@@ -34,7 +34,7 @@ enum SerializerWitnessTests {
 
 // MARK: - Unit Tests
 
-extension SerializerWitnessTests.Unit {
+extension `Witness Tests`.Unit {
 
     @Test
     func `init stores the serialize closure`() {
@@ -82,7 +82,7 @@ extension SerializerWitnessTests.Unit {
 
 // MARK: - Edge Cases
 
-extension SerializerWitnessTests.`Edge Case` {
+extension `Witness Tests`.`Edge Case` {
 
     @Test
     func `_serialize into empty buffer`() {
@@ -97,26 +97,26 @@ extension SerializerWitnessTests.`Edge Case` {
 
     @Test
     func `_serialize closure with typed throws propagates the error`() {
-        struct ZeroIsForbidden: Swift.Error, Equatable {}
+        struct Forbidden: Swift.Error, Equatable {}
 
-        let witness = Serializer.Witness<Int, [UInt8], ZeroIsForbidden> { value, buffer throws(ZeroIsForbidden) in
-            guard value != 0 else { throw ZeroIsForbidden() }
+        let witness = Serializer.Witness<Int, [UInt8], Forbidden> { value, buffer throws(Forbidden) in
+            guard value != 0 else { throw Forbidden() }
             buffer.append(UInt8(truncatingIfNeeded: value))
         }
 
         var buffer: [UInt8] = []
-        do throws(ZeroIsForbidden) {
+        do throws(Forbidden) {
             try witness._serialize(7, &buffer)
             #expect(buffer == [7])
         } catch {
             Issue.record("Did not expect throw for non-zero")
         }
 
-        do throws(ZeroIsForbidden) {
+        do throws(Forbidden) {
             try witness._serialize(0, &buffer)
-            Issue.record("Expected ZeroIsForbidden to be thrown")
+            Issue.record("Expected Forbidden to be thrown")
         } catch {
-            #expect(error == ZeroIsForbidden())
+            #expect(error == Forbidden())
         }
     }
 }

@@ -30,6 +30,13 @@ extension Tagged where Underlying: Serializable, Underlying.Serializer.Output ==
     }
 }
 
+// swift-linter:disable:next extension noncopyable constraint
+// REASON: `Tag` is already pinned to `Copyable` by the enclosing declaration
+// (`extension Tagged where Underlying: Serializable, ...` at this file's top,
+// which lacks `Tag: ~Copyable` and is what introduces `UnderlyingSerializer`
+// in the first place) — adding `Tag: ~Copyable` here does not widen the
+// surface, it fails to compile (`'Tag' required to be 'Copyable' but is
+// marked with '~Copyable'`), confirmed by a full package build.
 extension Tagged.UnderlyingSerializer where Underlying: Serializable, Underlying.Serializer.Output == Underlying {
     /// The wrapped `Tagged` value this serializer accepts.
     public typealias Output = Tagged<Tag, Underlying>

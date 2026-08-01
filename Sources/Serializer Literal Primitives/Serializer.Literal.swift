@@ -30,11 +30,11 @@ extension Serializer {
         /// - Parameter string: The static string whose UTF-8 bytes are emitted.
         @inlinable
         public init(_ string: StaticString) {
-            self.bytes = unsafe Swift.Array(
+            unsafe (self.bytes = Swift.Array(
                 string.utf8Start.withMemoryRebound(to: UInt8.self, capacity: string.utf8CodeUnitCount) {
                     unsafe UnsafeBufferPointer(start: $0, count: string.utf8CodeUnitCount)
                 }.lazy.map(Byte.init)
-            )
+            ))
         }
     }
 }

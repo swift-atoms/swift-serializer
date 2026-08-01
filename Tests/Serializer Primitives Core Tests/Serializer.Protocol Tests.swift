@@ -27,7 +27,7 @@ import Testing
 
 /// Test namespace for the ``Serializer/Protocol`` surface declared in the
 /// `Serializer Primitives Core` source target.
-enum SerializerProtocolTests {
+@Suite struct `Protocol Tests` {
     @Suite struct Unit {}
     @Suite struct `Edge Case` {}
     @Suite struct Integration {}
@@ -36,7 +36,7 @@ enum SerializerProtocolTests {
 
 // MARK: - Unit Tests — Witness Conformance + Default Extensions
 
-extension SerializerProtocolTests.Unit {
+extension `Protocol Tests`.Unit {
 
     @Test
     func `serialize routes through the conformance method`() {
@@ -87,7 +87,7 @@ extension SerializerProtocolTests.Unit {
 
 // MARK: - Edge Cases — Failure Propagation
 
-extension SerializerProtocolTests.`Edge Case` {
+extension `Protocol Tests`.`Edge Case` {
 
     @Test
     func `serialize propagates typed error through the conformance`() {
@@ -129,7 +129,7 @@ extension SerializerProtocolTests.`Edge Case` {
 
 // MARK: - Integration — Protocol Conformance + RangeReplaceable Convenience
 
-extension SerializerProtocolTests.Integration {
+extension `Protocol Tests`.Integration {
 
     @Test
     func `Witness conforms to Serializer.Protocol`() {
@@ -196,9 +196,13 @@ extension SerializerProtocolTests.Integration {
 ///
 /// Demonstrates the `var body` style: no `serialize(_:into:)` method here —
 /// the default extension provides it via delegation to body.serialize.
-struct DecimalPrinter: Serializer.`Protocol` {}
+enum Decimal {}
 
-extension DecimalPrinter {
+extension Decimal {
+    struct Printer {}
+}
+
+extension Decimal.Printer: Serializer.`Protocol` {
     typealias Output = Int
     typealias Buffer = [UInt8]
     typealias Failure = Never
@@ -210,7 +214,7 @@ extension DecimalPrinter {
     }
 }
 
-extension SerializerProtocolTests.Integration {
+extension `Protocol Tests`.Integration {
 
     @Test
     func `body-style conformer delegates serialize to body`() {
@@ -218,7 +222,7 @@ extension SerializerProtocolTests.Integration {
         // serialize routes through the default extension that delegates to
         // body.serialize. If the default extension is wrong, this call
         // would not type-check.
-        let printer = DecimalPrinter()
+        let printer = Decimal.Printer()
         var buffer: [UInt8] = []
         printer.serialize(42, into: &buffer)
         #expect(buffer == Array("42".utf8))
@@ -234,7 +238,7 @@ extension SerializerProtocolTests.Integration {
             return (S.Output.self, S.Failure.self)
         }
 
-        let (outputType, failureType) = acceptsBodyComposed(DecimalPrinter())
+        let (outputType, failureType) = acceptsBodyComposed(Decimal.Printer())
         #expect(outputType == Int.self)
         #expect(failureType == Never.self)
     }
@@ -242,7 +246,7 @@ extension SerializerProtocolTests.Integration {
     @Test
     func `body-style conformer appends, mirroring leaf-form behavior`() {
         // Body-style and leaf-form conformers MUST behave identically.
-        let printer = DecimalPrinter()
+        let printer = Decimal.Printer()
         var buffer: [UInt8] = Array("prefix:".utf8)
         printer.serialize(7, into: &buffer)
         #expect(buffer == Array("prefix:7".utf8))

@@ -22,7 +22,7 @@ import Testing
 
 // MARK: - Test Suite Structure
 
-enum LiteralTests {
+@Suite struct `Literal Tests` {
     @Suite struct Unit {}
     @Suite struct `Edge Case` {}
     @Suite struct Integration {}
@@ -31,7 +31,7 @@ enum LiteralTests {
 
 // MARK: - Unit Tests
 
-extension LiteralTests.Unit {
+extension `Literal Tests`.Unit {
 
     @Test
     func `Literal from byte array appends bytes`() {
@@ -60,7 +60,7 @@ extension LiteralTests.Unit {
 
 // MARK: - Edge Cases
 
-extension LiteralTests.`Edge Case` {
+extension `Literal Tests`.`Edge Case` {
 
     @Test
     func `Literal with empty bytes is a no-op`() {
@@ -81,7 +81,7 @@ extension LiteralTests.`Edge Case` {
 
 // MARK: - Integration — Conformance through Serializer.Protocol
 
-extension LiteralTests.Integration {
+extension `Literal Tests`.Integration {
 
     @Test
     func `Literal conforms to Serializer.Protocol with Void Output`() {
