@@ -99,7 +99,9 @@ extension `Witness Tests`.`Edge Case` {
     func `_serialize closure with typed throws propagates the error`() {
         struct Forbidden: Swift.Error, Equatable {}
 
-        let witness = Serializer.Witness<Int, [UInt8], Forbidden> { value, buffer throws(Forbidden) in
+        let witness = Serializer.Witness<Int, [UInt8], Forbidden> {
+            value,
+            buffer throws(Forbidden) in
             guard value != 0 else { throw Forbidden() }
             buffer.append(UInt8(truncatingIfNeeded: value))
         }

@@ -127,7 +127,9 @@ extension Populated {
 extension Populated.Printer: Serializer.`Protocol` {
     typealias Output = String
     typealias Buffer = [UInt8]
-    typealias Failure = Either<Never, Serializer.Filter<Serializer.Witness<String, [UInt8], Never>>.Error>
+    typealias Failure = Either<
+        Never, Serializer.Filter<Serializer.Witness<String, [UInt8], Never>>.Error
+    >
 
     var body: some Serializer.`Protocol`<String, [UInt8], Failure> {
         Serializer.Witness<String, [UInt8], Never> { value, buffer in

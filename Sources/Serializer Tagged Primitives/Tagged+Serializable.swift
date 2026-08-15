@@ -37,7 +37,8 @@ extension Tagged where Underlying: Serializable, Underlying.Serializer.Output ==
 // in the first place) — adding `Tag: ~Copyable` here does not widen the
 // surface, it fails to compile (`'Tag' required to be 'Copyable' but is
 // marked with '~Copyable'`), confirmed by a full package build.
-extension Tagged.UnderlyingSerializer where Underlying: Serializable, Underlying.Serializer.Output == Underlying {
+extension Tagged.UnderlyingSerializer
+where Underlying: Serializable, Underlying.Serializer.Output == Underlying {
     /// The wrapped `Tagged` value this serializer accepts.
     public typealias Output = Tagged<Tag, Underlying>
 
