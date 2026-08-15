@@ -74,7 +74,9 @@ extension `Map Tests`.Unit {
         struct Upstream: Swift.Error {}
         struct Transformation: Swift.Error, Equatable {}
 
-        let upstream = Serializer.Witness<Int, [UInt8], Upstream> { value, buffer throws(Upstream) in
+        let upstream = Serializer.Witness<Int, [UInt8], Upstream> {
+            value,
+            buffer throws(Upstream) in
             buffer.append(UInt8(truncatingIfNeeded: value))
         }
 
@@ -86,7 +88,9 @@ extension `Map Tests`.Unit {
         var buffer: [UInt8] = []
 
         // Success: transform succeeds, upstream succeeds.
-        do throws(Serializer.Map<Serializer.Witness<Int, [UInt8], Upstream>, String>.Throwing<Transformation>.Failure) {
+        do throws(Serializer.Map<Serializer.Witness<Int, [UInt8], Upstream>, String>.Throwing<
+            Transformation
+        >.Failure) {
             try mapped.serialize("ok", into: &buffer)
             #expect(buffer == [2])
         } catch {
@@ -95,7 +99,9 @@ extension `Map Tests`.Unit {
 
         // Transform failure: throw is .right(Transformation)
         buffer.removeAll()
-        do throws(Serializer.Map<Serializer.Witness<Int, [UInt8], Upstream>, String>.Throwing<Transformation>.Failure) {
+        do throws(Serializer.Map<Serializer.Witness<Int, [UInt8], Upstream>, String>.Throwing<
+            Transformation
+        >.Failure) {
             try mapped.serialize("", into: &buffer)
             Issue.record("Expected Transformation")
         } catch let error {

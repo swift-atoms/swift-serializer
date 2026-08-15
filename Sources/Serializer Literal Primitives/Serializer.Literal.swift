@@ -31,7 +31,10 @@ extension Serializer {
         @inlinable
         public init(_ string: StaticString) {
             unsafe (self.bytes = Swift.Array(
-                string.utf8Start.withMemoryRebound(to: UInt8.self, capacity: string.utf8CodeUnitCount) {
+                string.utf8Start.withMemoryRebound(
+                    to: UInt8.self,
+                    capacity: string.utf8CodeUnitCount
+                ) {
                     unsafe UnsafeBufferPointer(start: $0, count: string.utf8CodeUnitCount)
                 }.lazy.map(Byte.init)
             ))

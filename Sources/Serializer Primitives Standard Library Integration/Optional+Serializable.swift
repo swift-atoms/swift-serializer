@@ -20,7 +20,9 @@
 
 extension Swift.Optional: Serializable where Wrapped: Serializable {
     /// The canonical serializer wraps the element's serializer, emitting nothing for `nil`.
-    public static var serializer: Serializer_Optional_Primitives.Serializer.Optionally<Wrapped.Serializer> {
+    public static var serializer:
+        Serializer_Optional_Primitives.Serializer.Optionally<Wrapped.Serializer>
+    {
         Serializer_Optional_Primitives.Serializer.Optionally(Wrapped.serializer)
     }
 }

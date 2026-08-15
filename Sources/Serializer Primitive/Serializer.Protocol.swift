@@ -116,7 +116,8 @@ extension Serializer.`Protocol` where Self: ~Copyable, Buffer: RangeReplaceableC
     }
 }
 
-extension Serializer.`Protocol` where Self: ~Copyable, Failure == Never, Buffer: RangeReplaceableCollection {
+extension Serializer.`Protocol`
+where Self: ~Copyable, Failure == Never, Buffer: RangeReplaceableCollection {
     /// Serializes a value, returning the constructed buffer.
     ///
     /// Infallible version for serializers that cannot fail.

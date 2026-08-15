@@ -109,7 +109,9 @@ extension Serializer.Many.Separated: Serializer.`Protocol` {
     public typealias Output = [Element.Output]
 
     /// A count-bound error, or an element- or separator-serialization error.
-    public typealias Failure = Either<Serializer.Many<Buffer, Element>.Error, Either<Element.Failure, Separator.Failure>>
+    public typealias Failure = Either<
+        Serializer.Many<Buffer, Element>.Error, Either<Element.Failure, Separator.Failure>
+    >
 
     /// A leaf serializer has no composed body.
     public typealias Body = Never
