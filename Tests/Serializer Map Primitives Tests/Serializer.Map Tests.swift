@@ -1,28 +1,6 @@
-// ===----------------------------------------------------------------------===//
-//
-// This source file is part of the swift-serializer-primitives open source project
-//
-// Copyright (c) 2026 Coen ten Thije Boonkkamp and the swift-serializer-primitives project authors
-// Licensed under Apache License v2.0
-//
-// See LICENSE for license information
-//
-// ===----------------------------------------------------------------------===//
-
-// Per [TEST-033] (proposed): one test target per source target. This test
-// target covers ONLY the `Serializer Map Primitives` source target —
-// `Serializer.Map.Transform`, `Serializer.Map.Throwing`, and the `.map(_:)`
-// / `.tryMap(_:)` methods declared as extensions on Serializer.Protocol.
-//
-// Map is contravariant for serializers: `.map { newInput in upstream.Output }`
-// transforms the NEW input into the upstream's expected output before
-// delegating to upstream.serialize.
-
 import Serializer_Map_Primitives
 import Serializer_Witness_Primitives
 import Testing
-
-// MARK: - Test Suite Structure
 
 @Suite struct `Map Tests` {
     @Suite struct Unit {}
@@ -31,15 +9,11 @@ import Testing
     @Suite(.serialized) struct Performance {}
 }
 
-// MARK: - Unit Tests — Map.Transform (Pure Contravariant Transform)
-
 extension `Map Tests`.Unit {
 
     @Test
     func `Map.Transform transforms new input then delegates to upstream`() {
-        // Upstream serializes an Int as one byte. Map's transform takes a
-        // String and produces the Int (Upstream.Output) the upstream
-        // serializes.
+
         let upstream = Serializer.Witness<Int, [UInt8], Never> { value, buffer in
             buffer.append(UInt8(truncatingIfNeeded: value))
         }
@@ -50,22 +24,20 @@ extension `Map Tests`.Unit {
 
         var buffer: [UInt8] = []
         mapped.serialize("hello", into: &buffer)
-        // .map transforms "hello" → 5 → upstream serializes 5
+
         #expect(buffer == [5])
     }
 
     @Test
     func `Map.Transform.Failure equals Upstream.Failure (no failure introduced)`() {
-        // Pure (non-throwing) map does not add a failure layer.
+
         struct E: Swift.Error {}
         let upstream = Serializer.Witness<Int, [UInt8], E> { _, _ throws(E) in throw E() }
         let mapped = upstream.map { (s: String) -> Int in s.count }
-        // Failure type is E, not Either<E, ...>.
+
         let _: E.Type = type(of: mapped).Failure.self
     }
 }
-
-// MARK: - Unit Tests — Map.Throwing (Failure-Adding Transform)
 
 extension `Map Tests`.Unit {
 
@@ -87,7 +59,6 @@ extension `Map Tests`.Unit {
 
         var buffer: [UInt8] = []
 
-        // Success: transform succeeds, upstream succeeds.
         do throws(Serializer.Map<Serializer.Witness<Int, [UInt8], Upstream>, String>.Throwing<
             Transformation
         >.Failure) {
@@ -97,7 +68,6 @@ extension `Map Tests`.Unit {
             Issue.record("Did not expect throw on success path")
         }
 
-        // Transform failure: throw is .right(Transformation)
         buffer.removeAll()
         do throws(Serializer.Map<Serializer.Witness<Int, [UInt8], Upstream>, String>.Throwing<
             Transformation
@@ -107,7 +77,7 @@ extension `Map Tests`.Unit {
         } catch let error {
             switch error {
             case .right:
-                break  // expected — transform threw
+                break
 
             case .left:
                 Issue.record("Expected .right, got .left")
@@ -116,13 +86,6 @@ extension `Map Tests`.Unit {
     }
 }
 
-// MARK: - Integration — `var body` Composition with .map
-
-/// Serializes a `String` as its UTF-8 byte count (uppercased input first).
-///
-/// Demonstrates `var body` with a `.map` chain on a leaf serializer. The
-/// body composes a single chained expression and returns the
-/// `Map.Transform` type.
 enum Uppercased {}
 
 extension Uppercased {
@@ -151,7 +114,7 @@ extension `Map Tests`.Integration {
         let counter = Uppercased.Counter()
         var buffer: [UInt8] = []
         counter.serialize("ab", into: &buffer)
-        // "ab" → uppercased "AB" → count 2 → upstream writes 2.
+
         #expect(buffer == [2])
     }
 
@@ -160,7 +123,7 @@ extension `Map Tests`.Integration {
         let counter = Uppercased.Counter()
         var buffer: [UInt8] = [99]
         counter.serialize("hi", into: &buffer)
-        // Existing [99] preserved, then 2 appended.
+
         #expect(buffer == [99, 2])
     }
 }

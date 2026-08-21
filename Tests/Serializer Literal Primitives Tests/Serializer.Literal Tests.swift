@@ -1,26 +1,6 @@
-// ===----------------------------------------------------------------------===//
-//
-// This source file is part of the swift-serializer-primitives open source project
-//
-// Copyright (c) 2026 Coen ten Thije Boonkkamp and the swift-serializer-primitives project authors
-// Licensed under Apache License v2.0
-//
-// See LICENSE for license information
-//
-// ===----------------------------------------------------------------------===//
-
-// Per [TEST-033] (proposed): one test target per source target. This test
-// target covers ONLY the `Serializer Literal Primitives` source target —
-// ``Serializer/Literal`` (fixed-byte emission, Void output, Never failure)
-// and its `ExpressibleByStringLiteral` /
-// `ExpressibleByUnicodeScalarLiteral` /
-// `ExpressibleByExtendedGraphemeClusterLiteral` conformances.
-
 import Byte_Primitives
 import Serializer_Literal_Primitives
 import Testing
-
-// MARK: - Test Suite Structure
 
 @Suite struct `Literal Tests` {
     @Suite struct Unit {}
@@ -29,13 +9,11 @@ import Testing
     @Suite(.serialized) struct Performance {}
 }
 
-// MARK: - Unit Tests
-
 extension `Literal Tests`.Unit {
 
     @Test
     func `Literal from byte array appends bytes`() {
-        let literal = Serializer.Literal<[Byte]>([0x48, 0x69] as [Byte])  // "Hi"
+        let literal = Serializer.Literal<[Byte]>([0x48, 0x69] as [Byte])
         var buffer: [Byte] = []
         literal.serialize((), into: &buffer)
         #expect(buffer == [0x48, 0x69])
@@ -58,8 +36,6 @@ extension `Literal Tests`.Unit {
     }
 }
 
-// MARK: - Edge Cases
-
 extension `Literal Tests`.`Edge Case` {
 
     @Test
@@ -79,14 +55,11 @@ extension `Literal Tests`.`Edge Case` {
     }
 }
 
-// MARK: - Integration — Conformance through Serializer.Protocol
-
 extension `Literal Tests`.Integration {
 
     @Test
     func `Literal conforms to Serializer.Protocol with Void Output`() {
-        // Type-level verification: passing Literal through a Serializer.Protocol
-        // constraint resolves only if conformance is in place.
+
         func acceptsAnySerializer<S: Serializer.`Protocol`>(_ s: S) -> S.Output.Type {
             return S.Output.self
         }
@@ -98,15 +71,13 @@ extension `Literal Tests`.Integration {
 
     @Test
     func `Literal is Failure == Never`() {
-        // Type-level verification: the Failure of Serializer.Literal is Never.
+
         let _: Serializer.Literal<[Byte]>.Failure.Type = Never.self
     }
 
     @Test
     func `Literal via Buffer-returning convenience extension`() {
-        // The `Buffer: RangeReplaceableCollection, Failure == Never`
-        // default extension on `Serializer.Protocol` provides
-        // `serialize() -> Buffer`.
+
         let literal = Serializer.Literal<[Byte]>("xyz")
         let buffer: [Byte] = literal.serialize(())
         #expect(buffer == "xyz".utf8.map(Byte.init))

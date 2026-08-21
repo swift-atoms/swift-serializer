@@ -1,30 +1,7 @@
-// ===----------------------------------------------------------------------===//
-//
-// This source file is part of the swift-serializer-primitives open source project
-//
-// Copyright (c) 2026 Coen ten Thije Boonkkamp and the swift-serializer-primitives project authors
-// Licensed under Apache License v2.0
-//
-// See LICENSE for license information
-//
-// ===----------------------------------------------------------------------===//
-
-// Per [TEST-033] (proposed): one test target per source target. This test
-// target covers ONLY the `Serializer Namespace` source target — the enum
-// namespace and the closure-backed ``Serializer/Witness`` storage (its init
-// and `_serialize` storage). The witness behavior under conformance
-// (``Serializer/Protocol``, default extensions, body delegation) is provided
-// by `Serializer Primitives Core` and tested in
-// `Serializer Primitives Core Tests`.
-
 import Serializer_Primitive
 import Serializer_Witness_Primitives
 import Testing
 
-// MARK: - Test Suite Structure
-
-/// Test namespace for the ``Serializer/Witness`` storage declared in the
-/// `Serializer Namespace` source target.
 @Suite struct `Witness Tests` {
     @Suite struct Unit {}
     @Suite struct `Edge Case` {}
@@ -32,16 +9,11 @@ import Testing
     @Suite(.serialized) struct Performance {}
 }
 
-// MARK: - Unit Tests
-
 extension `Witness Tests`.Unit {
 
     @Test
     func `init stores the serialize closure`() {
-        // Construct the witness and verify the public `_serialize` storage
-        // holds the closure passed at init. Pure Namespace-target surface:
-        // does NOT invoke `.serialize(_:into:)` (which is the Core
-        // conformance method tested separately).
+
         let witness = Serializer.Witness<Int, [UInt8], Never> { value, buffer in
             buffer.append(UInt8(truncatingIfNeeded: value))
         }
@@ -79,8 +51,6 @@ extension `Witness Tests`.Unit {
         #expect(buffer == [10, 20, 30, 40])
     }
 }
-
-// MARK: - Edge Cases
 
 extension `Witness Tests`.`Edge Case` {
 

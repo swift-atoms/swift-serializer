@@ -1,24 +1,6 @@
-// ===----------------------------------------------------------------------===//
-//
-// This source file is part of the swift-serializer-primitives open source project
-//
-// Copyright (c) 2026 Coen ten Thije Boonkkamp and the swift-serializer-primitives project authors
-// Licensed under Apache License v2.0
-//
-// See LICENSE for license information
-//
-// ===----------------------------------------------------------------------===//
-
-// Per [TEST-033] (proposed): one test target per source target. This test
-// target covers ONLY the `Serializer Sequence Primitives` source target —
-// ``Serializer/Sequence/Two`` and ``Serializer/Sequence/Three`` plus the
-// `buildBlock` / `buildPartialBlock` builder hooks they back.
-
 import Serializer_Sequence_Primitives
 import Serializer_Witness_Primitives
 import Testing
-
-// MARK: - Test Suite Structure
 
 @Suite struct `Sequence Tests` {
     @Suite struct Unit {}
@@ -26,8 +8,6 @@ import Testing
     @Suite struct Integration {}
     @Suite(.serialized) struct Performance {}
 }
-
-// MARK: - Unit Tests — Two
 
 extension `Sequence Tests`.Unit {
 
@@ -56,7 +36,7 @@ extension `Sequence Tests`.Unit {
         let s2 = Serializer.Witness<Int, [UInt8], Never> { v, b in b.append(UInt8(v &+ 10)) }
 
         let pair = Serializer.Sequence.Two(s1, s2)
-        var buffer: [UInt8] = [99]  // pre-existing
+        var buffer: [UInt8] = [99]
         do throws(Either<Never, Never>) {
             try pair.serialize(5, into: &buffer)
             #expect(buffer == [99, 5, 15])
@@ -65,8 +45,6 @@ extension `Sequence Tests`.Unit {
         }
     }
 }
-
-// MARK: - Edge Cases — Failure Propagation
 
 extension `Sequence Tests`.`Edge Case` {
 
@@ -119,8 +97,6 @@ extension `Sequence Tests`.`Edge Case` {
     }
 }
 
-// MARK: - Unit Tests — Three
-
 extension `Sequence Tests`.Unit {
 
     @Test
@@ -140,11 +116,6 @@ extension `Sequence Tests`.Unit {
     }
 }
 
-// MARK: - Integration — `var body` composition via builder
-
-/// Declarative `var body` that sequences two witnesses on the same Output.
-///
-/// Verifies `buildBlock(_:_:)` produces a `Serializer.Sequence.Two`.
 enum Duo {}
 
 extension Duo {

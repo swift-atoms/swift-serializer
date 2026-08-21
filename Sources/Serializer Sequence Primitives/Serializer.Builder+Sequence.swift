@@ -1,14 +1,5 @@
-//
-//  Serializer.Builder+Sequence.swift
-//  swift-serializer-primitives
-//
-//  Sequential composition methods for Serializer.Builder.
-//
-
-// MARK: - Two Serializers (buildBlock)
-
 extension Serializer.Builder {
-    /// Combines two serializers sequentially.
+
     @inlinable
     public static func buildBlock<P0: Serializer.`Protocol`, P1: Serializer.`Protocol`>(
         _ p0: P0,
@@ -23,10 +14,8 @@ extension Serializer.Builder {
     }
 }
 
-// MARK: - Partial Block Building
-
 extension Serializer.Builder {
-    /// Accumulates into a partial block (general case — two elements).
+
     @inlinable
     public static func buildPartialBlock<
         Accumulated: Serializer.`Protocol`,

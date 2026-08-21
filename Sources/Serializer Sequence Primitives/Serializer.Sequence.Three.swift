@@ -1,13 +1,5 @@
-//
-//  Serializer.Sequence.Three.swift
-//  swift-serializer-primitives
-//
-
-// MARK: - Three
-
 extension Serializer.Sequence {
-    /// A serializer that applies three serializers sequentially, writing each
-    /// into the same buffer with the same input value.
+
     public struct Three<
         P0: Serializer.`Protocol`,
         P1: Serializer.`Protocol`,
@@ -28,7 +20,6 @@ extension Serializer.Sequence {
         @usableFromInline
         internal let p2: P2
 
-        /// Creates a serializer that applies `p0`, then `p1`, then `p2` to the same value.
         @inlinable
         public init(_ p0: P0, _ p1: P1, _ p2: P2) {
             self.p0 = p0
@@ -39,19 +30,15 @@ extension Serializer.Sequence {
 }
 
 extension Serializer.Sequence.Three: Serializer.`Protocol` {
-    /// The shared output type of all three serializers.
+
     public typealias Output = P0.Output
 
-    /// The shared buffer type of all three serializers.
     public typealias Buffer = P0.Buffer
 
-    /// A failure from the first, second, or third serializer.
     public typealias Failure = Either<P0.Failure, Either<P1.Failure, P2.Failure>>
 
-    /// A leaf serializer has no composed body.
     public typealias Body = Never
 
-    /// Serializes the value through all three serializers in order.
     @inlinable
     public func serialize(_ output: Output, into buffer: inout Buffer) throws(Failure) {
         do throws(P0.Failure) {

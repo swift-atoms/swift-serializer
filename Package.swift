@@ -12,27 +12,27 @@ let package = Package(
         .visionOS(.v27),
     ],
     products: [
-        // MARK: - Namespace
+
         .library(
             name: "Serializer Primitive",
             targets: ["Serializer Primitive"]
         ),
-        // MARK: - Tagged Integration
+
         .library(
             name: "Serializer Tagged Primitives",
             targets: ["Serializer Tagged Primitives"]
         ),
-        // MARK: - Witness (closure-backed leaf conformer)
+
         .library(
             name: "Serializer Witness Primitives",
             targets: ["Serializer Witness Primitives"]
         ),
-        // MARK: - Core (DEPRECATED transitional shim — removed in the cleanup wave)
+
         .library(
             name: "Serializer Primitives Core",
             targets: ["Serializer Primitives Core"]
         ),
-        // MARK: - Combinators
+
         .library(
             name: "Serializer Map Primitives",
             targets: ["Serializer Map Primitives"]
@@ -73,12 +73,12 @@ let package = Package(
             name: "Serializer Trace Primitives",
             targets: ["Serializer Trace Primitives"]
         ),
-        // MARK: - Standard Library Integration
+
         .library(
             name: "Serializer Primitives Standard Library Integration",
             targets: ["Serializer Primitives Standard Library Integration"]
         ),
-        // MARK: - Umbrella
+
         .library(
             name: "Serializer Primitives",
             targets: ["Serializer Primitives"]
@@ -99,12 +99,12 @@ let package = Package(
         ),
     ],
     targets: [
-        // MARK: - Namespace
+
         .target(
             name: "Serializer Primitive",
             dependencies: []
         ),
-        // MARK: - Tagged Integration
+
         .target(
             name: "Serializer Tagged Primitives",
             dependencies: [
@@ -112,23 +112,14 @@ let package = Package(
                 .product(name: "Tagged Primitives", package: "swift-tagged-primitives"),
             ]
         ),
-        // MARK: - Witness (closure-backed leaf conformer)
-        // Hosted in its OWN target (NOT in "Serializer Primitive") so the module that
-        // DEFINES Serializer.Protocol contains no `Body == Never` conformer. With an
-        // in-defining-module leaf conformer present, the `@inlinable` leaf-default
-        // `var body: Never` `read` accessor is serialized into Serializer_Primitive and
-        // re-emitted BODYLESS into every consumer module conforming a `Body == Never`
-        // type (Trace, Map, …) — a SIL-verification crash on Windows + Embedded.
-        // Relocating the only such conformer (Serializer.Witness) out of the defining
-        // module is the verified fix. See:
-        //   swift-institute/Issues/swift-issue-noncopyable-assoctype-never-bodyless-witness
+
         .target(
             name: "Serializer Witness Primitives",
             dependencies: [
                 "Serializer Primitive"
             ]
         ),
-        // MARK: - Core (DEPRECATED transitional shim — exports-only; removed in the cleanup wave)
+
         .target(
             name: "Serializer Primitives Core",
             dependencies: [
@@ -137,7 +128,7 @@ let package = Package(
                 "Serializer Witness Primitives",
             ]
         ),
-        // MARK: - Combinators
+
         .target(
             name: "Serializer Map Primitives",
             dependencies: [
@@ -203,7 +194,7 @@ let package = Package(
                 "Serializer Primitive"
             ]
         ),
-        // MARK: - Standard Library Integration
+
         .target(
             name: "Serializer Primitives Standard Library Integration",
             dependencies: [
@@ -211,7 +202,7 @@ let package = Package(
                 "Serializer Optional Primitives",
             ]
         ),
-        // MARK: - Umbrella
+
         .target(
             name: "Serializer Primitives",
             dependencies: [
@@ -232,12 +223,6 @@ let package = Package(
             ]
         ),
 
-        // MARK: - Tests
-        // Per [TEST-033]: one test target per source target. Each test
-        // target depends on the MINIMAL set of source targets needed to
-        // exercise that source target's surface — so per-target link
-        // failures (e.g., witness-table emission specific to one source
-        // target) are not masked by bundling.
         .testTarget(
             name: "Serializer Primitive Tests",
             dependencies: ["Serializer Primitive", "Serializer Witness Primitives"]

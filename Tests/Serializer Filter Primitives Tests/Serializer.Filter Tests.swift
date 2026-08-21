@@ -1,29 +1,6 @@
-// ===----------------------------------------------------------------------===//
-//
-// This source file is part of the swift-serializer-primitives open source project
-//
-// Copyright (c) 2026 Coen ten Thije Boonkkamp and the swift-serializer-primitives project authors
-// Licensed under Apache License v2.0
-//
-// See LICENSE for license information
-//
-// ===----------------------------------------------------------------------===//
-
-// Per [TEST-033] (proposed): one test target per source target. This test
-// target covers ONLY the `Serializer Filter Primitives` source target —
-// `Serializer.Filter` and the `.filter(_:)` extension method.
-//
-// `Serializer.Filter<Upstream>` is a generic type, so its test suite cannot
-// be attached via `extension Serializer.Filter { @Suite ... }` — that shape
-// either hard-errors (unspecialized) or compiles but is silently never
-// discovered (specialized). Per the testing skill's "host types that break
-// the extension pattern" guidance, this uses a top-level backticked suite.
-
 import Serializer_Filter_Primitives
 import Serializer_Witness_Primitives
 import Testing
-
-// MARK: - Test Suite Structure
 
 @Suite struct `Filter Tests` {
     @Suite struct Unit {}
@@ -31,8 +8,6 @@ import Testing
     @Suite struct Integration {}
     @Suite(.serialized) struct Performance {}
 }
-
-// MARK: - Unit Tests
 
 extension `Filter Tests`.Unit {
 
@@ -69,7 +44,7 @@ extension `Filter Tests`.Unit {
             switch error {
             case .right(let filterError):
                 if case .validationFailed = filterError {
-                    // expected
+
                 } else {
                     Issue.record("Expected .validationFailed")
                 }
@@ -78,11 +53,9 @@ extension `Filter Tests`.Unit {
                 Issue.record("Expected .right (filter error), got .left (upstream error)")
             }
         }
-        #expect(buffer.isEmpty)  // predicate failed before any write
+        #expect(buffer.isEmpty)
     }
 }
-
-// MARK: - Edge Cases
 
 extension `Filter Tests`.`Edge Case` {
 
@@ -94,7 +67,7 @@ extension `Filter Tests`.`Edge Case` {
             throw Failing()
         }
 
-        let filtered = upstream.filter { _ in true }  // always accepts
+        let filtered = upstream.filter { _ in true }
 
         var buffer: [UInt8] = []
         do throws(Serializer.Filter<Serializer.Witness<Int, [UInt8], Failing>>.Failure) {
@@ -112,15 +85,10 @@ extension `Filter Tests`.`Edge Case` {
     }
 }
 
-// MARK: - Integration — `var body` with .filter
-
-/// Namespace for the non-empty-string integration fixture.
 enum Populated {}
 
 extension Populated {
-    /// Serializes a non-empty String to its UTF-8 bytes; throws if empty.
-    ///
-    /// Demonstrates `var body` with a `.filter` chain on a leaf serializer.
+
     struct Printer {}
 }
 
@@ -161,7 +129,7 @@ extension `Filter Tests`.Integration {
             try printer.serialize("", into: &buffer)
             Issue.record("Expected empty-string rejection")
         } catch {
-            // expected — predicate fails on empty string
+
         }
         #expect(buffer.isEmpty)
     }
