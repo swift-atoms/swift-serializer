@@ -1,4 +1,4 @@
-# Serializer Primitives
+# Serializer
 
 ![Development Status](https://img.shields.io/badge/status-active--development-blue.svg)
 
@@ -41,7 +41,7 @@ Transform inputs with `map`, validate with `filter`, and recover the failure typ
 
 ```swift
 import Serializer_Primitive
-import Serializer_Map_Primitives
+import Serializer_Map
 
 let octet = Serializer.Witness<UInt8, [UInt8], Never> { value, buffer in
     buffer.append(value)
@@ -58,7 +58,7 @@ let encoded: [UInt8] = lengthByte.serialize("hello")   // [5]
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/swift-primitives/swift-serializer-primitives.git", branch: "main")
+    .package(url: "https://github.com/swift-molecules/swift-serializer.git", branch: "main")
 ]
 ```
 
@@ -66,7 +66,7 @@ dependencies: [
 .target(
     name: "App",
     dependencies: [
-        .product(name: "Serializer Primitive", package: "swift-serializer-primitives"),
+        .product(name: "Serializer Primitive", package: "swift-serializer"),
     ]
 )
 ```
@@ -82,19 +82,19 @@ The namespace target carries the protocol and the closure-backed witness; each c
 | Product | When to import |
 |---------|----------------|
 | `Serializer Primitive` | The `Serializer.Protocol`, `Serializer.Witness` / `Serializer.Pure`, `Serializable`, and `Serializer.Builder`. The minimal core. |
-| `Serializer Map Primitives` | Contravariant input transforms — `map(_:)` and throwing `tryMap(_:)`. |
-| `Serializer Filter Primitives` | Predicate validation — `filter(_:)`. |
-| `Serializer Sequence Primitives` | Sequential composition (`Sequence.Two` / `Sequence.Three`) over one shared value. |
-| `Serializer Many Primitives` | Repetition with count bounds, and separator-delimited repetition. |
-| `Serializer Optional Primitives` | Compile-time-optional (`Optional`) and runtime-optional (`Optionally`) serializers. |
-| `Serializer Literal Primitives` | Fixed byte-sequence emission for delimiters and keywords. |
-| `Serializer Always Primitives` | The identity serializer that writes nothing. |
-| `Serializer Fail Primitives` | The serializer that always throws a chosen error. |
-| `Serializer Lazy Primitives` | Deferred construction for recursive formats. |
-| `Serializer Trace Primitives` | Debug tracing around any serializer. |
-| `Serializer Tagged Primitives` | `Serializable` for `Tagged`, lifting the underlying value's serializer. |
-| `Serializer Primitives Standard Library Integration` | `Serializable` for `Swift.Optional`. |
-| `Serializer Primitives` | Umbrella re-exporting every product above. |
+| `Serializer Map` | Contravariant input transforms — `map(_:)` and throwing `tryMap(_:)`. |
+| `Serializer Filter` | Predicate validation — `filter(_:)`. |
+| `Serializer Sequence` | Sequential composition (`Sequence.Two` / `Sequence.Three`) over one shared value. |
+| `Serializer Many` | Repetition with count bounds, and separator-delimited repetition. |
+| `Serializer Optional` | Compile-time-optional (`Optional`) and runtime-optional (`Optionally`) serializers. |
+| `Serializer Literal` | Fixed byte-sequence emission for delimiters and keywords. |
+| `Serializer Always` | The identity serializer that writes nothing. |
+| `Serializer Fail` | The serializer that always throws a chosen error. |
+| `Serializer Lazy` | Deferred construction for recursive formats. |
+| `Serializer Trace` | Debug tracing around any serializer. |
+| `Serializer Tagged` | `Serializable` for `Tagged`, lifting the underlying value's serializer. |
+| `Serializer Standard Library Integration` | `Serializable` for `Swift.Optional`. |
+| `Serializer` | Umbrella re-exporting every product above. |
 
 Foundation-free; depends only on other primitives packages.
 
