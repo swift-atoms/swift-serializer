@@ -1,5 +1,4 @@
-import Serializer_Primitive
-import Serializer_Witness
+import Serializer
 import Testing
 
 @Suite struct `Witness Tests` {

@@ -1,5 +1,4 @@
-import Serializer_Map
-import Serializer_Witness
+import Serializer
 import Testing
 
 @Suite struct `Map Tests` {

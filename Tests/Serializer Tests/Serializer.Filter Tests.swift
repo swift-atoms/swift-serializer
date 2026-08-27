@@ -1,5 +1,4 @@
-import Serializer_Filter
-import Serializer_Witness
+import Serializer
 import Testing
 
 @Suite struct `Filter Tests` {

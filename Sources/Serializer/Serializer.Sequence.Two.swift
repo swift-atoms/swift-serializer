@@ -1,3 +1,5 @@
+public import Either
+
 extension Serializer.Sequence {
 
     public struct Two<P0: Serializer.`Protocol`, P1: Serializer.`Protocol`>
