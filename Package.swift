@@ -51,7 +51,10 @@ let package = Package(
         ),
         .testTarget(
             name: "Serializer Tests",
-            dependencies: ["Serializer"]
+            dependencies: [
+                "Serializer",
+                .product(name: "Either", package: "swift-either"),
+            ]
         ),
     ],
     swiftLanguageModes: [.v6]
