@@ -1,6 +1,8 @@
+public typealias SerializerProtocol = Serializer.`Protocol`
+
 public protocol Serializable {
 
-    associatedtype Serializer: Serializer_Primitive.Serializer.`Protocol`
+    associatedtype Serializer: SerializerProtocol
 
     static var serializer: Serializer { get }
 }
