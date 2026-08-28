@@ -3,7 +3,7 @@
 import PackageDescription
 
 let package = Package(
-    name: "swift-serializer-primitives",
+    name: "swift-serializer",
     platforms: [
         .macOS(.v27),
         .iOS(.v27),
@@ -14,238 +14,196 @@ let package = Package(
     products: [
 
         .library(
-            name: "Serializer Primitive",
-            targets: ["Serializer Primitive"]
+            name: "Serializer",
+            targets: ["Serializer"]
         ),
 
         .library(
-            name: "Serializer Tagged Primitives",
-            targets: ["Serializer Tagged Primitives"]
+            name: "Serializer Tagged",
+            targets: ["Serializer Tagged"]
         ),
 
         .library(
-            name: "Serializer Witness Primitives",
-            targets: ["Serializer Witness Primitives"]
+            name: "Serializer Witness",
+            targets: ["Serializer Witness"]
         ),
 
         .library(
-            name: "Serializer Primitives Core",
-            targets: ["Serializer Primitives Core"]
+            name: "Serializer Map",
+            targets: ["Serializer Map"]
+        ),
+        .library(
+            name: "Serializer Filter",
+            targets: ["Serializer Filter"]
+        ),
+        .library(
+            name: "Serializer Optional",
+            targets: ["Serializer Optional"]
+        ),
+        .library(
+            name: "Serializer Many",
+            targets: ["Serializer Many"]
+        ),
+        .library(
+            name: "Serializer Sequence",
+            targets: ["Serializer Sequence"]
+        ),
+        .library(
+            name: "Serializer Literal",
+            targets: ["Serializer Literal"]
+        ),
+        .library(
+            name: "Serializer Always",
+            targets: ["Serializer Always"]
+        ),
+        .library(
+            name: "Serializer Fail",
+            targets: ["Serializer Fail"]
+        ),
+        .library(
+            name: "Serializer Lazy",
+            targets: ["Serializer Lazy"]
+        ),
+        .library(
+            name: "Serializer Trace",
+            targets: ["Serializer Trace"]
         ),
 
         .library(
-            name: "Serializer Map Primitives",
-            targets: ["Serializer Map Primitives"]
-        ),
-        .library(
-            name: "Serializer Filter Primitives",
-            targets: ["Serializer Filter Primitives"]
-        ),
-        .library(
-            name: "Serializer Optional Primitives",
-            targets: ["Serializer Optional Primitives"]
-        ),
-        .library(
-            name: "Serializer Many Primitives",
-            targets: ["Serializer Many Primitives"]
-        ),
-        .library(
-            name: "Serializer Sequence Primitives",
-            targets: ["Serializer Sequence Primitives"]
-        ),
-        .library(
-            name: "Serializer Literal Primitives",
-            targets: ["Serializer Literal Primitives"]
-        ),
-        .library(
-            name: "Serializer Always Primitives",
-            targets: ["Serializer Always Primitives"]
-        ),
-        .library(
-            name: "Serializer Fail Primitives",
-            targets: ["Serializer Fail Primitives"]
-        ),
-        .library(
-            name: "Serializer Lazy Primitives",
-            targets: ["Serializer Lazy Primitives"]
-        ),
-        .library(
-            name: "Serializer Trace Primitives",
-            targets: ["Serializer Trace Primitives"]
+            name: "Serializer Standard Library Integration",
+            targets: ["Serializer Standard Library Integration"]
         ),
 
-        .library(
-            name: "Serializer Primitives Standard Library Integration",
-            targets: ["Serializer Primitives Standard Library Integration"]
-        ),
-
-        .library(
-            name: "Serializer Primitives",
-            targets: ["Serializer Primitives"]
-        ),
     ],
     dependencies: [
         .package(
-            url: "https://github.com/swift-primitives/swift-either-primitives.git",
+            url: "https://github.com/swift-atoms/swift-either.git",
             branch: "main"
         ),
         .package(
-            url: "https://github.com/swift-primitives/swift-byte-primitives.git",
+            url: "https://github.com/swift-atoms/swift-byte.git",
             branch: "main"
         ),
         .package(
-            url: "https://github.com/swift-primitives/swift-tagged-primitives.git",
+            url: "https://github.com/swift-atoms/swift-tagged.git",
             branch: "main"
         ),
     ],
     targets: [
 
         .target(
-            name: "Serializer Primitive",
+            name: "Serializer",
             dependencies: []
         ),
 
         .target(
-            name: "Serializer Tagged Primitives",
+            name: "Serializer Tagged",
             dependencies: [
-                "Serializer Primitive",
-                .product(name: "Tagged Primitives", package: "swift-tagged-primitives"),
+                .target(name: "Serializer"),
+                .product(name: "Tagged", package: "swift-tagged"),
             ]
         ),
 
         .target(
-            name: "Serializer Witness Primitives",
+            name: "Serializer Witness",
             dependencies: [
-                "Serializer Primitive"
+                .target(name: "Serializer")
             ]
         ),
 
         .target(
-            name: "Serializer Primitives Core",
+            name: "Serializer Map",
             dependencies: [
-                "Serializer Primitive",
-                "Serializer Tagged Primitives",
-                "Serializer Witness Primitives",
+                .target(name: "Serializer"),
+                .product(name: "Either", package: "swift-either"),
+            ]
+        ),
+        .target(
+            name: "Serializer Filter",
+            dependencies: [
+                .target(name: "Serializer"),
+                .product(name: "Either", package: "swift-either"),
+            ]
+        ),
+        .target(
+            name: "Serializer Optional",
+            dependencies: [
+                .target(name: "Serializer")
+            ]
+        ),
+        .target(
+            name: "Serializer Many",
+            dependencies: [
+                .target(name: "Serializer"),
+                .product(name: "Either", package: "swift-either"),
+            ]
+        ),
+        .target(
+            name: "Serializer Sequence",
+            dependencies: [
+                .target(name: "Serializer"),
+                .product(name: "Either", package: "swift-either"),
+            ]
+        ),
+        .target(
+            name: "Serializer Literal",
+            dependencies: [
+                .target(name: "Serializer"),
+                .product(name: "Byte", package: "swift-byte"),
+            ]
+        ),
+        .target(
+            name: "Serializer Always",
+            dependencies: [
+                .target(name: "Serializer")
+            ]
+        ),
+        .target(
+            name: "Serializer Fail",
+            dependencies: [
+                .target(name: "Serializer")
+            ]
+        ),
+        .target(
+            name: "Serializer Lazy",
+            dependencies: [
+                .target(name: "Serializer")
+            ]
+        ),
+        .target(
+            name: "Serializer Trace",
+            dependencies: [
+                .target(name: "Serializer")
             ]
         ),
 
         .target(
-            name: "Serializer Map Primitives",
+            name: "Serializer Standard Library Integration",
             dependencies: [
-                "Serializer Primitive",
-                .product(name: "Either Primitives", package: "swift-either-primitives"),
-            ]
-        ),
-        .target(
-            name: "Serializer Filter Primitives",
-            dependencies: [
-                "Serializer Primitive",
-                .product(name: "Either Primitives", package: "swift-either-primitives"),
-            ]
-        ),
-        .target(
-            name: "Serializer Optional Primitives",
-            dependencies: [
-                "Serializer Primitive"
-            ]
-        ),
-        .target(
-            name: "Serializer Many Primitives",
-            dependencies: [
-                "Serializer Primitive",
-                .product(name: "Either Primitives", package: "swift-either-primitives"),
-            ]
-        ),
-        .target(
-            name: "Serializer Sequence Primitives",
-            dependencies: [
-                "Serializer Primitive",
-                .product(name: "Either Primitives", package: "swift-either-primitives"),
-            ]
-        ),
-        .target(
-            name: "Serializer Literal Primitives",
-            dependencies: [
-                "Serializer Primitive",
-                .product(name: "Byte Primitives", package: "swift-byte-primitives"),
-            ]
-        ),
-        .target(
-            name: "Serializer Always Primitives",
-            dependencies: [
-                "Serializer Primitive"
-            ]
-        ),
-        .target(
-            name: "Serializer Fail Primitives",
-            dependencies: [
-                "Serializer Primitive"
-            ]
-        ),
-        .target(
-            name: "Serializer Lazy Primitives",
-            dependencies: [
-                "Serializer Primitive"
-            ]
-        ),
-        .target(
-            name: "Serializer Trace Primitives",
-            dependencies: [
-                "Serializer Primitive"
-            ]
-        ),
-
-        .target(
-            name: "Serializer Primitives Standard Library Integration",
-            dependencies: [
-                "Serializer Primitive",
-                "Serializer Optional Primitives",
-            ]
-        ),
-
-        .target(
-            name: "Serializer Primitives",
-            dependencies: [
-                "Serializer Primitive",
-                "Serializer Tagged Primitives",
-                "Serializer Witness Primitives",
-                "Serializer Map Primitives",
-                "Serializer Filter Primitives",
-                "Serializer Optional Primitives",
-                "Serializer Many Primitives",
-                "Serializer Sequence Primitives",
-                "Serializer Literal Primitives",
-                "Serializer Always Primitives",
-                "Serializer Fail Primitives",
-                "Serializer Lazy Primitives",
-                "Serializer Trace Primitives",
-                "Serializer Primitives Standard Library Integration",
+                .target(name: "Serializer"),
+                .target(name: "Serializer Optional"),
             ]
         ),
 
         .testTarget(
-            name: "Serializer Primitive Tests",
-            dependencies: ["Serializer Primitive", "Serializer Witness Primitives"]
+            name: "Serializer Tests",
+            dependencies: [.target(name: "Serializer"), .target(name: "Serializer Witness")]
         ),
         .testTarget(
-            name: "Serializer Primitives Core Tests",
-            dependencies: ["Serializer Primitive", "Serializer Witness Primitives"]
+            name: "Serializer Map Tests",
+            dependencies: [.target(name: "Serializer Map"), .target(name: "Serializer Witness")]
         ),
         .testTarget(
-            name: "Serializer Map Primitives Tests",
-            dependencies: ["Serializer Map Primitives", "Serializer Witness Primitives"]
+            name: "Serializer Filter Tests",
+            dependencies: [.target(name: "Serializer Filter"), .target(name: "Serializer Witness")]
         ),
         .testTarget(
-            name: "Serializer Filter Primitives Tests",
-            dependencies: ["Serializer Filter Primitives", "Serializer Witness Primitives"]
+            name: "Serializer Sequence Tests",
+            dependencies: [.target(name: "Serializer Sequence"), .target(name: "Serializer Witness")]
         ),
         .testTarget(
-            name: "Serializer Sequence Primitives Tests",
-            dependencies: ["Serializer Sequence Primitives", "Serializer Witness Primitives"]
-        ),
-        .testTarget(
-            name: "Serializer Literal Primitives Tests",
-            dependencies: ["Serializer Literal Primitives"]
+            name: "Serializer Literal Tests",
+            dependencies: [.target(name: "Serializer Literal")]
         ),
     ],
     swiftLanguageModes: [.v6]
