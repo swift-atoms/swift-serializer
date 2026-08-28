@@ -1,4 +1,5 @@
-import Serializer
+import Serializer_Primitive
+import Serializer_Witness
 import Testing
 
 @Suite struct `Protocol Tests` {

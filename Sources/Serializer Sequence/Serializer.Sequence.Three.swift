@@ -1,5 +1,3 @@
-public import Either
-
 extension Serializer.Sequence {
 
     public struct Three<

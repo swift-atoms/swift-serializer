@@ -1,5 +1,5 @@
-import Either
-import Serializer
+import Serializer_Sequence
+import Serializer_Witness
 import Testing
 
 @Suite struct `Sequence Tests` {

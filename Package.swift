@@ -12,49 +12,240 @@ let package = Package(
         .visionOS(.v27),
     ],
     products: [
+
         .library(
-            name: "Serializer",
-            targets: ["Serializer"]
+            name: "Serializer Primitive",
+            targets: ["Serializer Primitive"]
         ),
+
+        .library(
+            name: "Serializer Tagged",
+            targets: ["Serializer Tagged"]
+        ),
+
+        .library(
+            name: "Serializer Witness",
+            targets: ["Serializer Witness"]
+        ),
+
+        .library(
+            name: "Serializer Core",
+            targets: ["Serializer Core"]
+        ),
+
+        .library(
+            name: "Serializer Map",
+            targets: ["Serializer Map"]
+        ),
+        .library(
+            name: "Serializer Filter",
+            targets: ["Serializer Filter"]
+        ),
+        .library(
+            name: "Serializer Optional",
+            targets: ["Serializer Optional"]
+        ),
+        .library(
+            name: "Serializer Many",
+            targets: ["Serializer Many"]
+        ),
+        .library(
+            name: "Serializer Sequence",
+            targets: ["Serializer Sequence"]
+        ),
+        .library(
+            name: "Serializer Literal",
+            targets: ["Serializer Literal"]
+        ),
+        .library(
+            name: "Serializer Always",
+            targets: ["Serializer Always"]
+        ),
+        .library(
+            name: "Serializer Fail",
+            targets: ["Serializer Fail"]
+        ),
+        .library(
+            name: "Serializer Lazy",
+            targets: ["Serializer Lazy"]
+        ),
+        .library(
+            name: "Serializer Trace",
+            targets: ["Serializer Trace"]
+        ),
+
         .library(
             name: "Serializer Standard Library Integration",
             targets: ["Serializer Standard Library Integration"]
         ),
+
         .library(
-            name: "Serializer Apple Foundation Integration",
-            targets: ["Serializer Apple Foundation Integration"]
+            name: "Serializer",
+            targets: ["Serializer"]
         ),
     ],
     dependencies: [
         .package(
-            url: "https://github.com/swift-atoms/swift-either.git",
+            url: "https://github.com/swift-molecules/swift-either.git",
+            branch: "main"
+        ),
+        .package(
+            url: "https://github.com/swift-molecules/swift-byte.git",
+            branch: "main"
+        ),
+        .package(
+            url: "https://github.com/swift-molecules/swift-tagged.git",
             branch: "main"
         ),
     ],
     targets: [
+
+        .target(
+            name: "Serializer Primitive",
+            dependencies: []
+        ),
+
+        .target(
+            name: "Serializer Tagged",
+            dependencies: [
+                "Serializer Primitive",
+                .product(name: "Tagged", package: "swift-tagged"),
+            ]
+        ),
+
+        .target(
+            name: "Serializer Witness",
+            dependencies: [
+                "Serializer Primitive"
+            ]
+        ),
+
+        .target(
+            name: "Serializer Core",
+            dependencies: [
+                "Serializer Primitive",
+                "Serializer Tagged",
+                "Serializer Witness",
+            ]
+        ),
+
+        .target(
+            name: "Serializer Map",
+            dependencies: [
+                "Serializer Primitive",
+                .product(name: "Either", package: "swift-either"),
+            ]
+        ),
+        .target(
+            name: "Serializer Filter",
+            dependencies: [
+                "Serializer Primitive",
+                .product(name: "Either", package: "swift-either"),
+            ]
+        ),
+        .target(
+            name: "Serializer Optional",
+            dependencies: [
+                "Serializer Primitive"
+            ]
+        ),
+        .target(
+            name: "Serializer Many",
+            dependencies: [
+                "Serializer Primitive",
+                .product(name: "Either", package: "swift-either"),
+            ]
+        ),
+        .target(
+            name: "Serializer Sequence",
+            dependencies: [
+                "Serializer Primitive",
+                .product(name: "Either", package: "swift-either"),
+            ]
+        ),
+        .target(
+            name: "Serializer Literal",
+            dependencies: [
+                "Serializer Primitive",
+                .product(name: "Byte", package: "swift-byte"),
+            ]
+        ),
+        .target(
+            name: "Serializer Always",
+            dependencies: [
+                "Serializer Primitive"
+            ]
+        ),
+        .target(
+            name: "Serializer Fail",
+            dependencies: [
+                "Serializer Primitive"
+            ]
+        ),
+        .target(
+            name: "Serializer Lazy",
+            dependencies: [
+                "Serializer Primitive"
+            ]
+        ),
+        .target(
+            name: "Serializer Trace",
+            dependencies: [
+                "Serializer Primitive"
+            ]
+        ),
+
+        .target(
+            name: "Serializer Standard Library Integration",
+            dependencies: [
+                "Serializer Primitive",
+                "Serializer Optional",
+            ]
+        ),
+
         .target(
             name: "Serializer",
             dependencies: [
-                .product(name: "Either", package: "swift-either")
-            ]
-        ),
-        .target(
-            name: "Serializer Standard Library Integration",
-            dependencies: ["Serializer"]
-        ),
-        .target(
-            name: "Serializer Apple Foundation Integration",
-            dependencies: [
-                "Serializer",
+                "Serializer Primitive",
+                "Serializer Tagged",
+                "Serializer Witness",
+                "Serializer Map",
+                "Serializer Filter",
+                "Serializer Optional",
+                "Serializer Many",
+                "Serializer Sequence",
+                "Serializer Literal",
+                "Serializer Always",
+                "Serializer Fail",
+                "Serializer Lazy",
+                "Serializer Trace",
                 "Serializer Standard Library Integration",
             ]
         ),
+
         .testTarget(
-            name: "Serializer Tests",
-            dependencies: [
-                "Serializer",
-                .product(name: "Either", package: "swift-either"),
-            ]
+            name: "Serializer Primitive Tests",
+            dependencies: ["Serializer Primitive", "Serializer Witness"]
+        ),
+        .testTarget(
+            name: "Serializer Core Tests",
+            dependencies: ["Serializer Primitive", "Serializer Witness"]
+        ),
+        .testTarget(
+            name: "Serializer Map Tests",
+            dependencies: ["Serializer Map", "Serializer Witness"]
+        ),
+        .testTarget(
+            name: "Serializer Filter Tests",
+            dependencies: ["Serializer Filter", "Serializer Witness"]
+        ),
+        .testTarget(
+            name: "Serializer Sequence Tests",
+            dependencies: ["Serializer Sequence", "Serializer Witness"]
+        ),
+        .testTarget(
+            name: "Serializer Literal Tests",
+            dependencies: ["Serializer Literal"]
         ),
     ],
     swiftLanguageModes: [.v6]

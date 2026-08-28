@@ -1,5 +1,3 @@
-public import Either
-
 extension Serializer {
 
     public struct Filter<Upstream: Serializer.`Protocol`> {
