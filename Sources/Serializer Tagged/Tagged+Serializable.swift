@@ -1,9 +1,9 @@
-public import Serializer_Primitive
+public import Serializer
 public import Tagged
 
 extension Tagged where Underlying: Serializable, Underlying.Serializer.Output == Underlying {
 
-    public struct UnderlyingSerializer: Serializer_Primitive.Serializer.`Protocol` {
+    public struct UnderlyingSerializer: Serializer.Serializer.`Protocol` {
 
         @inlinable
         public init() {}
