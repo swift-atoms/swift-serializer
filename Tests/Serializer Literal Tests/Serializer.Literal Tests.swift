@@ -1,4 +1,5 @@
 import Byte
+import Byte_Protocol
 import Serializer_Literal
 import Testing
 
