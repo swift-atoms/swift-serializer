@@ -1,159 +1,90 @@
 import Serializer
-import Serializer_Witness
 import Testing
 
-@Suite struct `Protocol Tests` {
-    @Suite struct Unit {}
-    @Suite struct `Edge Case` {}
-    @Suite struct Integration {}
-    @Suite(.serialized) struct Performance {}
-}
-
-extension `Protocol Tests`.Unit {
+@Suite
+struct `Serializer.Protocol` {
 
     @Test
-    func `serialize routes through the conformance method`() {
-
-        let witness = Serializer.Witness<Int, [UInt8], Never> { value, buffer in
-            buffer.append(UInt8(truncatingIfNeeded: value))
-        }
-
+    func `a leaf declares only serialize`() {
         var buffer: [UInt8] = []
-        witness.serialize(42, into: &buffer)
-        #expect(buffer == [42])
+        Digit().serialize(7, into: &buffer)
+        #expect(buffer == [7])
     }
 
     @Test
-    func `Body == Never on the leaf witness (per API-IMPL-020)`() {
-
-        let _: Serializer.Witness<Int, [UInt8], Never>.Body.Type = Never.self
+    func `a leaf's Failure defaults to Never`() {
+        let _: Digit.Failure.Type = Never.self
     }
 
     @Test
-    func `body getter exists for Body == Never (default leaf extension)`() {
-
-        let witness = Serializer.Witness<Int, [UInt8], Never> { _, _ in }
-        _ = witness
+    func `serialize appends in call order`() {
+        var buffer: [UInt8] = [1]
+        Digit().serialize(2, into: &buffer)
+        Digit().serialize(3, into: &buffer)
+        #expect(buffer == [1, 2, 3])
     }
 
     @Test
-    func `multiple serialize calls compose by append order`() {
-        let s1 = Serializer.Witness<UInt8, [UInt8], Never> { v, b in b.append(v) }
-        let s2 = Serializer.Witness<UInt8, [UInt8], Never> { v, b in b.append(v &+ 100) }
-
+    func `a typed failure propagates through the conformance`() {
         var buffer: [UInt8] = []
-        s1.serialize(1, into: &buffer)
-        s2.serialize(1, into: &buffer)
-        s1.serialize(2, into: &buffer)
-
-        #expect(buffer == [1, 101, 2])
+        #expect(throws: Rejection.zero) {
+            try NonZero().serialize(0, into: &buffer)
+        }
+        #expect(buffer.isEmpty)
     }
-}
-
-extension `Protocol Tests`.`Edge Case` {
 
     @Test
-    func `serialize propagates typed error through the conformance`() {
-        struct E: Swift.Error, Equatable {}
-
-        let witness = Serializer.Witness<Int, [UInt8], E> { value, buffer throws(E) in
-            guard value != 0 else { throw E() }
-            buffer.append(UInt8(truncatingIfNeeded: value))
-        }
-
+    func `a noncopyable output is borrowed`() {
         var buffer: [UInt8] = []
-        do throws(E) {
-            try witness.serialize(7, into: &buffer)
-            #expect(buffer == [7])
-        } catch {
-            Issue.record("Did not expect throw for non-zero")
-        }
-
-        do throws(E) {
-            try witness.serialize(0, into: &buffer)
-            Issue.record("Expected E to be thrown")
-        } catch {
-            #expect(error == E())
-        }
+        let token = Token(value: 9)
+        TokenSerializer().serialize(token, into: &buffer)
+        #expect(buffer == [9])
+        #expect(token.value == 9)
     }
 
     @Test
-    func `infallible Failure == Never call site does not require try`() {
-        let witness = Serializer.Witness<UInt8, [UInt8], Never> { value, buffer in
-            buffer.append(value)
-        }
-
+    func `Serializable exposes a static serializer`() {
         var buffer: [UInt8] = []
-
-        witness.serialize(255, into: &buffer)
-        #expect(buffer == [255])
+        Count.serializer.serialize(Count(value: 4), into: &buffer)
+        #expect(buffer == [4])
     }
 }
 
-extension `Protocol Tests`.Integration {
-
-    @Test
-    func `Witness conforms to Serializer.Protocol`() {
-
-        func acceptsAnySerializer<S: Serializer.`Protocol`>(_ serializer: S) -> S.Output.Type {
-            return S.Output.self
-        }
-
-        let witness = Serializer.Witness<Int, [UInt8], Never> { _, _ in }
-        let outputType = acceptsAnySerializer(witness)
-        #expect(outputType == Int.self)
-    }
-
-}
-
-enum Decimal {}
-
-extension Decimal {
-    struct Printer {}
-}
-
-extension Decimal.Printer: Serializer.`Protocol` {
-    typealias Output = Int
-    typealias Buffer = [UInt8]
-    typealias Failure = Never
-
-    var body: some Serializer.`Protocol`<Int, [UInt8], Never> {
-        Serializer.Witness<Int, [UInt8], Never> { value, buffer in
-            buffer.append(contentsOf: "\(value)".utf8)
-        }
+private struct Digit: Serializer.`Protocol` {
+    borrowing func serialize(_ output: UInt8, into buffer: inout [UInt8]) {
+        buffer.append(output)
     }
 }
 
-extension `Protocol Tests`.Integration {
+private enum Rejection: Swift.Error, Equatable {
+    case zero
+}
 
-    @Test
-    func `body-style conformer delegates serialize to body`() {
-
-        let printer = Decimal.Printer()
-        var buffer: [UInt8] = []
-        printer.serialize(42, into: &buffer)
-        #expect(buffer == Array("42".utf8))
+private struct NonZero: Serializer.`Protocol` {
+    borrowing func serialize(_ output: UInt8, into buffer: inout [UInt8]) throws(Rejection) {
+        guard output != 0 else { throw .zero }
+        buffer.append(output)
     }
+}
 
-    @Test
-    func `body-style conformer's Body is the composed serializer's concrete type`() {
+private struct Token: ~Copyable {
+    let value: UInt8
+}
 
-        func acceptsBodyComposed<S>(_ s: S) -> (S.Output.Type, S.Failure.Type)
-        where S: Serializer.`Protocol`, S.Output == Int, S.Buffer == [UInt8], S.Failure == Never {
-            return (S.Output.self, S.Failure.self)
-        }
-
-        let (outputType, failureType) = acceptsBodyComposed(Decimal.Printer())
-        #expect(outputType == Int.self)
-        #expect(failureType == Never.self)
+private struct TokenSerializer: Serializer.`Protocol` {
+    borrowing func serialize(_ output: borrowing Token, into buffer: inout [UInt8]) {
+        buffer.append(output.value)
     }
+}
 
-    @Test
-    func `body-style conformer appends, mirroring leaf-form behavior`() {
+private struct Count: Serializable {
+    let value: UInt8
 
-        let printer = Decimal.Printer()
-        var buffer: [UInt8] = Array("prefix:".utf8)
-        printer.serialize(7, into: &buffer)
-        #expect(buffer == Array("prefix:7".utf8))
+    static var serializer: CountSerializer { CountSerializer() }
+}
+
+private struct CountSerializer: Serializer.`Protocol` {
+    borrowing func serialize(_ output: Count, into buffer: inout [UInt8]) {
+        buffer.append(output.value)
     }
 }

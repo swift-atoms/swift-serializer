@@ -16,10 +16,6 @@ let package = Package(
         .library(name: "Serializer Witness", targets: ["Serializer Witness"]),
         .library(name: "Serializer Error", targets: ["Serializer Error"]),
         .library(name: "Serializer Map", targets: ["Serializer Map"]),
-        .library(name: "Serializer Filter", targets: ["Serializer Filter"]),
-        .library(name: "Serializer Sequence", targets: ["Serializer Sequence"]),
-        .library(name: "Serializer Fail", targets: ["Serializer Fail"]),
-        .library(name: "Serializer Trace", targets: ["Serializer Trace"]),
         .library(
             name: "Serializer Standard Library Integration",
             targets: ["Serializer Standard Library Integration"]
@@ -28,10 +24,6 @@ let package = Package(
     dependencies: [
         .package(
             url: "https://github.com/swift-atoms/swift-either.git",
-            branch: "main"
-        ),
-        .package(
-            url: "https://github.com/swift-atoms/swift-predicate.git",
             branch: "main"
         ),
     ],
@@ -53,60 +45,33 @@ let package = Package(
             ]
         ),
         .target(
-            name: "Serializer Filter",
-            dependencies: [
-                .target(name: "Serializer"),
-                .product(name: "Either", package: "swift-either"),
-                .product(name: "Predicate", package: "swift-predicate"),
-            ]
-        ),
-        .target(
-            name: "Serializer Sequence",
-            dependencies: [
-                .target(name: "Serializer"),
-                .product(name: "Either", package: "swift-either"),
-            ]
-        ),
-        .target(
-            name: "Serializer Fail",
-            dependencies: [.target(name: "Serializer")]
-        ),
-        .target(
-            name: "Serializer Trace",
-            dependencies: [.target(name: "Serializer")]
-        ),
-        .target(
             name: "Serializer Standard Library Integration",
             dependencies: [.target(name: "Serializer")]
         ),
         .testTarget(
             name: "Serializer Tests",
+            dependencies: [.target(name: "Serializer")]
+        ),
+        .testTarget(
+            name: "Serializer Witness Tests",
             dependencies: [
                 .target(name: "Serializer"),
                 .target(name: "Serializer Witness"),
             ]
         ),
         .testTarget(
+            name: "Serializer Error Tests",
+            dependencies: [
+                .target(name: "Serializer"),
+                .target(name: "Serializer Error"),
+            ]
+        ),
+        .testTarget(
             name: "Serializer Map Tests",
             dependencies: [
+                .target(name: "Serializer"),
                 .target(name: "Serializer Map"),
-                .target(name: "Serializer Witness"),
-            ]
-        ),
-        .testTarget(
-            name: "Serializer Filter Tests",
-            dependencies: [
-                .target(name: "Serializer Filter"),
-                .target(name: "Serializer Witness"),
                 .product(name: "Either", package: "swift-either"),
-                .product(name: "Predicate", package: "swift-predicate"),
-            ]
-        ),
-        .testTarget(
-            name: "Serializer Sequence Tests",
-            dependencies: [
-                .target(name: "Serializer Sequence"),
-                .target(name: "Serializer Witness"),
             ]
         ),
         .testTarget(
@@ -114,7 +79,6 @@ let package = Package(
             dependencies: [
                 .target(name: "Serializer"),
                 .target(name: "Serializer Standard Library Integration"),
-                .target(name: "Serializer Witness"),
             ]
         ),
     ],

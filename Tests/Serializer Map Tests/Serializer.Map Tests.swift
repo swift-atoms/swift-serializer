@@ -1,129 +1,86 @@
+import Either
+import Serializer
 import Serializer_Map
-import Serializer_Witness
 import Testing
 
-@Suite struct `Map Tests` {
-    @Suite struct Unit {}
-    @Suite struct `Edge Case` {}
-    @Suite struct Integration {}
-    @Suite(.serialized) struct Performance {}
-}
-
-extension `Map Tests`.Unit {
+@Suite
+struct `Serializer.Map` {
 
     @Test
-    func `Map.Transform transforms new input then delegates to upstream`() {
-
-        let upstream = Serializer.Witness<Int, [UInt8], Never> { value, buffer in
-            buffer.append(UInt8(truncatingIfNeeded: value))
-        }
-
-        let mapped = upstream.map { (input: String) -> Int in
-            input.count
-        }
-
+    func `contramap transforms the new output before delegating`() {
+        let mapped = Digit().contramap { (text: borrowing String) -> UInt8 in UInt8(text.count) }
         var buffer: [UInt8] = []
         mapped.serialize("hello", into: &buffer)
-
         #expect(buffer == [5])
     }
 
     @Test
-    func `Map.Transform.Failure equals Upstream.Failure (no failure introduced)`() {
-
-        struct E: Swift.Error {}
-        let upstream = Serializer.Witness<Int, [UInt8], E> { _, _ throws(E) in throw E() }
-        let mapped = upstream.map { (s: String) -> Int in s.count }
-
-        let _: E.Type = type(of: mapped).Failure.self
+    func `a total contramap introduces no failure`() {
+        let mapped = NonZero().contramap { (text: borrowing String) -> UInt8 in UInt8(text.count) }
+        requireFailure(mapped, Rejection.self)
     }
-}
-
-extension `Map Tests`.Unit {
 
     @Test
-    func `Map.Throwing wraps upstream Failure as Either.left, transform error as right`() {
-        struct Upstream: Swift.Error {}
-        struct Transformation: Swift.Error, Equatable {}
-
-        let upstream = Serializer.Witness<Int, [UInt8], Upstream> {
-            value,
-            buffer throws(Upstream) in
-            buffer.append(UInt8(truncatingIfNeeded: value))
+    func `a throwing contramap nests the transform failure on the right`() {
+        let mapped = NonZero().contramap { (text: borrowing String) throws(Empty) -> UInt8 in
+            guard !text.isEmpty else { throw Empty() }
+            return UInt8(text.count)
         }
-
-        let mapped = upstream.tryMap { (input: String) throws(Transformation) -> Int in
-            guard !input.isEmpty else { throw Transformation() }
-            return input.count
-        }
+        requireFailure(mapped, Either<Rejection, Empty>.self)
 
         var buffer: [UInt8] = []
-
-        do throws(Serializer.Map<Serializer.Witness<Int, [UInt8], Upstream>, String>.Throwing<
-            Transformation
-        >.Failure) {
-            try mapped.serialize("ok", into: &buffer)
-            #expect(buffer == [2])
-        } catch {
-            Issue.record("Did not expect throw on success path")
-        }
-
-        buffer.removeAll()
-        do throws(Serializer.Map<Serializer.Witness<Int, [UInt8], Upstream>, String>.Throwing<
-            Transformation
-        >.Failure) {
+        #expect(throws: Either<Rejection, Empty>.right(Empty())) {
             try mapped.serialize("", into: &buffer)
-            Issue.record("Expected Transformation")
-        } catch let error {
-            switch error {
-            case .right:
-                break
-
-            case .left:
-                Issue.record("Expected .right, got .left")
-            }
         }
+        #expect(buffer.isEmpty)
     }
-}
-
-enum Uppercased {}
-
-extension Uppercased {
-    struct Counter {}
-}
-
-extension Uppercased.Counter: Serializer.`Protocol` {
-    typealias Output = String
-    typealias Buffer = [UInt8]
-    typealias Failure = Never
-
-    var body: some Serializer.`Protocol`<String, [UInt8], Never> {
-        Serializer.Witness<Int, [UInt8], Never> { value, buffer in
-            buffer.append(UInt8(truncatingIfNeeded: value))
-        }
-        .map { (input: String) -> Int in
-            input.uppercased().count
-        }
-    }
-}
-
-extension `Map Tests`.Integration {
 
     @Test
-    func `var body with .map chain serializes via contravariant transform`() {
-        let counter = Uppercased.Counter()
+    func `a throwing contramap keeps the upstream failure on the left`() {
+        let mapped = NonZero().contramap { (value: borrowing Int) throws(Empty) -> UInt8 in
+            UInt8(truncatingIfNeeded: copy value)
+        }
         var buffer: [UInt8] = []
-        counter.serialize("ab", into: &buffer)
-
-        #expect(buffer == [2])
+        #expect(throws: Either<Rejection, Empty>.left(.zero)) {
+            try mapped.serialize(0, into: &buffer)
+        }
     }
 
     @Test
-    func `var body with .map appends, mirroring leaf-form behavior`() {
-        let counter = Uppercased.Counter()
-        var buffer: [UInt8] = [99]
-        counter.serialize("hi", into: &buffer)
+    func `contramap borrows a noncopyable new output`() {
+        let mapped = Digit().contramap { (token: borrowing Token) -> UInt8 in token.value }
+        var buffer: [UInt8] = []
+        let token = Token(value: 8)
+        mapped.serialize(token, into: &buffer)
+        #expect(buffer == [8])
+        #expect(token.value == 8)
+    }
+}
 
-        #expect(buffer == [99, 2])
+private func requireFailure<S: Serializer.`Protocol`, Failure: Swift.Error>(
+    _: borrowing S,
+    _: Failure.Type
+) where S.Output: ~Copyable & ~Escapable, S.Buffer: ~Copyable & ~Escapable, S.Failure == Failure {}
+
+private struct Empty: Swift.Error, Equatable {}
+
+private struct Token: ~Copyable {
+    let value: UInt8
+}
+
+private enum Rejection: Swift.Error, Equatable {
+    case zero
+}
+
+private struct Digit: Serializer.`Protocol` {
+    borrowing func serialize(_ output: UInt8, into buffer: inout [UInt8]) {
+        buffer.append(output)
+    }
+}
+
+private struct NonZero: Serializer.`Protocol` {
+    borrowing func serialize(_ output: UInt8, into buffer: inout [UInt8]) throws(Rejection) {
+        guard output != 0 else { throw .zero }
+        buffer.append(output)
     }
 }

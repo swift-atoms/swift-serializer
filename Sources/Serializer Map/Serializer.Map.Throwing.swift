@@ -1,45 +1,49 @@
 public import Either
+public import Serializer
 
-extension Serializer.Map {
+extension Serializer.Map
+where
+    NewOutput: ~Copyable & ~Escapable,
+    Upstream.Output: ~Copyable & Escapable,
+    Upstream.Buffer: ~Copyable & ~Escapable
+{
 
-    public struct Throwing<E: Swift.Error> {
+    public struct Throwing<E: Swift.Error>: Serializer.`Protocol` {
+
+        public typealias Output = NewOutput
+
+        public typealias Buffer = Upstream.Buffer
+
+        public typealias Failure = Either<Upstream.Failure, E>
+
         @usableFromInline
         let upstream: Upstream
 
         @usableFromInline
-        let transform: (NewOutput) throws(E) -> Upstream.Output
+        let transform: (borrowing NewOutput) throws(E) -> Upstream.Output
 
         @inlinable
         public init(
             upstream: Upstream,
-            transform: @escaping (NewOutput) throws(E) -> Upstream.Output
+            transform: @escaping (borrowing NewOutput) throws(E) -> Upstream.Output
         ) {
             self.upstream = upstream
             self.transform = transform
         }
-    }
-}
 
-extension Serializer.Map.Throwing: Serializer.`Protocol` {
-
-    public typealias Buffer = Upstream.Buffer
-
-    public typealias Failure = Either<Upstream.Failure, E>
-
-    public typealias Body = Never
-
-    @inlinable
-    public func serialize(_ output: NewOutput, into buffer: inout Buffer) throws(Failure) {
-        let upstreamInput: Upstream.Output
-        do throws(E) {
-            upstreamInput = try transform(output)
-        } catch {
-            throw .right(error)
-        }
-        do throws(Upstream.Failure) {
-            try upstream.serialize(upstreamInput, into: &buffer)
-        } catch {
-            throw .left(error)
+        @inlinable
+        public borrowing func serialize(_ output: borrowing NewOutput, into buffer: inout Buffer) throws(Failure) {
+            let upstreamOutput: Upstream.Output
+            do throws(E) {
+                upstreamOutput = try transform(output)
+            } catch {
+                throw .right(error)
+            }
+            do throws(Upstream.Failure) {
+                try upstream.serialize(upstreamOutput, into: &buffer)
+            } catch {
+                throw .left(error)
+            }
         }
     }
 }

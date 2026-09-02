@@ -2,7 +2,17 @@ public import Serializer
 
 extension Serializer::Serializer {
 
-    public struct Optionally<Wrapped: Serializer::Serializer.`Protocol`> {
+    public struct Optionally<Wrapped: Serializer::Serializer.`Protocol`>: Serializer::Serializer.`Protocol`
+    where
+        Wrapped.Output: ~Copyable & Escapable,
+        Wrapped.Buffer: ~Copyable & ~Escapable
+    {
+        public typealias Output = Wrapped.Output?
+
+        public typealias Buffer = Wrapped.Buffer
+
+        public typealias Failure = Wrapped.Failure
+
         @usableFromInline
         internal let wrapped: Wrapped
 
@@ -10,22 +20,15 @@ extension Serializer::Serializer {
         public init(_ wrapped: Wrapped) {
             self.wrapped = wrapped
         }
-    }
-}
 
-extension Serializer::Serializer.Optionally: Serializer::Serializer.`Protocol` {
-
-    public typealias Output = Wrapped.Output?
-
-    public typealias Buffer = Wrapped.Buffer
-
-    public typealias Failure = Wrapped.Failure
-
-    public typealias Body = Never
-
-    @inlinable
-    public func serialize(_ output: Output, into buffer: inout Buffer) throws(Failure) {
-        guard let output else { return }
-        try wrapped.serialize(output, into: &buffer)
+        @inlinable
+        public borrowing func serialize(_ output: borrowing Output, into buffer: inout Buffer) throws(Failure) {
+            switch output {
+            case .some(let value):
+                try wrapped.serialize(value, into: &buffer)
+            case .none:
+                return
+            }
+        }
     }
 }
