@@ -29,6 +29,11 @@ let package = Package(
         ),
 
         .library(
+            name: "Serializer Error",
+            targets: ["Serializer Error"]
+        ),
+
+        .library(
             name: "Serializer Map",
             targets: ["Serializer Map"]
         ),
@@ -85,6 +90,10 @@ let package = Package(
             branch: "main"
         ),
         .package(
+            url: "https://github.com/swift-atoms/swift-predicate.git",
+            branch: "main"
+        ),
+        .package(
             url: "https://github.com/swift-atoms/swift-tagged.git",
             branch: "main"
         ),
@@ -112,6 +121,13 @@ let package = Package(
         ),
 
         .target(
+            name: "Serializer Error",
+            dependencies: [
+                .target(name: "Serializer")
+            ]
+        ),
+
+        .target(
             name: "Serializer Map",
             dependencies: [
                 .target(name: "Serializer"),
@@ -123,6 +139,7 @@ let package = Package(
             dependencies: [
                 .target(name: "Serializer"),
                 .product(name: "Either", package: "swift-either"),
+                .product(name: "Predicate", package: "swift-predicate"),
             ]
         ),
         .target(
@@ -195,7 +212,12 @@ let package = Package(
         ),
         .testTarget(
             name: "Serializer Filter Tests",
-            dependencies: [.target(name: "Serializer Filter"), .target(name: "Serializer Witness")]
+            dependencies: [
+                .target(name: "Serializer Filter"),
+                .target(name: "Serializer Witness"),
+                .product(name: "Either", package: "swift-either"),
+                .product(name: "Predicate", package: "swift-predicate"),
+            ]
         ),
         .testTarget(
             name: "Serializer Sequence Tests",
