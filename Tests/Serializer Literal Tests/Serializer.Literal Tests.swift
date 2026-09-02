@@ -1,5 +1,4 @@
 import Byte
-import Byte_Protocol
 import Serializer_Literal
 import Testing
 
@@ -14,10 +13,10 @@ extension `Literal Tests`.Unit {
 
     @Test
     func `Literal from byte array appends bytes`() {
-        let literal = Serializer.Literal<[Byte]>([0x48, 0x69] as [Byte])
+        let literal = Serializer.Literal<[Byte]>([0x48, 0x69].map { Byte(bitPattern: $0) })
         var buffer: [Byte] = []
         literal.serialize((), into: &buffer)
-        #expect(buffer == [0x48, 0x69])
+        #expect(buffer == [0x48, 0x69].map { Byte(bitPattern: $0) })
     }
 
     @Test
@@ -25,15 +24,15 @@ extension `Literal Tests`.Unit {
         let literal = Serializer.Literal<[Byte]>("Hi")
         var buffer: [Byte] = []
         literal.serialize((), into: &buffer)
-        #expect(buffer == "Hi".utf8.map(Byte.init))
+        #expect(buffer == "Hi".utf8.map(Byte.init(bitPattern:)))
     }
 
     @Test
     func `Literal appends to existing buffer (does not replace)`() {
         let literal = Serializer.Literal<[Byte]>(", world")
-        var buffer: [Byte] = "hello".utf8.map(Byte.init)
+        var buffer: [Byte] = "hello".utf8.map(Byte.init(bitPattern:))
         literal.serialize((), into: &buffer)
-        #expect(buffer == "hello, world".utf8.map(Byte.init))
+        #expect(buffer == "hello, world".utf8.map(Byte.init(bitPattern:)))
     }
 }
 
@@ -42,9 +41,9 @@ extension `Literal Tests`.`Edge Case` {
     @Test
     func `Literal with empty bytes is a no-op`() {
         let literal = Serializer.Literal<[Byte]>([] as [Byte])
-        var buffer: [Byte] = "preserved".utf8.map(Byte.init)
+        var buffer: [Byte] = "preserved".utf8.map(Byte.init(bitPattern:))
         literal.serialize((), into: &buffer)
-        #expect(buffer == "preserved".utf8.map(Byte.init))
+        #expect(buffer == "preserved".utf8.map(Byte.init(bitPattern:)))
     }
 
     @Test
@@ -52,7 +51,7 @@ extension `Literal Tests`.`Edge Case` {
         let literal: Serializer.Literal<[Byte]> = ", "
         var buffer: [Byte] = []
         literal.serialize((), into: &buffer)
-        #expect(buffer == ", ".utf8.map(Byte.init))
+        #expect(buffer == ", ".utf8.map(Byte.init(bitPattern:)))
     }
 }
 
@@ -81,6 +80,6 @@ extension `Literal Tests`.Integration {
 
         let literal = Serializer.Literal<[Byte]>("xyz")
         let buffer: [Byte] = literal.serialize(())
-        #expect(buffer == "xyz".utf8.map(Byte.init))
+        #expect(buffer == "xyz".utf8.map(Byte.init(bitPattern:)))
     }
 }

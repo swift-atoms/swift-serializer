@@ -88,10 +88,6 @@ let package = Package(
             url: "https://github.com/swift-atoms/swift-tagged.git",
             branch: "main"
         ),
-        .package(
-            url: "https://github.com/swift-atoms/swift-carrier.git",
-            branch: "main"
-        ),
     ],
     targets: [
 
@@ -154,8 +150,6 @@ let package = Package(
             dependencies: [
                 .target(name: "Serializer"),
                 .product(name: "Byte", package: "swift-byte"),
-                .product(name: "Byte Protocol", package: "swift-byte"),
-                .product(name: "Carrier Protocol", package: "swift-carrier"),
             ]
         ),
         .target(
@@ -211,7 +205,7 @@ let package = Package(
             name: "Serializer Literal Tests",
             dependencies: [
                 .target(name: "Serializer Literal"),
-                .product(name: "Byte Protocol", package: "swift-byte"),
+                .product(name: "Byte", package: "swift-byte"),
             ]
         ),
     ],

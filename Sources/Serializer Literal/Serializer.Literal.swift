@@ -1,6 +1,4 @@
 public import Byte
-public import Byte_Protocol
-public import Carrier_Protocol
 
 extension Serializer {
 
@@ -10,8 +8,8 @@ extension Serializer {
         let bytes: [Byte]
 
         @inlinable
-        public init(_ bytes: some Swift.Sequence<some Byte.`Protocol`>) {
-            self.bytes = Swift.Array(bytes.lazy.map(\.byte))
+        public init(_ bytes: some Swift.Sequence<Byte>) {
+            self.bytes = Swift.Array(bytes)
         }
 
         @inlinable
@@ -22,7 +20,7 @@ extension Serializer {
                     capacity: string.utf8CodeUnitCount
                 ) {
                     unsafe UnsafeBufferPointer(start: $0, count: string.utf8CodeUnitCount)
-                }.lazy.map(Byte.init)
+                }.lazy.map(Byte.init(bitPattern:))
             ))
         }
     }
@@ -46,7 +44,7 @@ extension Serializer.Literal: ExpressibleByStringLiteral {
 
     @inlinable
     public init(stringLiteral value: String) {
-        self.bytes = value.utf8.map(Byte.init)
+        self.bytes = value.utf8.map(Byte.init(bitPattern:))
     }
 }
 
@@ -54,7 +52,7 @@ extension Serializer.Literal: ExpressibleByUnicodeScalarLiteral {
 
     @inlinable
     public init(unicodeScalarLiteral value: Unicode.Scalar) {
-        self.bytes = String(value).utf8.map(Byte.init)
+        self.bytes = String(value).utf8.map(Byte.init(bitPattern:))
     }
 }
 
@@ -62,6 +60,6 @@ extension Serializer.Literal: ExpressibleByExtendedGraphemeClusterLiteral {
 
     @inlinable
     public init(extendedGraphemeClusterLiteral value: Character) {
-        self.bytes = String(value).utf8.map(Byte.init)
+        self.bytes = String(value).utf8.map(Byte.init(bitPattern:))
     }
 }
