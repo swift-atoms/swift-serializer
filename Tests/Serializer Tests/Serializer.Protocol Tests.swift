@@ -104,39 +104,6 @@ extension `Protocol Tests`.Integration {
         #expect(outputType == Int.self)
     }
 
-    @Test
-    func `Buffer: RangeReplaceableCollection default extension constructs a buffer`() {
-
-        let witness = Serializer.Witness<UInt8, [UInt8], Never> { value, buffer in
-            buffer.append(value)
-        }
-
-        let result: [UInt8] = witness.serialize(42)
-        #expect(result == [42])
-    }
-
-    @Test
-    func `throwing serialize-returns-buffer default extension`() {
-        struct E: Swift.Error {}
-        let witness = Serializer.Witness<Int, [UInt8], E> { value, buffer throws(E) in
-            guard value >= 0 else { throw E() }
-            buffer.append(UInt8(truncatingIfNeeded: value))
-        }
-
-        do throws(E) {
-            let result: [UInt8] = try witness.serialize(7)
-            #expect(result == [7])
-        } catch {
-            Issue.record("Did not expect throw for non-negative")
-        }
-
-        do throws(E) {
-            let _: [UInt8] = try witness.serialize(-1)
-            Issue.record("Expected throw for negative")
-        } catch {
-
-        }
-    }
 }
 
 enum Decimal {}

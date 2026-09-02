@@ -42,24 +42,3 @@ where
         try body.serialize(output, into: &buffer)
     }
 }
-
-extension Serializer.`Protocol` where Self: ~Copyable, Buffer: RangeReplaceableCollection {
-
-    @inlinable
-    public borrowing func serialize(_ output: Output) throws(Failure) -> Buffer {
-        var buffer = Buffer()
-        try serialize(output, into: &buffer)
-        return buffer
-    }
-}
-
-extension Serializer.`Protocol`
-where Self: ~Copyable, Failure == Never, Buffer: RangeReplaceableCollection {
-
-    @inlinable
-    public borrowing func serialize(_ output: Output) -> Buffer {
-        var buffer = Buffer()
-        serialize(output, into: &buffer)
-        return buffer
-    }
-}

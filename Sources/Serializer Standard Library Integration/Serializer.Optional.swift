@@ -1,6 +1,8 @@
-extension Serializer {
+public import Serializer
 
-    public struct Optional<Wrapped: Serializer.`Protocol`> {
+extension Serializer::Serializer {
+
+    public struct Optional<Wrapped: Serializer::Serializer.`Protocol`> {
         @usableFromInline
         let wrapped: Wrapped?
 
@@ -11,7 +13,7 @@ extension Serializer {
     }
 }
 
-extension Serializer.Optional: Serializer.`Protocol` {
+extension Serializer::Serializer.Optional: Serializer::Serializer.`Protocol` {
 
     public typealias Output = Wrapped.Output?
 
@@ -25,5 +27,15 @@ extension Serializer.Optional: Serializer.`Protocol` {
     public func serialize(_ output: Output, into buffer: inout Buffer) throws(Failure) {
         guard let wrapped, let output else { return }
         try wrapped.serialize(output, into: &buffer)
+    }
+}
+
+extension Serializer::Serializer.Builder {
+
+    @inlinable
+    public static func buildIf<S: Serializer::Serializer.`Protocol`>(
+        _ serializer: S?
+    ) -> Serializer::Serializer.Optional<S> where S.Buffer == B {
+        .init(serializer)
     }
 }

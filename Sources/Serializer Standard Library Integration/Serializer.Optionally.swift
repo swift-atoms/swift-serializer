@@ -1,6 +1,8 @@
-extension Serializer {
+public import Serializer
 
-    public struct Optionally<Wrapped: Serializer.`Protocol`> {
+extension Serializer::Serializer {
+
+    public struct Optionally<Wrapped: Serializer::Serializer.`Protocol`> {
         @usableFromInline
         internal let wrapped: Wrapped
 
@@ -11,7 +13,7 @@ extension Serializer {
     }
 }
 
-extension Serializer.Optionally: Serializer.`Protocol` {
+extension Serializer::Serializer.Optionally: Serializer::Serializer.`Protocol` {
 
     public typealias Output = Wrapped.Output?
 
