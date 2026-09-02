@@ -1,6 +1,6 @@
 public protocol Serializable {
 
-    associatedtype Serializer: Serializer::Serializer.`Protocol`
+    associatedtype Serializer: Serializing
     where
         Serializer.Output: ~Copyable & ~Escapable,
         Serializer.Buffer: ~Copyable & ~Escapable
