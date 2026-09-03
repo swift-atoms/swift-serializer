@@ -22,6 +22,17 @@ struct `Serializer Standard Library Integration` {
     }
 
     @Test
+    func `an array serializes itself into a buffer of its elements`() {
+        var text = ""
+        [Character].Serializer<String>(Array("<tag")).serialize((), into: &text)
+        #expect(text == "<tag")
+
+        var bytes: [UInt8] = []
+        [UInt8].Serializer<[UInt8]>([1, 2, 3]).serialize((), into: &bytes)
+        #expect(bytes == [1, 2, 3])
+    }
+
+    @Test
     func `Swift Optional is serializable when its wrapped value is`() {
         var buffer: [UInt8] = []
         Swift.Optional<Count>.serializer.serialize(Count(value: 3), into: &buffer)
