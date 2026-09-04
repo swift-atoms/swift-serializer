@@ -6,18 +6,16 @@ import Testing
 struct `Serializer Standard Library Integration` {
 
     @Test
-    func `Optionally emits the wrapped output when present`() {
-        let serializer = Serializer.Optionally(Digit())
+    func `an optional adopter emits the wrapped output when present`() {
         var buffer: [UInt8] = []
-        serializer.serialize(9, into: &buffer)
+        Swift.Optional<Count>.serializer.serialize(Count(value: 9), into: &buffer)
         #expect(buffer == [9])
     }
 
     @Test
-    func `Optionally emits nothing when the output is nil`() {
-        let serializer = Serializer.Optionally(Digit())
+    func `an optional adopter emits nothing when the output is nil`() {
         var buffer: [UInt8] = []
-        serializer.serialize(nil, into: &buffer)
+        Swift.Optional<Count>.serializer.serialize(nil, into: &buffer)
         #expect(buffer.isEmpty)
     }
 
@@ -39,12 +37,6 @@ struct `Serializer Standard Library Integration` {
         #expect(buffer == [3])
         Swift.Optional<Count>.serializer.serialize(nil, into: &buffer)
         #expect(buffer == [3])
-    }
-}
-
-private struct Digit: Serializer.`Protocol` {
-    borrowing func serialize(_ output: UInt8, into buffer: inout [UInt8]) {
-        buffer.append(output)
     }
 }
 
