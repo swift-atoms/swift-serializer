@@ -5,7 +5,7 @@ extension Serializer {
 
 extension Serializer.Error {
 
-    public struct Transform<Upstream: Serializer.`Protocol`>
+    public struct Transform<Upstream: Serializer.`Protocol` & ~Copyable>: ~Copyable
     where
         Upstream.Output: ~Copyable & ~Escapable,
         Upstream.Buffer: ~Copyable & ~Escapable
@@ -14,7 +14,7 @@ extension Serializer.Error {
         let upstream: Upstream
 
         @inlinable
-        package init(_ upstream: Upstream) {
+        public init(_ upstream: consuming Upstream) {
             self.upstream = upstream
         }
     }
@@ -31,3 +31,10 @@ where
         Serializer.Error.Transform(self)
     }
 }
+
+extension Serializer.Error.Transform: Copyable
+where
+    Upstream: Serializer.`Protocol`<Upstream.Output, Upstream.Buffer, Upstream.Failure> & Copyable,
+    Upstream.Output: ~Copyable & ~Escapable,
+    Upstream.Buffer: ~Copyable & ~Escapable
+{}

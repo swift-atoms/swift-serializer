@@ -1,6 +1,6 @@
 extension Serializer.Error {
 
-    public struct Map<Upstream: Serializer.`Protocol`, NewFailure: Swift.Error>: Serializer.`Protocol`
+    public struct Map<Upstream: Serializer.`Protocol` & ~Copyable, NewFailure: Swift.Error>: Serializer.`Protocol`, ~Copyable
     where
         Upstream.Output: ~Copyable & ~Escapable,
         Upstream.Buffer: ~Copyable & ~Escapable
@@ -17,7 +17,7 @@ extension Serializer.Error {
 
         @inlinable
         package init(
-            _ upstream: Upstream,
+            _ upstream: consuming Upstream,
             transform: @escaping (Upstream.Failure) -> NewFailure
         ) {
             self.upstream = upstream
@@ -37,14 +37,22 @@ extension Serializer.Error {
 
 extension Serializer.Error.Transform
 where
+    Upstream: ~Copyable,
     Upstream.Output: ~Copyable & ~Escapable,
     Upstream.Buffer: ~Copyable & ~Escapable
 {
 
     @inlinable
-    public func map<NewFailure: Swift.Error>(
+    public consuming func map<NewFailure: Swift.Error>(
         _ transform: @escaping (Upstream.Failure) -> NewFailure
     ) -> Serializer.Error.Map<Upstream, NewFailure> {
         Serializer.Error.Map(upstream, transform: transform)
     }
 }
+
+extension Serializer.Error.Map: Copyable
+where
+    Upstream: Serializer.`Protocol`<Upstream.Output, Upstream.Buffer, Upstream.Failure> & Copyable,
+    Upstream.Output: ~Copyable & ~Escapable,
+    Upstream.Buffer: ~Copyable & ~Escapable
+{}

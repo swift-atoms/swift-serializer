@@ -1,6 +1,6 @@
 extension Serializer {
 
-    public struct Map<Upstream: Serializer.`Protocol`, NewOutput: ~Copyable & ~Escapable>: Serializer.`Protocol`
+    public struct Map<Upstream: Serializer.`Protocol` & ~Copyable, NewOutput: ~Copyable & ~Escapable>: Serializer.`Protocol`, ~Copyable
     where
         Upstream.Output: ~Copyable & Escapable,
         Upstream.Buffer: ~Copyable & ~Escapable
@@ -19,7 +19,7 @@ extension Serializer {
 
         @inlinable
         public init(
-            upstream: Upstream,
+            upstream: consuming Upstream,
             transform: @escaping (borrowing NewOutput) -> Upstream.Output
         ) {
             self.upstream = upstream
@@ -32,3 +32,11 @@ extension Serializer {
         }
     }
 }
+
+extension Serializer.Map: Copyable
+where
+    Upstream: Serializer.`Protocol`<Upstream.Output, Upstream.Buffer, Upstream.Failure> & Copyable,
+    NewOutput: ~Copyable & ~Escapable,
+    Upstream.Output: ~Copyable & Escapable,
+    Upstream.Buffer: ~Copyable & ~Escapable
+{}

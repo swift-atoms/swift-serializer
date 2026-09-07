@@ -2,12 +2,13 @@ public import Either
 
 extension Serializer.Map
 where
+    Upstream: ~Copyable,
     NewOutput: ~Copyable & ~Escapable,
     Upstream.Output: ~Copyable & Escapable,
     Upstream.Buffer: ~Copyable & ~Escapable
 {
 
-    public struct Throwing<E: Swift.Error>: Serializer.`Protocol` {
+    public struct Throwing<E: Swift.Error>: Serializer.`Protocol`, ~Copyable {
 
         public typealias Output = NewOutput
 
@@ -23,7 +24,7 @@ where
 
         @inlinable
         public init(
-            upstream: Upstream,
+            upstream: consuming Upstream,
             transform: @escaping (borrowing NewOutput) throws(E) -> Upstream.Output
         ) {
             self.upstream = upstream
@@ -46,3 +47,11 @@ where
         }
     }
 }
+
+extension Serializer.Map.Throwing: Copyable
+where
+    Upstream: Serializer.`Protocol`<Upstream.Output, Upstream.Buffer, Upstream.Failure> & Copyable,
+    NewOutput: ~Copyable & ~Escapable,
+    Upstream.Output: ~Copyable & Escapable,
+    Upstream.Buffer: ~Copyable & ~Escapable
+{}
