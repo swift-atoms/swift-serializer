@@ -1,4 +1,3 @@
-public import Serializer
 
 extension Serializer.Error {
 

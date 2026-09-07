@@ -1,6 +1,5 @@
 import Either
 import Serializer
-import Serializer_Map
 import Testing
 
 @Suite

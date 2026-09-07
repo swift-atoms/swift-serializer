@@ -13,13 +13,9 @@ let package = Package(
     ],
     products: [
         .library(name: "Serializer", targets: ["Serializer"]),
-        .library(name: "Serializer Witness", targets: ["Serializer Witness"]),
-        .library(name: "Serializer Error", targets: ["Serializer Error"]),
-        .library(name: "Serializer Map", targets: ["Serializer Map"]),
-        .library(
-            name: "Serializer Standard Library Integration",
-            targets: ["Serializer Standard Library Integration"]
-        ),
+        .library(name: "Serializer Standard Library Integration", targets: ["Serializer Standard Library Integration"]),
+        .library(name: "Serializer Foundation Library Integration", targets: ["Serializer Foundation Library Integration"]),
+        .library(name: "Serializer Test Support", targets: ["Serializer Test Support"]),
     ],
     dependencies: [
         .package(
@@ -28,65 +24,52 @@ let package = Package(
         ),
     ],
     targets: [
-        .target(name: "Serializer"),
         .target(
-            name: "Serializer Witness",
-            dependencies: [.target(name: "Serializer")]
-        ),
-        .target(
-            name: "Serializer Error",
-            dependencies: [.target(name: "Serializer")]
-        ),
-        .target(
-            name: "Serializer Map",
+            name: "Serializer",
             dependencies: [
-                .target(name: "Serializer"),
                 .product(name: "Either", package: "swift-either"),
-            ]
+            ],
+            path: "Sources/Serializer"
         ),
         .target(
             name: "Serializer Standard Library Integration",
-            dependencies: [.target(name: "Serializer")]
-        ),
-        .testTarget(
-            name: "Serializer Tests",
-            dependencies: [.target(name: "Serializer")]
-        ),
-        .testTarget(
-            name: "Serializer Witness Tests",
             dependencies: [
                 .target(name: "Serializer"),
-                .target(name: "Serializer Witness"),
-            ]
+            ],
+            path: "Sources/Serializer Standard Library Integration"
         ),
-        .testTarget(
-            name: "Serializer Error Tests",
-            dependencies: [
-                .target(name: "Serializer"),
-                .target(name: "Serializer Error"),
-            ]
-        ),
-        .testTarget(
-            name: "Serializer Map Tests",
-            dependencies: [
-                .target(name: "Serializer"),
-                .target(name: "Serializer Map"),
-                .product(name: "Either", package: "swift-either"),
-            ]
-        ),
-        .testTarget(
-            name: "Serializer Standard Library Integration Tests",
+        .target(
+            name: "Serializer Foundation Library Integration",
             dependencies: [
                 .target(name: "Serializer"),
                 .target(name: "Serializer Standard Library Integration"),
-            ]
+            ],
+            path: "Sources/Serializer Foundation Library Integration"
+        ),
+        .target(
+            name: "Serializer Test Support",
+            dependencies: [
+                .target(name: "Serializer"),
+            ],
+            path: "Tests/Support"
+        ),
+        .testTarget(
+            name: "Serializer Tests",
+            dependencies: [
+                .target(name: "Serializer"),
+                .product(name: "Either", package: "swift-either"),
+                .target(name: "Serializer Standard Library Integration"),
+                .target(name: "Serializer Test Support"),
+                .target(name: "Serializer Foundation Library Integration"),
+            ],
+            path: "Tests/Serializer Tests"
         ),
     ],
     swiftLanguageModes: [.v6]
 )
 
-for target in package.targets where ![.system, .binary, .plugin, .macro].contains(target.type) {
-    let ecosystem: [SwiftSetting] = [
+for target in package.targets {
+    target.swiftSettings = [
         .strictMemorySafety(),
         .enableUpcomingFeature("ExistentialAny"),
         .enableUpcomingFeature("InternalImportsByDefault"),
@@ -95,8 +78,4 @@ for target in package.targets where ![.system, .binary, .plugin, .macro].contain
         .enableExperimentalFeature("Lifetimes"),
         .enableUpcomingFeature("InferIsolatedConformances"),
     ]
-
-    let package: [SwiftSetting] = []
-
-    target.swiftSettings = (target.swiftSettings ?? []) + ecosystem + package
 }

@@ -1,5 +1,4 @@
 public import Either
-public import Serializer
 
 extension Serializer.Map
 where

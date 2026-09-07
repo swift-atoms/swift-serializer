@@ -1,4 +1,3 @@
-public import Serializer
 
 extension Serializer {
 
@@ -34,3 +33,4 @@ extension Serializer {
         }
     }
 }
+

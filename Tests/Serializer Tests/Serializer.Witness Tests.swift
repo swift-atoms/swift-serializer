@@ -1,5 +1,4 @@
 import Serializer
-import Serializer_Witness
 import Testing
 
 @Suite

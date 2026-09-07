@@ -1,5 +1,4 @@
 import Either
-public import Serializer
 
 extension Serializer.`Protocol`
 where
