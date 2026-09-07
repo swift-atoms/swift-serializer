@@ -13,8 +13,8 @@ let package = Package(
     ],
     products: [
         .library(name: "Serializer", targets: ["Serializer"]),
-        .library(name: "Serializer Standard Library Integration", targets: ["Serializer Standard Library Integration"]),
-        .library(name: "Serializer Foundation Library Integration", targets: ["Serializer Foundation Library Integration"]),
+
+        .library(name: "Serializer Foundation Integration", targets: ["Serializer Foundation Integration"]),
         .library(name: "Serializer Test Support", targets: ["Serializer Test Support"]),
     ],
     dependencies: [
@@ -31,20 +31,13 @@ let package = Package(
             ],
             path: "Sources/Serializer"
         ),
+        
         .target(
-            name: "Serializer Standard Library Integration",
+            name: "Serializer Foundation Integration",
             dependencies: [
                 .target(name: "Serializer"),
             ],
-            path: "Sources/Serializer Standard Library Integration"
-        ),
-        .target(
-            name: "Serializer Foundation Library Integration",
-            dependencies: [
-                .target(name: "Serializer"),
-                .target(name: "Serializer Standard Library Integration"),
-            ],
-            path: "Sources/Serializer Foundation Library Integration"
+            path: "Sources/Serializer Foundation Integration"
         ),
         .target(
             name: "Serializer Test Support",
@@ -58,9 +51,8 @@ let package = Package(
             dependencies: [
                 .target(name: "Serializer"),
                 .product(name: "Either", package: "swift-either"),
-                .target(name: "Serializer Standard Library Integration"),
                 .target(name: "Serializer Test Support"),
-                .target(name: "Serializer Foundation Library Integration"),
+                .target(name: "Serializer Foundation Integration"),
             ],
             path: "Tests/Serializer Tests"
         ),

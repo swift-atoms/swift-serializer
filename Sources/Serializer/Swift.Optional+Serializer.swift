@@ -1,5 +1,3 @@
-public import Serializer
-
 extension Swift.Optional: Serializable
 where
     Wrapped: Serializable,

@@ -1,5 +1,3 @@
-public import Serializer
-
 extension Swift.Array {
 
     public struct Serializer<Buffer: RangeReplaceableCollection>: Serializer::Serializer.`Protocol`

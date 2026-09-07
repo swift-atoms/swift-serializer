@@ -1,5 +1,3 @@
-public import Serializer
-
 extension Serializer::Serializer {
 
     public struct Optionally<Wrapped: Serializer::Serializer.`Protocol`>: Serializer::Serializer.`Protocol`

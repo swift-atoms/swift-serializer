@@ -1,4 +1,3 @@
-
 extension Serializer {
 
     public struct Map<Upstream: Serializer.`Protocol`, NewOutput: ~Copyable & ~Escapable>: Serializer.`Protocol`
@@ -33,4 +32,3 @@ extension Serializer {
         }
     }
 }
-

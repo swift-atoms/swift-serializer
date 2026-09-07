@@ -1,4 +1,3 @@
-
 extension Serializer.Error {
 
     public struct Map<Upstream: Serializer.`Protocol`, NewFailure: Swift.Error>: Serializer.`Protocol`

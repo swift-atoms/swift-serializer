@@ -1,4 +1,3 @@
-
 extension Serializer {
 
     public enum Error {}
