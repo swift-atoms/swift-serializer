@@ -2,7 +2,7 @@ import Serializer
 import Testing
 
 @Suite
-struct `Serializer.Error` {
+struct `Serializer error maps transform failures and preserve successful writes` {
 
     @Test
     func `error map rewrites the upstream failure`() {

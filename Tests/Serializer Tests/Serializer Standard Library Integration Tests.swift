@@ -2,7 +2,7 @@ import Serializer
 import Testing
 
 @Suite
-struct `Serializer Standard Library Integration` {
+struct `Optional and array values serialize their present elements` {
 
     @Test
     func `an optional adopter emits the wrapped output when present`() {

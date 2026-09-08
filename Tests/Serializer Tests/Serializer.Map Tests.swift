@@ -3,7 +3,7 @@ import Serializer
 import Testing
 
 @Suite
-struct `Serializer.Map` {
+struct `Serializer contramaps borrow transformed values and distinguish stage failures` {
 
     @Test
     func `contramap transforms the new output before delegating`() {

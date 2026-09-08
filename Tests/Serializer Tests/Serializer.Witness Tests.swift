@@ -2,7 +2,7 @@ import Serializer
 import Testing
 
 @Suite
-struct `Serializer.Witness` {
+struct `Serializer witnesses execute their closure with borrowed output and typed failure` {
 
     @Test
     func `a witness serializes through its closure`() {

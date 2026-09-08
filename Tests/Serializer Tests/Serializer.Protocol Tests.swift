@@ -2,7 +2,7 @@ import Serializer
 import Testing
 
 @Suite
-struct `Serializer.Protocol` {
+struct `Serializer leaves append borrowed values and preserve typed failures` {
 
     @Test
     func `a leaf declares only serialize`() {
