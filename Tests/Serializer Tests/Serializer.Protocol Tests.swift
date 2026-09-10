@@ -42,15 +42,10 @@ struct `Serializer leaves append borrowed values and preserve typed failures` {
         #expect(token.value == 9)
     }
 
-    @Test
-    func `Serializable exposes a static serializer`() {
-        var buffer: [UInt8] = []
-        Count.serializer.serialize(Count(value: 4), into: &buffer)
-        #expect(buffer == [4])
-    }
+
 }
 
-private struct Digit: Serializer.`Protocol` {
+private struct Digit: Serializing {
     borrowing func serialize(_ output: UInt8, into buffer: inout [UInt8]) {
         buffer.append(output)
     }
@@ -60,7 +55,7 @@ private enum Rejection: Swift.Error, Equatable {
     case zero
 }
 
-private struct NonZero: Serializer.`Protocol` {
+private struct NonZero: Serializing {
     borrowing func serialize(_ output: UInt8, into buffer: inout [UInt8]) throws(Rejection) {
         guard output != 0 else { throw .zero }
         buffer.append(output)
@@ -71,20 +66,8 @@ private struct Token: ~Copyable {
     let value: UInt8
 }
 
-private struct TokenSerializer: Serializer.`Protocol` {
+private struct TokenSerializer: Serializing {
     borrowing func serialize(_ output: borrowing Token, into buffer: inout [UInt8]) {
-        buffer.append(output.value)
-    }
-}
-
-private struct Count: Serializable {
-    let value: UInt8
-
-    static var serializer: CountSerializer { CountSerializer() }
-}
-
-private struct CountSerializer: Serializer.`Protocol` {
-    borrowing func serialize(_ output: Count, into buffer: inout [UInt8]) {
         buffer.append(output.value)
     }
 }

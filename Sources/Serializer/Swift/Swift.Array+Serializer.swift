@@ -1,6 +1,6 @@
 extension Swift.Array {
 
-    public struct Serializer<Buffer: RangeReplaceableCollection>: Serializer::Serializer.`Protocol`
+    public struct Serializer<Buffer: RangeReplaceableCollection>: Serializer::Serializing
     where Buffer.Element == Element {
 
         public typealias Output = Void

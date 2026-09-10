@@ -6,7 +6,7 @@ struct `Serializer witnesses execute their closure with borrowed output and type
 
     @Test
     func `a witness serializes through its closure`() {
-        let witness = Serializer.Witness<Int, [UInt8], Never> { value, buffer in
+        let witness = Serializer<Int, [UInt8], Never> { value, buffer in
             buffer.append(UInt8(truncatingIfNeeded: value))
         }
         var buffer: [UInt8] = [10]
@@ -16,7 +16,7 @@ struct `Serializer witnesses execute their closure with borrowed output and type
 
     @Test
     func `a pure witness needs no try`() {
-        let pure = Serializer.Pure<UInt8, [UInt8]> { value, buffer in buffer.append(value) }
+        let pure = Serializer<UInt8, [UInt8], Never> { value, buffer in buffer.append(value) }
         var buffer: [UInt8] = []
         pure.serialize(255, into: &buffer)
         #expect(buffer == [255])
@@ -25,7 +25,7 @@ struct `Serializer witnesses execute their closure with borrowed output and type
     @Test
     func `a witness propagates its typed failure`() {
         struct Forbidden: Swift.Error, Equatable {}
-        let witness = Serializer.Witness<Int, [UInt8], Forbidden> { value, buffer throws(Forbidden) in
+        let witness = Serializer<Int, [UInt8], Forbidden> { value, buffer throws(Forbidden) in
             guard value != 0 else { throw Forbidden() }
             buffer.append(UInt8(truncatingIfNeeded: value))
         }
@@ -41,7 +41,7 @@ struct `Serializer witnesses execute their closure with borrowed output and type
         struct Token: ~Copyable {
             let value: UInt8
         }
-        let witness = Serializer.Witness<Token, [UInt8], Never> { token, buffer in
+        let witness = Serializer<Token, [UInt8], Never> { token, buffer in
             buffer.append(token.value)
         }
         var buffer: [UInt8] = []

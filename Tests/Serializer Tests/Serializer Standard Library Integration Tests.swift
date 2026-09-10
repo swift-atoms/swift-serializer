@@ -5,16 +5,16 @@ import Testing
 struct `Optional and array values serialize their present elements` {
 
     @Test
-    func `an optional adopter emits the wrapped output when present`() {
+    func `an optional representation emits the wrapped output when present`() {
         var buffer: [UInt8] = []
-        Swift.Optional<Count>.serializer.serialize(Count(value: 9), into: &buffer)
+        Swift.Optional<CountSerializer>.Serializer(CountSerializer()).serialize(Count(value: 9), into: &buffer)
         #expect(buffer == [9])
     }
 
     @Test
-    func `an optional adopter emits nothing when the output is nil`() {
+    func `an optional representation emits nothing when the output is nil`() {
         var buffer: [UInt8] = []
-        Swift.Optional<Count>.serializer.serialize(nil, into: &buffer)
+        Swift.Optional<CountSerializer>.Serializer(CountSerializer()).serialize(nil, into: &buffer)
         #expect(buffer.isEmpty)
     }
 
@@ -30,23 +30,41 @@ struct `Optional and array values serialize their present elements` {
     }
 
     @Test
-    func `Swift Optional is serializable when its wrapped value is`() {
+    func `an explicit optional serializer can be reused`() {
         var buffer: [UInt8] = []
-        Swift.Optional<Count>.serializer.serialize(Count(value: 3), into: &buffer)
+        Swift.Optional<CountSerializer>.Serializer(CountSerializer()).serialize(Count(value: 3), into: &buffer)
         #expect(buffer == [3])
-        Swift.Optional<Count>.serializer.serialize(nil, into: &buffer)
+        Swift.Optional<CountSerializer>.Serializer(CountSerializer()).serialize(nil, into: &buffer)
         #expect(buffer == [3])
     }
 }
 
-private struct Count: Serializable {
+private struct Count {
     let value: UInt8
 
-    static var serializer: CountSerializer { CountSerializer() }
 }
 
-private struct CountSerializer: Serializer.`Protocol` {
+private struct CountSerializer: Serializing {
     borrowing func serialize(_ output: Count, into buffer: inout [UInt8]) {
         buffer.append(output.value)
+    }
+}
+
+@Suite struct `Explicit optional serializers retain owned components` {
+    @Test func `noncopyable values and serializers can be borrowed repeatedly`() {
+        let serializer = Optional<OwnedCountSerializer>.Serializer(OwnedCountSerializer())
+        let value: OwnedCount? = .some(OwnedCount(value: 7))
+        var buffer = OwnedBuffer()
+        serializer.serialize(value, into: &buffer)
+        serializer.serialize(value, into: &buffer)
+        serializer.serialize(nil, into: &buffer)
+        #expect(buffer.values == [7, 7])
+    }
+}
+private struct OwnedCount: ~Copyable { let value: Int }
+private struct OwnedBuffer: ~Copyable { var values: [Int] = [] }
+private struct OwnedCountSerializer: Serializing, ~Copyable {
+    borrowing func serialize(_ output: borrowing OwnedCount, into buffer: inout OwnedBuffer) {
+        buffer.values.append(output.value)
     }
 }

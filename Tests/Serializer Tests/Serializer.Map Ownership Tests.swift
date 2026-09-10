@@ -1,3 +1,4 @@
+#if Map
 import Either
 import Serializer
 import Testing
@@ -25,11 +26,11 @@ struct `Serializer mapping preserves its owned resource` {
     @Test
     func `explicit error transforms compose noncopyable owners and preserve partial writes`() throws {
         let lifetime = Lifetime()
-        let firstMap = Serializer.Error.Transform(Owned(lifetime: lifetime)).map { error -> Mapped in
+        let firstMap = Owned(lifetime: lifetime).mapFailure { error -> Mapped in
             lifetime.mapped += 1
             return .upstream(error)
         }
-        let serializer = Serializer.Error.Transform(firstMap).map { error -> Mapped in error }
+        let serializer = firstMap.mapFailure { error -> Mapped in error }
         requireFailure(serializer, Mapped.self)
         var buffer = Buffer()
         try serializer.serialize(1, into: &buffer)
@@ -106,7 +107,7 @@ struct `Serializer mapping preserves its owned resource` {
     func `error mapping composes with a throwing contramap without copying the owner`() throws {
         let lifetime = Lifetime()
         let upstream = Owned(lifetime: lifetime).contramap(transform)
-        let serializer = Serializer.Error.Transform(upstream).map { Mapped.composition($0) }
+        let serializer = upstream.mapFailure { Mapped.composition($0) }
         let invalid = Value(number: -1)
         let accepted = Value(number: 3)
         var buffer = Buffer()
@@ -137,12 +138,10 @@ struct `Serializer mapping preserves its owned resource` {
 
     @Test
     func `fluent error access and maps stay copyable with copyable owners`() throws {
-        let upstream = Serializer.Witness<Int, Buffer, Owned.Error> { value, buffer in
+        let upstream = Serializer<Int, Buffer, Owned.Error> { value, buffer in
             buffer.values.append(value)
         }
-        let errors = upstream.error
-        requireCopyable(errors)
-        let mappedErrors = errors.map { Mapped.upstream($0) }
+        let mappedErrors = upstream.mapFailure { Mapped.upstream($0) }
         requireCopyable(mappedErrors)
         let total = upstream.contramap { (value: borrowing Value) in value.number }
         requireCopyable(total)
@@ -163,7 +162,7 @@ private func transform(_ value: borrowing Value) throws(TransformError) -> Int {
     return value.number
 }
 
-private func requireFailure<S: Serializer.`Protocol` & ~Copyable, E: Swift.Error>(
+private func requireFailure<S: Serializing & ~Copyable, E: Swift.Error>(
     _: borrowing S,
     _: E.Type
 ) where S.Output: ~Copyable & ~Escapable, S.Buffer: ~Copyable & ~Escapable, S.Failure == E {}
@@ -195,7 +194,7 @@ private final class Lifetime {
     var mapped = 0
 }
 
-private struct Owned: ~Copyable, Serializer.`Protocol` {
+private struct Owned: ~Copyable, Serializing {
     let lifetime: Lifetime
 
     enum Error: Swift.Error, Equatable {
@@ -210,3 +209,5 @@ private struct Owned: ~Copyable, Serializer.`Protocol` {
         guard output != 2 else { throw .rejected(output) }
     }
 }
+
+#endif
