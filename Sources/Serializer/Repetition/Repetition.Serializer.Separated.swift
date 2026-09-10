@@ -6,7 +6,7 @@ public import Either
 extension Repetition.Serializer where Bounds: Cardinal.Range,
     Operation: Serializing & ~Copyable, Operation.Output: Copyable & Escapable,
     Operation.Buffer: ~Copyable & ~Escapable {
-    /// Inserts a canonical Void separator between elements, never around an empty array.
+
     public struct Separated<Separator: Serializing & ~Copyable>: Serializing, ~Copyable
     where Separator.Output == Void, Separator.Buffer == Operation.Buffer,
           Separator.Buffer: ~Copyable & ~Escapable {

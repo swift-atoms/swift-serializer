@@ -4,8 +4,7 @@ public import Always
 extension Always::Always {
 
     @frozen
-    /// Discards any supplied value and emits nothing. This one-way operation
-    /// does not validate equality with base.value or promise a value round-trip.
+
     public struct Serializer<Buffer: ~Copyable & ~Escapable>: Serializing {
 
         public typealias Output = Value

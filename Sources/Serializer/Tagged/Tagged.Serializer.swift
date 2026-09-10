@@ -3,7 +3,7 @@ public import Tagged
 
 extension Tagged::Tagged
 where Tag: ~Copyable & ~Escapable, Underlying: ~Copyable {
-    /// Serializes the underlying value with an explicitly selected representation.
+
     public struct Serializer<Upstream: Serializing & ~Copyable>: Serializing, ~Copyable
     where Upstream.Output: ~Copyable & Escapable, Upstream.Output == Underlying, Upstream.Buffer: ~Copyable & ~Escapable {
         public typealias Output = Tagged::Tagged<Tag, Underlying>

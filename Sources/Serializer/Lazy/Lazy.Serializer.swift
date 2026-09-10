@@ -8,7 +8,7 @@ where
     Value.Buffer: ~Copyable & ~Escapable,
     Value.Output: ~Copyable & ~Escapable
 {
-    /// Creates a fresh temporary serializer per call; failures are not cached.
+
     public struct Serializer<Failure: Swift.Error>: Serializing {
         public typealias Buffer = Value.Buffer
         public typealias Output = Value.Output

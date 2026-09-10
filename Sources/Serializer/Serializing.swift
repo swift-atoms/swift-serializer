@@ -1,4 +1,3 @@
-/// Serializes a borrowed value into an independently represented mutable buffer.
 public protocol Serializing<Output, Buffer, Failure>: ~Copyable {
     associatedtype Output: ~Copyable & ~Escapable
     associatedtype Buffer: ~Copyable & ~Escapable

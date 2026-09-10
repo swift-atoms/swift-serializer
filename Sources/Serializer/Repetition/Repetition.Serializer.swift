@@ -5,7 +5,7 @@ public import Either
 
 extension Repetition where Bounds: Cardinal.Range, Operation: Serializing & ~Copyable,
     Operation.Output: Copyable & Escapable, Operation.Buffer: ~Copyable & ~Escapable {
-    /// Serializes a bounded array. Count validation happens before any output.
+
     public struct Serializer: Serializing, ~Copyable {
         public typealias Output = [Operation.Output]
         public typealias Buffer = Operation.Buffer

@@ -2,8 +2,7 @@
 public import Map
 
 extension Map where Source: ~Copyable & ~Escapable, Target: ~Copyable & Escapable {
-    /// A serialization contramap borrows its source. The underlying Map algebra's
-    /// consuming arrow is deliberately not used to project a borrowed value.
+
     public struct Serializer<Upstream: Serializing & ~Copyable>: Serializing, ~Copyable
     where Upstream.Output: ~Copyable & Escapable, Upstream.Buffer: ~Copyable & ~Escapable,
           Upstream.Output == Target {

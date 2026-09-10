@@ -3,8 +3,6 @@ public import Map
 
 extension Map.Error where Source: Swift.Error, Target: Swift.Error, Failure == Never {
 
-    /// Maps only an upstream serializer's failure, preserving its owner.
-    /// Partial writes remain visible; the buffer is not rewound.
     public struct Serializer<Upstream: Serializing & ~Copyable>: Serializing, ~Copyable
     where
         Upstream.Buffer: ~Copyable & ~Escapable,

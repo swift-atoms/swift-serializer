@@ -1,4 +1,3 @@
-/// A serializer represented by a typed function borrowing its value.
 public struct Serializer<
     Output: ~Copyable & ~Escapable,
     Buffer: ~Copyable & ~Escapable,
@@ -20,8 +19,7 @@ public struct Serializer<
     ) throws(Failure) {
         try _serialize(output, &buffer)
     }
-    
-    /// Builds once and retains the composition, preserving borrowed serialization.
+
     @inlinable
     public init<S: Serializing & ~Copyable>(@Builder<Buffer> _ build: () -> S)
     where
