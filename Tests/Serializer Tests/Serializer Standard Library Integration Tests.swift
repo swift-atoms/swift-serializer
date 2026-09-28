@@ -21,7 +21,7 @@ struct `Optional and array values serialize their present elements` {
     @Test
     func `an array serializes itself into a buffer of its elements`() {
         var text = ""
-        [Character].Serializer<String>(Array("<tag")).serialize((), into: &text)
+        [Character].Serializer<String>(["<", "t", "a", "g"]).serialize((), into: &text)
         #expect(text == "<tag")
 
         var bytes: [UInt8] = []

@@ -27,7 +27,7 @@ let package = Package(
         .trait(name: "Tagged", description: "Serialization of tagged values"),
         .trait(name: "Collection", description: "Fresh collection serialization buffers"),
         .trait(name: "Repetition", description: "Bounded and separated serialization", enabledTraits: ["Either"]),
-        .default(enabledTraits: ["Either", "Map", "Pair", "Optic", "Always", "Lazy", "Tagged", "Collection", "Repetition"]),
+        .trait(name: "Byte", description: "Absorbed Byte integration"),
     ],
     dependencies: [
         .package(url: "https://github.com/swift-atoms/swift-repetition.git", branch: "main"),
@@ -42,6 +42,8 @@ let package = Package(
             url: "https://github.com/swift-atoms/swift-either.git",
             branch: "main"
         ),
+        .package(url: "https://github.com/swift-atoms/swift-byte.git", branch: "main"),
+        .package(url: "https://github.com/swift-atoms/swift-carrier.git", branch: "main"),
     ],
     targets: [
         .target(
@@ -56,10 +58,12 @@ let package = Package(
                 .product(name: "Map", package: "swift-map", condition: .when(traits: ["Map"])),
                 .product(name: "Pair", package: "swift-pair", condition: .when(traits: ["Pair"])),
                 .product(name: "Optic", package: "swift-optic", condition: .when(traits: ["Optic"])),
-            ],
+                .product(name: "Byte", package: "swift-byte", condition: .when(traits: ["Byte"])),
+                .product(name: "Carrier", package: "swift-carrier", condition: .when(traits: ["Byte"])),
+    ],
             path: "Sources/Serializer"
         ),
-        
+
         .target(
             name: "Serializer Foundation Integration",
             dependencies: [
@@ -84,6 +88,7 @@ let package = Package(
             ],
             path: "Tests/Serializer Tests"
         ),
+        .testTarget(name: "Absorbed swift-serializer-byte Serializer Byte Tests", dependencies: [.product(name: "Byte", package: "swift-byte", condition: .when(traits: ["Byte"])), .product(name: "Carrier", package: "swift-carrier", condition: .when(traits: ["Byte"])), .target(name: "Serializer")], path: "Tests/Absorbed/swift-serializer-byte/Serializer Byte Tests"),
     ],
     swiftLanguageModes: [.v6]
 )
