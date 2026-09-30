@@ -49,17 +49,17 @@ let package = Package(
         .target(
             name: "Serializer",
             dependencies: [
-                .product(name: "Repetition", package: "swift-repetition", condition: .when(traits: ["Repetition"])),
-                .product(name: "Cardinal", package: "swift-cardinal", condition: .when(traits: ["Repetition"])),
-                .product(name: "Always", package: "swift-always", condition: .when(traits: ["Always"])),
-                .product(name: "Lazy", package: "swift-lazy", condition: .when(traits: ["Lazy"])),
-                .product(name: "Tagged", package: "swift-tagged", condition: .when(traits: ["Tagged"])),
-                .product(name: "Either", package: "swift-either", condition: .when(traits: ["Either", "Lazy", "Map", "Optic", "Pair", "Repetition"])),
-                .product(name: "Map", package: "swift-map", condition: .when(traits: ["Map", "Optic"])),
-                .product(name: "Pair", package: "swift-pair", condition: .when(traits: ["Pair"])),
-                .product(name: "Optic", package: "swift-optic", condition: .when(traits: ["Optic"])),
-                .product(name: "Byte", package: "swift-byte", condition: .when(traits: ["Byte"])),
-                .product(name: "Carrier", package: "swift-carrier", condition: .when(traits: ["Byte"])),
+                .product(name: "Repetition", package: "swift-repetition"),
+                .product(name: "Cardinal", package: "swift-cardinal"),
+                .product(name: "Always", package: "swift-always"),
+                .product(name: "Lazy", package: "swift-lazy"),
+                .product(name: "Tagged", package: "swift-tagged"),
+                .product(name: "Either", package: "swift-either"),
+                .product(name: "Map", package: "swift-map"),
+                .product(name: "Pair", package: "swift-pair"),
+                .product(name: "Optic", package: "swift-optic"),
+                .product(name: "Byte", package: "swift-byte"),
+                .product(name: "Carrier", package: "swift-carrier"),
     ],
             path: "Sources/Serializer"
         ),
@@ -82,13 +82,13 @@ let package = Package(
             name: "Serializer Tests",
             dependencies: [
                 .target(name: "Serializer"),
-                .product(name: "Either", package: "swift-either", condition: .when(traits: ["Either", "Lazy", "Map", "Optic", "Pair", "Repetition"])),
+                .product(name: "Either", package: "swift-either"),
                 .target(name: "Serializer Test Support"),
                 .target(name: "Serializer Foundation Integration"),
             ],
             path: "Tests/Serializer Tests"
         ),
-        .testTarget(name: "Absorbed swift-serializer-byte Serializer Byte Tests", dependencies: [.product(name: "Byte", package: "swift-byte", condition: .when(traits: ["Byte"])), .product(name: "Carrier", package: "swift-carrier", condition: .when(traits: ["Byte"])), .target(name: "Serializer")], path: "Tests/Absorbed/swift-serializer-byte/Serializer Byte Tests"),
+        .testTarget(name: "Absorbed swift-serializer-byte Serializer Byte Tests", dependencies: [.product(name: "Byte", package: "swift-byte"), .product(name: "Carrier", package: "swift-carrier"), .target(name: "Serializer")], path: "Tests/Absorbed/swift-serializer-byte/Serializer Byte Tests"),
     ],
     swiftLanguageModes: [.v6]
 )
