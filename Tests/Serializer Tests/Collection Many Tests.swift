@@ -68,6 +68,12 @@ extension `Collection Serializer Many Tests`.`Edge Case` {
 }
 
 struct RepeatedCharacter: Serializing {
+    public var body: Never {
+        borrowing get {
+            return fatalError("\(Self.self) is a leaf: implement its conformance requirements directly")
+        }
+    }
+
     typealias Output = Character
     typealias Buffer = [UInt8]
     typealias Failure = Never
@@ -78,6 +84,12 @@ struct RepeatedCharacter: Serializing {
 }
 
 struct RepeatedComma: Serializing {
+    public var body: Never {
+        borrowing get {
+            return fatalError("\(Self.self) is a leaf: implement its conformance requirements directly")
+        }
+    }
+
     typealias Output = Void
     typealias Buffer = [UInt8]
     typealias Failure = Never

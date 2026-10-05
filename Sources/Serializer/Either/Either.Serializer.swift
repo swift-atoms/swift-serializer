@@ -13,6 +13,13 @@ where
     Right.Output: ~Copyable & ~Escapable
 {
     public struct Serializer: Serializing, ~Copyable {
+        @inlinable
+        public var body: Never {
+            borrowing get {
+                return fatalError("\(Self.self) is a leaf serializer: implement serialize(_:into:) directly")
+            }
+        }
+
         public typealias Buffer = Left.Buffer
         public typealias Output = Left.Output
         public typealias Failure = Either<Left.Failure, Right.Failure>

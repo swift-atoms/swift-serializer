@@ -52,6 +52,12 @@ private enum LiteralError: Error, Equatable {
 }
 
 private struct Literal: Serializing {
+    public var body: Never {
+        borrowing get {
+            return fatalError("\(Self.self) is a leaf: implement its conformance requirements directly")
+        }
+    }
+
     typealias Output = Character
     typealias Buffer = [UInt8]
     typealias Failure = LiteralError

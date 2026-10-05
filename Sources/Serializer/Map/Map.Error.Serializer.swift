@@ -9,6 +9,13 @@ extension Map.Error where Source: Swift.Error, Target: Swift.Error, Failure == N
         Upstream.Output: ~Copyable & ~Escapable,
         Upstream.Failure == Source
     {
+        @inlinable
+        public var body: Never {
+            borrowing get {
+                return fatalError("\(Self.self) is a leaf serializer: implement serialize(_:into:) directly")
+            }
+        }
+
         public typealias Buffer = Upstream.Buffer
         public typealias Output = Upstream.Output
         public typealias Failure = Target

@@ -195,6 +195,12 @@ private final class Lifetime {
 }
 
 private struct Owned: ~Copyable, Serializing {
+    public var body: Never {
+        borrowing get {
+            return fatalError("\(Self.self) is a leaf: implement its conformance requirements directly")
+        }
+    }
+
     let lifetime: Lifetime
 
     enum Error: Swift.Error, Equatable {

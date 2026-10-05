@@ -2,6 +2,13 @@ extension Swift.Optional where Wrapped: Serializing & ~Copyable,
     Wrapped.Output: ~Copyable & Escapable, Wrapped.Buffer: ~Copyable & ~Escapable {
 
     public struct Serializer: Serializing, ~Copyable {
+        @inlinable
+        public var body: Never {
+            borrowing get {
+                return fatalError("\(Self.self) is a leaf serializer: implement serialize(_:into:) directly")
+            }
+        }
+
         public typealias Output = Wrapped.Output?
         public typealias Buffer = Wrapped.Buffer
         public typealias Failure = Wrapped.Failure

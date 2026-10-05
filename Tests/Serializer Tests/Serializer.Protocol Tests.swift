@@ -46,6 +46,12 @@ struct `Serializer leaves append borrowed values and preserve typed failures` {
 }
 
 private struct Digit: Serializing {
+    public var body: Never {
+        borrowing get {
+            return fatalError("\(Self.self) is a leaf: implement its conformance requirements directly")
+        }
+    }
+
     borrowing func serialize(_ output: UInt8, into buffer: inout [UInt8]) {
         buffer.append(output)
     }
@@ -56,6 +62,12 @@ private enum Rejection: Swift.Error, Equatable {
 }
 
 private struct NonZero: Serializing {
+    public var body: Never {
+        borrowing get {
+            return fatalError("\(Self.self) is a leaf: implement its conformance requirements directly")
+        }
+    }
+
     borrowing func serialize(_ output: UInt8, into buffer: inout [UInt8]) throws(Rejection) {
         guard output != 0 else { throw .zero }
         buffer.append(output)
@@ -67,6 +79,12 @@ private struct Token: ~Copyable {
 }
 
 private struct TokenSerializer: Serializing {
+    public var body: Never {
+        borrowing get {
+            return fatalError("\(Self.self) is a leaf: implement its conformance requirements directly")
+        }
+    }
+
     borrowing func serialize(_ output: borrowing Token, into buffer: inout [UInt8]) {
         buffer.append(output.value)
     }
