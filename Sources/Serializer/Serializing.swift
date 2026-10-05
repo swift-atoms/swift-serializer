@@ -10,16 +10,6 @@ public protocol Serializing<Output, Buffer, Failure>: ~Copyable {
     borrowing func serialize(_ output: borrowing Output, into buffer: inout Buffer) throws(Failure)
 }
 
-extension Serializing
-where Self: ~Copyable, Output: ~Copyable & ~Escapable,
-      Buffer: ~Copyable & ~Escapable, Body == Never {
-    @inlinable
-    public var body: Never {
-        borrowing get {
-            fatalError("\(Self.self) is a leaf serializer: implement serialize(_:into:) directly")
-        }
-    }
-}
 
 extension Serializing
 where Self: ~Copyable, Output: ~Copyable & ~Escapable,
