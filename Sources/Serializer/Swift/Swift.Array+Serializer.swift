@@ -2,6 +2,12 @@ extension Swift.Array {
 
     public struct Serializer<Buffer: RangeReplaceableCollection>: Serializer::Serializing
     where Buffer.Element == Element {
+        @inlinable
+        public var body: Never {
+            borrowing get {
+                return fatalError("\(Self.self) is a leaf serializer: implement serialize(_:into:) directly")
+            }
+        }
 
 
         public typealias Output = Void

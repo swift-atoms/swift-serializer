@@ -63,6 +63,11 @@ private enum LiteralError: Error, Equatable {
 }
 
 private struct Literal: Serializing {
+    public var body: Never {
+        borrowing get {
+            return fatalError("\(Self.self) is a leaf: implement its conformance requirements directly")
+        }
+    }
 
     typealias Output = Character
     typealias Buffer = [UInt8]
@@ -115,12 +120,22 @@ private struct Literal: Serializing {
 private enum FactoryError: Error, Equatable { case unavailable }
 private final class FactoryState { var built = 0; var destroyed = 0 }
 private struct OwnedSerializer: Serializing, ~Copyable {
+    public var body: Never {
+        borrowing get {
+            return fatalError("\(Self.self) is a leaf: implement its conformance requirements directly")
+        }
+    }
 
     let state: FactoryState
     deinit { state.destroyed += 1 }
     borrowing func serialize(_ output: Int, into buffer: inout [Int]) { buffer.append(output) }
 }
 private struct IntSerializer: Serializing {
+    public var body: Never {
+        borrowing get {
+            return fatalError("\(Self.self) is a leaf: implement its conformance requirements directly")
+        }
+    }
 
     borrowing func serialize(_ output: Int, into buffer: inout [Int]) { buffer.append(output) }
 }

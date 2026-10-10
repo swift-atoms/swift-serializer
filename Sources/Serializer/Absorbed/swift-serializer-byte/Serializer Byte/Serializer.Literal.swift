@@ -27,6 +27,12 @@ public import struct Byte.Byte
 
 
 extension Serializer::Literal: Serializing {
+    @inlinable
+    public var body: Never {
+        borrowing get {
+            return fatalError("\(Self.self) is a leaf serializer: implement serialize(_:into:) directly")
+        }
+    }
 
 
     public typealias Output = Void

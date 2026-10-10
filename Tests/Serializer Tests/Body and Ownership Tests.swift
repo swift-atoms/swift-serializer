@@ -60,6 +60,11 @@ private struct Positive: Serializing {
     }
 }
 private struct Scoped: Serializing {
+    public var body: Never {
+        borrowing get {
+            return fatalError("\(Self.self) is a leaf: implement its conformance requirements directly")
+        }
+    }
 
     borrowing func serialize(_ output: borrowing Span<Int>, into buffer: inout [Int]) {
         for value in output { buffer.append(value) }
@@ -70,6 +75,11 @@ private struct ScopedBody: Serializing {
 }
 private final class Lifetime { var destroyed = 0 }
 private struct Owned: ~Copyable, Serializing {
+    public var body: Never {
+        borrowing get {
+            return fatalError("\(Self.self) is a leaf: implement its conformance requirements directly")
+        }
+    }
 
     let lifetime: Lifetime
     deinit { lifetime.destroyed += 1 }
@@ -99,6 +109,11 @@ private struct Owned: ~Copyable, Serializing {
 }
 private struct Field: ~Copyable { let value: Int }
 private struct FieldSerializer: Serializing {
+    public var body: Never {
+        borrowing get {
+            return fatalError("\(Self.self) is a leaf: implement its conformance requirements directly")
+        }
+    }
 
     borrowing func serialize(_ output: borrowing Field, into buffer: inout [Int]) {
         buffer.append(output.value)

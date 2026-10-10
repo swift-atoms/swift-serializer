@@ -45,6 +45,11 @@ private struct Count {
 }
 
 private struct CountSerializer: Serializing {
+    public var body: Never {
+        borrowing get {
+            return fatalError("\(Self.self) is a leaf: implement its conformance requirements directly")
+        }
+    }
 
     borrowing func serialize(_ output: Count, into buffer: inout [UInt8]) {
         buffer.append(output.value)
@@ -65,6 +70,11 @@ private struct CountSerializer: Serializing {
 private struct OwnedCount: ~Copyable { let value: Int }
 private struct OwnedBuffer: ~Copyable { var values: [Int] = [] }
 private struct OwnedCountSerializer: Serializing, ~Copyable {
+    public var body: Never {
+        borrowing get {
+            return fatalError("\(Self.self) is a leaf: implement its conformance requirements directly")
+        }
+    }
 
     borrowing func serialize(_ output: borrowing OwnedCount, into buffer: inout OwnedBuffer) {
         buffer.values.append(output.value)

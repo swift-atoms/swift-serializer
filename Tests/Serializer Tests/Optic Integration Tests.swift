@@ -156,6 +156,11 @@ private func describe(_ node: Node) -> String {
 }
 
 private struct Text: Serializing {
+    public var body: Never {
+        borrowing get {
+            return fatalError("\(Self.self) is a leaf: implement its conformance requirements directly")
+        }
+    }
 
     typealias Output = String
     typealias Buffer = [UInt8]
@@ -167,6 +172,11 @@ private struct Text: Serializing {
 }
 
 private struct Decimal: Serializing {
+    public var body: Never {
+        borrowing get {
+            return fatalError("\(Self.self) is a leaf: implement its conformance requirements directly")
+        }
+    }
 
     typealias Output = Int
     typealias Buffer = [UInt8]
@@ -178,6 +188,11 @@ private struct Decimal: Serializing {
 }
 
 private struct NodeText: Serializing {
+    public var body: Never {
+        borrowing get {
+            return fatalError("\(Self.self) is a leaf: implement its conformance requirements directly")
+        }
+    }
 
     typealias Output = Node
     typealias Buffer = [UInt8]
@@ -189,6 +204,11 @@ private struct NodeText: Serializing {
 }
 
 private struct BranchText: Serializing {
+    public var body: Never {
+        borrowing get {
+            return fatalError("\(Self.self) is a leaf: implement its conformance requirements directly")
+        }
+    }
 
     typealias Output = Either<Node, Int>
     typealias Buffer = [UInt8]

@@ -15,6 +15,12 @@ where
 
     @frozen
     public struct Serializer<Failure: Swift.Error>: Serializing, ~Copyable {
+        @inlinable
+        public var body: Never {
+            borrowing get {
+                return fatalError("\(Self.self) is a leaf serializer: implement serialize(_:into:) directly")
+            }
+        }
 
 
         public typealias Output = Pair::Pair<First.Output, Second.Output>

@@ -57,6 +57,11 @@ private struct Value {
 }
 
 private struct ValueSerializer: Serializing {
+    public var body: Never {
+        borrowing get {
+            return fatalError("\(Self.self) is a leaf: implement its conformance requirements directly")
+        }
+    }
 
     typealias Output = Value
     typealias Buffer = [Int]
@@ -89,6 +94,11 @@ private struct OwnedValue: ~Copyable {
     let rawValue: Int
 }
 private struct OwnedValueSerializer: ~Copyable, Serializing {
+    public var body: Never {
+        borrowing get {
+            return fatalError("\(Self.self) is a leaf: implement its conformance requirements directly")
+        }
+    }
 
     borrowing func serialize(_ output: borrowing OwnedValue, into buffer: inout [Int]) {
         buffer.append(output.rawValue)
