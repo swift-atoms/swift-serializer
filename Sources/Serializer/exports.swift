@@ -1,3 +1,5 @@
+@_exported public import Serializer_Core
+
 #if Either
 @_exported public import Either
 #endif

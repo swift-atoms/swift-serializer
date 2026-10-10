@@ -1,4 +1,5 @@
 #if Pair
+public import Serializer_Core
 public import Pair
 public import Either
 

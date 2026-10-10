@@ -1,4 +1,5 @@
 #if Either
+public import Serializer_Core
 public import Either
 
 extension Serializer::Builder where Buffer: ~Copyable & ~Escapable {

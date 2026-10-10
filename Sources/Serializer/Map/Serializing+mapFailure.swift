@@ -1,4 +1,5 @@
 #if Map
+public import Serializer_Core
 public import Map
 extension Serializing
 where Self: ~Copyable, Output: ~Copyable & ~Escapable, Buffer: ~Copyable & ~Escapable {

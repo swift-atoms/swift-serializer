@@ -66,11 +66,6 @@ struct `Pair Serializer Tests` {
 }
 
 private struct AnyCharacter: Serializer::Serializing {
-    public var body: Never {
-        borrowing get {
-            return fatalError("\(Self.self) is a leaf: implement its conformance requirements directly")
-        }
-    }
 
     borrowing func serialize(_ output: Character, into buffer: inout [UInt8]) {
         buffer.append(contentsOf: String(output).utf8)
@@ -86,11 +81,6 @@ private enum OtherError: Error, Equatable {
 }
 
 private struct Literal: Serializer::Serializing {
-    public var body: Never {
-        borrowing get {
-            return fatalError("\(Self.self) is a leaf: implement its conformance requirements directly")
-        }
-    }
 
     let expected: Character
 
@@ -108,11 +98,6 @@ private struct Literal: Serializer::Serializing {
 }
 
 private struct OtherLiteral: Serializer::Serializing {
-    public var body: Never {
-        borrowing get {
-            return fatalError("\(Self.self) is a leaf: implement its conformance requirements directly")
-        }
-    }
 
     let expected: Character
 

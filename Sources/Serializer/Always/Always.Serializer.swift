@@ -1,4 +1,5 @@
 #if Always
+public import Serializer_Core
 public import Always
 
 extension Always::Always {
@@ -6,12 +7,6 @@ extension Always::Always {
     @frozen
 
     public struct Serializer<Buffer: ~Copyable & ~Escapable>: Serializing {
-        @inlinable
-        public var body: Never {
-            borrowing get {
-                return fatalError("\(Self.self) is a leaf serializer: implement serialize(_:into:) directly")
-            }
-        }
 
 
         public typealias Output = Value

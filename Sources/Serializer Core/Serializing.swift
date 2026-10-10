@@ -13,6 +13,17 @@ public protocol Serializing<Output, Buffer, Failure>: ~Copyable {
 
 extension Serializing
 where Self: ~Copyable, Output: ~Copyable & ~Escapable,
+      Buffer: ~Copyable & ~Escapable, Body == Never {
+    @inlinable
+    public var body: Never {
+        borrowing get {
+            fatalError("\(Self.self) is a leaf serializer: implement serialize(_:into:) directly")
+        }
+    }
+}
+
+extension Serializing
+where Self: ~Copyable, Output: ~Copyable & ~Escapable,
       Buffer: ~Copyable & ~Escapable,
       Body: Serializing & ~Copyable,
       Body.Output: ~Copyable & ~Escapable,

@@ -46,9 +46,11 @@ let package = Package(
         .package(url: "https://github.com/swift-atoms/swift-carrier.git", branch: "main"),
     ],
     targets: [
+        .target(name: "Serializer Core"),
         .target(
             name: "Serializer",
             dependencies: [
+            .target(name: "Serializer Core"),
                 .product(name: "Repetition", package: "swift-repetition"),
                 .product(name: "Cardinal", package: "swift-cardinal"),
                 .product(name: "Always", package: "swift-always"),

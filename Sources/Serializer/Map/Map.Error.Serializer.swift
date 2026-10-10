@@ -1,4 +1,5 @@
 #if Map
+public import Serializer_Core
 public import Map
 
 extension Map.Error where Source: Swift.Error, Target: Swift.Error, Failure == Never {
@@ -9,12 +10,6 @@ extension Map.Error where Source: Swift.Error, Target: Swift.Error, Failure == N
         Upstream.Output: ~Copyable & ~Escapable,
         Upstream.Failure == Source
     {
-        @inlinable
-        public var body: Never {
-            borrowing get {
-                return fatalError("\(Self.self) is a leaf serializer: implement serialize(_:into:) directly")
-            }
-        }
 
         public typealias Buffer = Upstream.Buffer
         public typealias Output = Upstream.Output

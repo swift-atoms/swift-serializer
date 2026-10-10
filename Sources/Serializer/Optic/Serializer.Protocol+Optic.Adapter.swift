@@ -1,4 +1,5 @@
 #if Optic
+public import Serializer_Core
 public import Either
 public import Map
 public import Optic

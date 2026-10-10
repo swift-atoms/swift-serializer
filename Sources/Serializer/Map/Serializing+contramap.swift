@@ -1,4 +1,5 @@
 #if Map
+public import Serializer_Core
 public import Map
 public import Either
 

@@ -1,4 +1,5 @@
 #if Lazy
+public import Serializer_Core
 public import Lazy
 public import Either
 extension Builder where Buffer: ~Copyable & ~Escapable {

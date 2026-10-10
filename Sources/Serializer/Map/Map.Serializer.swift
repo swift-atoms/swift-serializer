@@ -1,4 +1,5 @@
 #if Map
+public import Serializer_Core
 public import Map
 
 extension Map where Source: ~Copyable & ~Escapable, Target: ~Copyable & Escapable {
@@ -6,12 +7,6 @@ extension Map where Source: ~Copyable & ~Escapable, Target: ~Copyable & Escapabl
     public struct Serializer<Upstream: Serializing & ~Copyable>: Serializing, ~Copyable
     where Upstream.Output: ~Copyable & Escapable, Upstream.Buffer: ~Copyable & ~Escapable,
           Upstream.Output == Target {
-        @inlinable
-        public var body: Never {
-            borrowing get {
-                return fatalError("\(Self.self) is a leaf serializer: implement serialize(_:into:) directly")
-            }
-        }
 
         public typealias Output = Source
         public typealias Buffer = Upstream.Buffer

@@ -1,4 +1,5 @@
 #if Lazy
+public import Serializer_Core
 public import Lazy
 public import Either
 
@@ -10,12 +11,6 @@ where
 {
 
     public struct Serializer<Failure: Swift.Error>: Serializing {
-        @inlinable
-        public var body: Never {
-            borrowing get {
-                return fatalError("\(Self.self) is a leaf serializer: implement serialize(_:into:) directly")
-            }
-        }
 
         public typealias Buffer = Value.Buffer
         public typealias Output = Value.Output
