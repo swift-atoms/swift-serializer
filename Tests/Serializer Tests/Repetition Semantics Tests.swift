@@ -73,11 +73,6 @@ import Testing
 private enum ElementError: Error, Equatable { case rejected }
 private enum SeparatorError: Error, Equatable { case failed }
 private struct Element: Serializing {
-    public var body: Never {
-        borrowing get {
-            return fatalError("\(Self.self) is a leaf: implement its conformance requirements directly")
-        }
-    }
 
     borrowing func serialize(_ output: Int, into buffer: inout [Int]) throws(ElementError) {
         buffer.append(output)
@@ -85,20 +80,10 @@ private struct Element: Serializing {
     }
 }
 private struct Separator: Serializing {
-    public var body: Never {
-        borrowing get {
-            return fatalError("\(Self.self) is a leaf: implement its conformance requirements directly")
-        }
-    }
 
     borrowing func serialize(_ output: Void, into buffer: inout [Int]) { buffer.append(0) }
 }
 private struct FailingSeparator: Serializing {
-    public var body: Never {
-        borrowing get {
-            return fatalError("\(Self.self) is a leaf: implement its conformance requirements directly")
-        }
-    }
 
     borrowing func serialize(_ output: Void, into buffer: inout [Int]) throws(SeparatorError) {
         buffer.append(99)
@@ -108,11 +93,6 @@ private struct FailingSeparator: Serializing {
 private final class Lifetime { var destroyed = 0 }
 private struct OwnedBuffer: ~Copyable { var values: [Int] = [] }
 private struct OwnedElement: Serializing, ~Copyable {
-    public var body: Never {
-        borrowing get {
-            return fatalError("\(Self.self) is a leaf: implement its conformance requirements directly")
-        }
-    }
 
     let lifetime: Lifetime
     deinit { lifetime.destroyed += 1 }
@@ -137,11 +117,6 @@ extension `Repeated serialization validates bounds before writes` {
     }
 }
 private struct OwnedSeparator: Serializing, ~Copyable {
-    public var body: Never {
-        borrowing get {
-            return fatalError("\(Self.self) is a leaf: implement its conformance requirements directly")
-        }
-    }
 
     let lifetime: Lifetime
     deinit { lifetime.destroyed += 1 }

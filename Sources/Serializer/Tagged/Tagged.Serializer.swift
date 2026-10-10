@@ -6,12 +6,6 @@ where Tag: ~Copyable & ~Escapable, Underlying: ~Copyable {
 
     public struct Serializer<Upstream: Serializing & ~Copyable>: Serializing, ~Copyable
     where Upstream.Output: ~Copyable & Escapable, Upstream.Output == Underlying, Upstream.Buffer: ~Copyable & ~Escapable {
-        @inlinable
-        public var body: Never {
-            borrowing get {
-                return fatalError("\(Self.self) is a leaf serializer: implement serialize(_:into:) directly")
-            }
-        }
 
         public typealias Output = Tagged::Tagged<Tag, Underlying>
         public typealias Buffer = Upstream.Buffer

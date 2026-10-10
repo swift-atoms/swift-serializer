@@ -10,12 +10,6 @@ extension Repetition.Serializer where Bounds: Cardinal.Range,
     public struct Separated<Separator: Serializing & ~Copyable>: Serializing, ~Copyable
     where Separator.Output == Void, Separator.Buffer == Operation.Buffer,
           Separator.Buffer: ~Copyable & ~Escapable {
-        @inlinable
-        public var body: Never {
-            borrowing get {
-                return fatalError("\(Self.self) is a leaf serializer: implement serialize(_:into:) directly")
-            }
-        }
 
         public typealias Output = [Operation.Output]
         public typealias Buffer = Operation.Buffer

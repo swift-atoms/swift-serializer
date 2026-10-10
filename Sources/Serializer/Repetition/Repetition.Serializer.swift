@@ -7,12 +7,6 @@ extension Repetition where Bounds: Cardinal.Range, Operation: Serializing & ~Cop
     Operation.Output: Copyable & Escapable, Operation.Buffer: ~Copyable & ~Escapable {
 
     public struct Serializer: Serializing, ~Copyable {
-        @inlinable
-        public var body: Never {
-            borrowing get {
-                return fatalError("\(Self.self) is a leaf serializer: implement serialize(_:into:) directly")
-            }
-        }
 
         public typealias Output = [Operation.Output]
         public typealias Buffer = Operation.Buffer
