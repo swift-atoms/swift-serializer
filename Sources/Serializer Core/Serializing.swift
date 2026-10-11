@@ -1,7 +1,7 @@
 public protocol Serializing<Output, Buffer, Failure>: ~Copyable {
     associatedtype Output: ~Copyable & ~Escapable
     associatedtype Buffer: ~Copyable & ~Escapable
-    associatedtype Failure: Swift.Error = Never
+    associatedtype Failure: Swift::Error = Never
     associatedtype Body: ~Copyable = Never
     
     @Builder<Buffer>

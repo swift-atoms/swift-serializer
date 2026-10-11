@@ -57,30 +57,32 @@ struct `Serializer contramaps borrow transformed values and distinguish stage fa
     }
 }
 
-private func requireFailure<S: Serializing, Failure: Swift.Error>(
+private func requireFailure<S: Serializing, Failure: Swift::Error>(
     _: borrowing S,
     _: Failure.Type
 ) where S.Output: ~Copyable & ~Escapable, S.Buffer: ~Copyable & ~Escapable, S.Failure == Failure {}
 
-private struct Empty: Swift.Error, Equatable {}
+private struct Empty: Swift::Error, Equatable {}
 
 private struct Token: ~Copyable {
     let value: UInt8
 }
 
-private enum Rejection: Swift.Error, Equatable {
+private enum Rejection: Swift::Error, Equatable {
     case zero
 }
 
-private struct Digit: Serializing {
+private struct Digit: Serializing {}
 
+extension Digit {
     borrowing func serialize(_ output: UInt8, into buffer: inout [UInt8]) {
         buffer.append(output)
     }
 }
 
-private struct NonZero: Serializing {
+private struct NonZero: Serializing {}
 
+extension NonZero {
     borrowing func serialize(_ output: UInt8, into buffer: inout [UInt8]) throws(Rejection) {
         guard output != 0 else { throw .zero }
         buffer.append(output)

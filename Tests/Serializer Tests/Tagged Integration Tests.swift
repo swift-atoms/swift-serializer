@@ -11,7 +11,7 @@ import Testing
     }
 
     @Test
-    func `lifted serializer delegates the underlying value`() throws(any Swift.Error) {
+    func `lifted serializer delegates the underlying value`() throws(any Swift::Error) {
         let identifier = Identifier(_unchecked: Value(rawValue: 42))
         var buffer: [Int] = []
 
@@ -21,7 +21,7 @@ import Testing
     }
 
     @Test
-    func `lifted serializer appends into an existing buffer`() throws(any Swift.Error) {
+    func `lifted serializer appends into an existing buffer`() throws(any Swift::Error) {
         let identifier = Identifier(_unchecked: Value(rawValue: 42))
         var buffer = [1, 2]
 
@@ -47,7 +47,7 @@ import Testing
 
 private enum IdentifierTag {}
 
-private enum TestFailure: Swift.Error, Equatable {
+private enum TestFailure: Swift::Error, Equatable {
     case rejected
 }
 
@@ -57,11 +57,12 @@ private struct Value {
 }
 
 private struct ValueSerializer: Serializing {
-
     typealias Output = Value
     typealias Buffer = [Int]
     typealias Failure = TestFailure
+}
 
+extension ValueSerializer {
     borrowing func serialize(_ output: Value, into buffer: inout [Int]) throws(TestFailure) {
         guard output.rawValue >= 0 else { throw .rejected }
         buffer.append(output.rawValue)
@@ -88,8 +89,9 @@ private typealias Identifier = Tagged::Tagged<IdentifierTag, Value>
 private struct OwnedValue: ~Copyable {
     let rawValue: Int
 }
-private struct OwnedValueSerializer: ~Copyable, Serializing {
+private struct OwnedValueSerializer: ~Copyable, Serializing {}
 
+extension OwnedValueSerializer {
     borrowing func serialize(_ output: borrowing OwnedValue, into buffer: inout [Int]) {
         buffer.append(output.rawValue)
     }

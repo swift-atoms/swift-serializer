@@ -162,7 +162,7 @@ private func transform(_ value: borrowing Value) throws(TransformError) -> Int {
     return value.number
 }
 
-private func requireFailure<S: Serializing & ~Copyable, E: Swift.Error>(
+private func requireFailure<S: Serializing & ~Copyable, E: Swift::Error>(
     _: borrowing S,
     _: E.Type
 ) where S.Output: ~Copyable & ~Escapable, S.Buffer: ~Copyable & ~Escapable, S.Failure == E {}
@@ -171,11 +171,11 @@ private func requireCopyable<T: Copyable>(_: T) {}
 
 private func discard<T: ~Copyable>(_ value: consuming T) {}
 
-private enum TransformError: Swift.Error, Equatable {
+private enum TransformError: Swift::Error, Equatable {
     case negative(Int)
 }
 
-private enum Mapped: Swift.Error, Equatable {
+private enum Mapped: Swift::Error, Equatable {
     case upstream(Owned.Error)
     case composition(Either<Owned.Error, TransformError>)
 }
@@ -195,15 +195,16 @@ private final class Lifetime {
 }
 
 private struct Owned: ~Copyable, Serializing {
-
     let lifetime: Lifetime
 
-    enum Error: Swift.Error, Equatable {
+    enum Error: Swift::Error, Equatable {
         case rejected(Int)
     }
 
     deinit { lifetime.destroyed += 1 }
+}
 
+extension Owned {
     borrowing func serialize(_ output: Int, into buffer: inout Buffer) throws(Error) {
         lifetime.calls += 1
         buffer.values.append(output)

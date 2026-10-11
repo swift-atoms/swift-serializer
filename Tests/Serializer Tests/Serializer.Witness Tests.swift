@@ -24,7 +24,7 @@ struct `Serializer witnesses execute their closure with borrowed output and type
 
     @Test
     func `a witness propagates its typed failure`() {
-        struct Forbidden: Swift.Error, Equatable {}
+        struct Forbidden: Swift::Error, Equatable {}
         let witness = Serializer<Int, [UInt8], Forbidden> { value, buffer throws(Forbidden) in
             guard value != 0 else { throw Forbidden() }
             buffer.append(UInt8(truncatingIfNeeded: value))

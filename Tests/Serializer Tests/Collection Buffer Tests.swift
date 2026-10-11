@@ -15,7 +15,7 @@ struct `Collection Serializer Buffer Tests` {
     }
 
     @Test
-    func `builds a fresh buffer for a failing serializer`() throws(any Swift.Error) {
+    func `builds a fresh buffer for a failing serializer`() throws(any Swift::Error) {
         let serializer = Literal("a")
 
         let buffer: [UInt8] = try serializer.serialize("a")
@@ -52,7 +52,6 @@ private enum LiteralError: Error, Equatable {
 }
 
 private struct Literal: Serializing {
-
     typealias Output = Character
     typealias Buffer = [UInt8]
     typealias Failure = LiteralError
@@ -62,7 +61,9 @@ private struct Literal: Serializing {
     init(_ expected: Character) {
         self.expected = expected
     }
+}
 
+extension Literal {
     borrowing func serialize(
         _ output: Character,
         into buffer: inout [UInt8]

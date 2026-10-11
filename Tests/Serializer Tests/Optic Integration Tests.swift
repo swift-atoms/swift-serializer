@@ -28,7 +28,7 @@ struct `Optic Serializer Tests` {
     }
 
     @Test
-    func `maps backward through a partial Adapter`() throws(any Swift.Error) {
+    func `maps backward through a partial Adapter`() throws(any Swift::Error) {
         let serializer = Text().map(backward: nonNegativeAdapter)
 
         var buffer: [UInt8] = []
@@ -77,7 +77,7 @@ struct `Optic Serializer Tests` {
     }
 
     @Test
-    func `matches through a Prism and fails on a mismatch`() throws(any Swift.Error) {
+    func `matches through a Prism and fails on a mismatch`() throws(any Swift::Error) {
         let serializer = Decimal().map(matching: leaf, failure: MatchFailure.mismatch)
 
         var buffer: [UInt8] = []
@@ -156,44 +156,48 @@ private func describe(_ node: Node) -> String {
 }
 
 private struct Text: Serializing {
-
     typealias Output = String
     typealias Buffer = [UInt8]
     typealias Failure = Never
+}
 
+extension Text {
     borrowing func serialize(_ output: String, into buffer: inout [UInt8]) {
         buffer.append(contentsOf: output.utf8)
     }
 }
 
 private struct Decimal: Serializing {
-
     typealias Output = Int
     typealias Buffer = [UInt8]
     typealias Failure = Never
+}
 
+extension Decimal {
     borrowing func serialize(_ output: Int, into buffer: inout [UInt8]) {
         buffer.append(contentsOf: String(output).utf8)
     }
 }
 
 private struct NodeText: Serializing {
-
     typealias Output = Node
     typealias Buffer = [UInt8]
     typealias Failure = Never
+}
 
+extension NodeText {
     borrowing func serialize(_ output: Node, into buffer: inout [UInt8]) {
         buffer.append(contentsOf: describe(output).utf8)
     }
 }
 
 private struct BranchText: Serializing {
-
     typealias Output = Either<Node, Int>
     typealias Buffer = [UInt8]
     typealias Failure = Never
+}
 
+extension BranchText {
     borrowing func serialize(_ output: Either<Node, Int>, into buffer: inout [UInt8]) {
         switch output {
         case .left(let node):

@@ -2,7 +2,7 @@
 public import Serializer_Core
 public import Map
 
-extension Map.Error where Source: Swift.Error, Target: Swift.Error, Failure == Never {
+extension Map.Error where Source: Swift::Error, Target: Swift::Error, Failure == Never {
 
     public struct Serializer<Upstream: Serializing & ~Copyable>: Serializing, ~Copyable
     where
@@ -35,7 +35,7 @@ extension Map.Error where Source: Swift.Error, Target: Swift.Error, Failure == N
     }
 }
 
-extension Map where Source: Swift.Error, Target: Swift.Error, Failure == Never {
+extension Map where Source: Swift::Error, Target: Swift::Error, Failure == Never {
 
     @inlinable
     public func errorSerializer<P: Serializing & ~Copyable>(_ upstream: consuming P) -> Error.Serializer<P>

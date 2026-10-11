@@ -34,7 +34,7 @@ extension Serializing where Self: ~Copyable, Buffer: ~Copyable & ~Escapable {
 
     @_disfavoredOverload
     @inlinable
-    public consuming func map<Source, Target, Focus, Replacement, MatchFailure: Swift.Error>(
+    public consuming func map<Source, Target, Focus, Replacement, MatchFailure: Swift::Error>(
         matching prism: Optic::Optic<
             Source,
             Target,

@@ -46,12 +46,16 @@ import Testing
 }
 
 private enum Rejection: Error, Equatable { case negative }
-private struct Infallible: Serializing {
+private struct Infallible: Serializing {}
+
+extension Infallible {
     var body: some Serializing<Int, [Int], Never> {
         Serializer<Int, [Int], Never> { value, buffer in buffer.append(value) }
     }
 }
-private struct Positive: Serializing {
+private struct Positive: Serializing {}
+
+extension Positive {
     var body: some Serializing<Int, [Int], Rejection> {
         Serializer<Int, [Int], Rejection> { value, buffer throws(Rejection) in
             guard value >= 0 else { throw .negative }
@@ -59,20 +63,25 @@ private struct Positive: Serializing {
         }
     }
 }
-private struct Scoped: Serializing {
+private struct Scoped: Serializing {}
 
+extension Scoped {
     borrowing func serialize(_ output: borrowing Span<Int>, into buffer: inout [Int]) {
         for value in output { buffer.append(value) }
     }
 }
-private struct ScopedBody: Serializing {
+private struct ScopedBody: Serializing {}
+
+extension ScopedBody {
     var body: some Serializing<Span<Int>, [Int], Never> { Scoped() }
 }
 private final class Lifetime { var destroyed = 0 }
 private struct Owned: ~Copyable, Serializing {
-
     let lifetime: Lifetime
     deinit { lifetime.destroyed += 1 }
+}
+
+extension Owned {
     borrowing func serialize(_ output: Int, into buffer: inout [Int]) { buffer.append(output) }
 }
 
@@ -98,8 +107,9 @@ private struct Owned: ~Copyable, Serializing {
     }
 }
 private struct Field: ~Copyable { let value: Int }
-private struct FieldSerializer: Serializing {
+private struct FieldSerializer: Serializing {}
 
+extension FieldSerializer {
     borrowing func serialize(_ output: borrowing Field, into buffer: inout [Int]) {
         buffer.append(output.value)
     }

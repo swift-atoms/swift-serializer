@@ -45,19 +45,21 @@ struct `Serializer leaves append borrowed values and preserve typed failures` {
 
 }
 
-private struct Digit: Serializing {
+private struct Digit: Serializing {}
 
+extension Digit {
     borrowing func serialize(_ output: UInt8, into buffer: inout [UInt8]) {
         buffer.append(output)
     }
 }
 
-private enum Rejection: Swift.Error, Equatable {
+private enum Rejection: Swift::Error, Equatable {
     case zero
 }
 
-private struct NonZero: Serializing {
+private struct NonZero: Serializing {}
 
+extension NonZero {
     borrowing func serialize(_ output: UInt8, into buffer: inout [UInt8]) throws(Rejection) {
         guard output != 0 else { throw .zero }
         buffer.append(output)
@@ -68,8 +70,9 @@ private struct Token: ~Copyable {
     let value: UInt8
 }
 
-private struct TokenSerializer: Serializing {
+private struct TokenSerializer: Serializing {}
 
+extension TokenSerializer {
     borrowing func serialize(_ output: borrowing Token, into buffer: inout [UInt8]) {
         buffer.append(output.value)
     }

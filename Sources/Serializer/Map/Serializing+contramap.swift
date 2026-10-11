@@ -14,7 +14,7 @@ where Self: ~Copyable, Output: ~Copyable & Escapable, Buffer: ~Copyable & ~Escap
 
     @inlinable
     @_disfavoredOverload
-    public consuming func contramap<NewOutput: ~Copyable & ~Escapable, E: Swift.Error>(
+    public consuming func contramap<NewOutput: ~Copyable & ~Escapable, E: Swift::Error>(
         _ transform: @escaping (borrowing NewOutput) throws(E) -> Output
     ) -> Map<NewOutput, Output, Either<Failure, E>>.Serializer<Self> {
         .init(upstream: self, transform: { value throws(Either<Failure, E>) in
@@ -26,7 +26,7 @@ where Self: ~Copyable, Output: ~Copyable & Escapable, Buffer: ~Copyable & ~Escap
 extension Serializing
 where Self: ~Copyable, Output: ~Copyable & Escapable, Buffer: ~Copyable & ~Escapable, Failure == Never {
     @inlinable
-    public consuming func contramap<NewOutput: ~Copyable & ~Escapable, E: Swift.Error>(
+    public consuming func contramap<NewOutput: ~Copyable & ~Escapable, E: Swift::Error>(
         _ transform: @escaping (borrowing NewOutput) throws(E) -> Output
     ) -> Map<NewOutput, Output, E>.Serializer<Self> {
         .init(upstream: self, transform: transform, failure: { $0 })

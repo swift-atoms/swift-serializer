@@ -7,7 +7,7 @@ import Testing
 struct `Lazy Serializer Tests` {
 
     @Test
-    func `defers serializer construction until serialize time`() throws(any Swift.Error) {
+    func `defers serializer construction until serialize time`() throws(any Swift::Error) {
         final class Box {
             var built = 0
         }
@@ -27,7 +27,7 @@ struct `Lazy Serializer Tests` {
     }
 
     @Test
-    func `re-invokes the thunk on every serialize`() throws(any Swift.Error) {
+    func `re-invokes the thunk on every serialize`() throws(any Swift::Error) {
         final class Box {
             var built = 0
         }
@@ -63,7 +63,6 @@ private enum LiteralError: Error, Equatable {
 }
 
 private struct Literal: Serializing {
-
     typealias Output = Character
     typealias Buffer = [UInt8]
     typealias Failure = LiteralError
@@ -73,7 +72,9 @@ private struct Literal: Serializing {
     init(_ expected: Character) {
         self.expected = expected
     }
+}
 
+extension Literal {
     borrowing func serialize(
         _ output: Character,
         into buffer: inout [UInt8]
@@ -115,13 +116,16 @@ private struct Literal: Serializing {
 private enum FactoryError: Error, Equatable { case unavailable }
 private final class FactoryState { var built = 0; var destroyed = 0 }
 private struct OwnedSerializer: Serializing, ~Copyable {
-
     let state: FactoryState
     deinit { state.destroyed += 1 }
+}
+
+extension OwnedSerializer {
     borrowing func serialize(_ output: Int, into buffer: inout [Int]) { buffer.append(output) }
 }
-private struct IntSerializer: Serializing {
+private struct IntSerializer: Serializing {}
 
+extension IntSerializer {
     borrowing func serialize(_ output: Int, into buffer: inout [Int]) { buffer.append(output) }
 }
 #endif

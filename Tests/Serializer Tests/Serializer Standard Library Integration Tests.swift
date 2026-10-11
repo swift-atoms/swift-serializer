@@ -7,14 +7,14 @@ struct `Optional and array values serialize their present elements` {
     @Test
     func `an optional representation emits the wrapped output when present`() {
         var buffer: [UInt8] = []
-        Swift.Optional<CountSerializer>.Serializer(CountSerializer()).serialize(Count(value: 9), into: &buffer)
+        Swift::Optional<CountSerializer>.Serializer(CountSerializer()).serialize(Count(value: 9), into: &buffer)
         #expect(buffer == [9])
     }
 
     @Test
     func `an optional representation emits nothing when the output is nil`() {
         var buffer: [UInt8] = []
-        Swift.Optional<CountSerializer>.Serializer(CountSerializer()).serialize(nil, into: &buffer)
+        Swift::Optional<CountSerializer>.Serializer(CountSerializer()).serialize(nil, into: &buffer)
         #expect(buffer.isEmpty)
     }
 
@@ -32,9 +32,9 @@ struct `Optional and array values serialize their present elements` {
     @Test
     func `an explicit optional serializer can be reused`() {
         var buffer: [UInt8] = []
-        Swift.Optional<CountSerializer>.Serializer(CountSerializer()).serialize(Count(value: 3), into: &buffer)
+        Swift::Optional<CountSerializer>.Serializer(CountSerializer()).serialize(Count(value: 3), into: &buffer)
         #expect(buffer == [3])
-        Swift.Optional<CountSerializer>.Serializer(CountSerializer()).serialize(nil, into: &buffer)
+        Swift::Optional<CountSerializer>.Serializer(CountSerializer()).serialize(nil, into: &buffer)
         #expect(buffer == [3])
     }
 }
@@ -44,8 +44,9 @@ private struct Count {
 
 }
 
-private struct CountSerializer: Serializing {
+private struct CountSerializer: Serializing {}
 
+extension CountSerializer {
     borrowing func serialize(_ output: Count, into buffer: inout [UInt8]) {
         buffer.append(output.value)
     }
@@ -64,8 +65,9 @@ private struct CountSerializer: Serializing {
 }
 private struct OwnedCount: ~Copyable { let value: Int }
 private struct OwnedBuffer: ~Copyable { var values: [Int] = [] }
-private struct OwnedCountSerializer: Serializing, ~Copyable {
+private struct OwnedCountSerializer: Serializing, ~Copyable {}
 
+extension OwnedCountSerializer {
     borrowing func serialize(_ output: borrowing OwnedCount, into buffer: inout OwnedBuffer) {
         buffer.values.append(output.value)
     }

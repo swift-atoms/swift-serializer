@@ -10,7 +10,7 @@ where
     Value.Output: ~Copyable & ~Escapable
 {
 
-    public struct Serializer<Failure: Swift.Error>: Serializing {
+    public struct Serializer<Failure: Swift::Error>: Serializing {
 
         public typealias Buffer = Value.Buffer
         public typealias Output = Value.Output

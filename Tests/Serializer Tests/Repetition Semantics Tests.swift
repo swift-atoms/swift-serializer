@@ -72,19 +72,22 @@ import Testing
 
 private enum ElementError: Error, Equatable { case rejected }
 private enum SeparatorError: Error, Equatable { case failed }
-private struct Element: Serializing {
+private struct Element: Serializing {}
 
+extension Element {
     borrowing func serialize(_ output: Int, into buffer: inout [Int]) throws(ElementError) {
         buffer.append(output)
         guard output >= 0 else { throw .rejected }
     }
 }
-private struct Separator: Serializing {
+private struct Separator: Serializing {}
 
+extension Separator {
     borrowing func serialize(_ output: Void, into buffer: inout [Int]) { buffer.append(0) }
 }
-private struct FailingSeparator: Serializing {
+private struct FailingSeparator: Serializing {}
 
+extension FailingSeparator {
     borrowing func serialize(_ output: Void, into buffer: inout [Int]) throws(SeparatorError) {
         buffer.append(99)
         throw .failed
@@ -93,9 +96,11 @@ private struct FailingSeparator: Serializing {
 private final class Lifetime { var destroyed = 0 }
 private struct OwnedBuffer: ~Copyable { var values: [Int] = [] }
 private struct OwnedElement: Serializing, ~Copyable {
-
     let lifetime: Lifetime
     deinit { lifetime.destroyed += 1 }
+}
+
+extension OwnedElement {
     borrowing func serialize(_ output: Int, into buffer: inout OwnedBuffer) { buffer.values.append(output) }
 }
 private func discard<T: ~Copyable>(_ value: consuming T) {}
@@ -117,9 +122,11 @@ extension `Repeated serialization validates bounds before writes` {
     }
 }
 private struct OwnedSeparator: Serializing, ~Copyable {
-
     let lifetime: Lifetime
     deinit { lifetime.destroyed += 1 }
+}
+
+extension OwnedSeparator {
     borrowing func serialize(_ output: Void, into buffer: inout OwnedBuffer) { buffer.values.append(0) }
 }
 #endif

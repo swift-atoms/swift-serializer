@@ -9,13 +9,13 @@ public import struct Byte.Byte
         let bytes: [Byte]
 
         @inlinable
-        public init<Bytes: Swift.Sequence>(_ bytes: Bytes) where Bytes.Element: Carrier.`Protocol`, Bytes.Element.Underlying == UInt8 {
-            self.bytes = Swift.Array(bytes.lazy.map(\.byte))
+        public init<Bytes: Swift::Sequence>(_ bytes: Bytes) where Bytes.Element: Carrier.`Protocol`, Bytes.Element.Underlying == UInt8 {
+            self.bytes = Swift::Array(bytes.lazy.map(\.byte))
         }
 
         @inlinable
         public init(_ string: StaticString) {
-            unsafe (self.bytes = Swift.Array(
+            unsafe (self.bytes = Swift::Array(
                 string.utf8Start.withMemoryRebound(
                     to: UInt8.self,
                     capacity: string.utf8CodeUnitCount

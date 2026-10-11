@@ -7,7 +7,7 @@ public import Optic
 extension Serializing where Self: ~Copyable, Buffer: ~Copyable & ~Escapable {
 
     @inlinable
-    public consuming func map<Source, Target, Focus, Replacement, ForwardFailure: Swift.Error>(
+    public consuming func map<Source, Target, Focus, Replacement, ForwardFailure: Swift::Error>(
         backward adapter: Optic::Optic<
             Source,
             Target,
@@ -26,8 +26,8 @@ extension Serializing where Self: ~Copyable, Buffer: ~Copyable & ~Escapable {
         Target,
         Focus,
         Replacement,
-        ForwardFailure: Swift.Error,
-        BackwardFailure: Swift.Error
+        ForwardFailure: Swift::Error,
+        BackwardFailure: Swift::Error
     >(
         backward adapter: Optic::Optic<
             Source,

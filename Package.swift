@@ -86,7 +86,6 @@ let package = Package(
                 .target(name: "Serializer"),
                 .product(name: "Either", package: "swift-either"),
                 .target(name: "Serializer Test Support"),
-                .target(name: "Serializer Foundation Integration"),
             ],
             path: "Tests/Serializer Tests"
         ),
@@ -95,14 +94,15 @@ let package = Package(
     swiftLanguageModes: [.v6]
 )
 
-for target in package.targets {
-    target.swiftSettings = [
+for target in package.targets where ![.system, .binary, .plugin, .macro].contains(target.type) {
+    target.swiftSettings = (target.swiftSettings ?? []) + [
         .strictMemorySafety(),
         .enableUpcomingFeature("ExistentialAny"),
         .enableUpcomingFeature("InternalImportsByDefault"),
         .enableUpcomingFeature("MemberImportVisibility"),
         .enableUpcomingFeature("NonisolatedNonsendingByDefault"),
-        .enableExperimentalFeature("Lifetimes"),
         .enableUpcomingFeature("InferIsolatedConformances"),
+        .enableExperimentalFeature("Lifetimes"),
+        .treatAllWarnings(as: .error),
     ]
 }

@@ -15,7 +15,7 @@ where
 {
 
     @frozen
-    public struct Serializer<Failure: Swift.Error>: Serializing, ~Copyable {
+    public struct Serializer<Failure: Swift::Error>: Serializing, ~Copyable {
 
 
         public typealias Output = Pair::Pair<First.Output, Second.Output>

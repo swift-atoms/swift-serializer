@@ -8,7 +8,7 @@ import Testing
 struct `Pair Serializer Tests` {
 
     @Test
-    func `serializes both halves of a nominal Pair in order`() throws(any Swift.Error) {
+    func `serializes both halves of a nominal Pair in order`() throws(any Swift::Error) {
         var buffer: [UInt8] = []
         let serializer: Pair::Pair<Literal, OtherLiteral>.Serializer<Either<LiteralError, OtherError>> =
             Pair::Pair(Literal("a"), OtherLiteral("b")).serializer()
@@ -43,7 +43,7 @@ struct `Pair Serializer Tests` {
     }
 
     @Test
-    func `equally typed failures collapse`() throws(any Swift.Error) {
+    func `equally typed failures collapse`() throws(any Swift::Error) {
         var buffer: [UInt8] = []
         let serializer: Pair::Pair<Literal, Literal>.Serializer<LiteralError> =
             Pair::Pair(Literal("a"), Literal("b")).serializer()
@@ -65,8 +65,9 @@ struct `Pair Serializer Tests` {
     }
 }
 
-private struct AnyCharacter: Serializer::Serializing {
+private struct AnyCharacter: Serializer::Serializing {}
 
+extension AnyCharacter {
     borrowing func serialize(_ output: Character, into buffer: inout [UInt8]) {
         buffer.append(contentsOf: String(output).utf8)
     }
@@ -81,13 +82,14 @@ private enum OtherError: Error, Equatable {
 }
 
 private struct Literal: Serializer::Serializing {
-
     let expected: Character
 
     init(_ expected: Character) {
         self.expected = expected
     }
+}
 
+extension Literal {
     borrowing func serialize(
         _ output: Character,
         into buffer: inout [UInt8]
@@ -98,13 +100,14 @@ private struct Literal: Serializer::Serializing {
 }
 
 private struct OtherLiteral: Serializer::Serializing {
-
     let expected: Character
 
     init(_ expected: Character) {
         self.expected = expected
     }
+}
 
+extension OtherLiteral {
     borrowing func serialize(
         _ output: Character,
         into buffer: inout [UInt8]

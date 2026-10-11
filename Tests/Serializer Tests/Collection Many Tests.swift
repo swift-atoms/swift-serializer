@@ -12,7 +12,7 @@ struct `Collection Serializer Many Tests` {
 extension `Collection Serializer Many Tests`.Unit {
 
     @Test
-    func `emits every element in order`() throws(any Swift.Error) {
+    func `emits every element in order`() throws(any Swift::Error) {
         let serializer = Repetition(Cardinal.zero..., operation: RepeatedCharacter()).serializer()
 
         var buffer: [UInt8] = []
@@ -22,7 +22,7 @@ extension `Collection Serializer Many Tests`.Unit {
     }
 
     @Test
-    func `emits a separator between elements`() throws(any Swift.Error) {
+    func `emits a separator between elements`() throws(any Swift::Error) {
         let serializer = Repetition(Cardinal.zero..., operation: RepeatedCharacter()).serializer(separator: RepeatedComma())
 
         var buffer: [UInt8] = []
@@ -57,7 +57,7 @@ extension `Collection Serializer Many Tests`.`Edge Case` {
     }
 
     @Test
-    func `emits nothing for an empty output`() throws(any Swift.Error) {
+    func `emits nothing for an empty output`() throws(any Swift::Error) {
         let serializer = Repetition(Cardinal.zero..., operation: RepeatedCharacter()).serializer()
 
         var buffer: [UInt8] = []
@@ -68,22 +68,24 @@ extension `Collection Serializer Many Tests`.`Edge Case` {
 }
 
 struct RepeatedCharacter: Serializing {
-
     typealias Output = Character
     typealias Buffer = [UInt8]
     typealias Failure = Never
+}
 
+extension RepeatedCharacter {
     borrowing func serialize(_ output: Character, into buffer: inout [UInt8]) {
         buffer.append(contentsOf: String(output).utf8)
     }
 }
 
 struct RepeatedComma: Serializing {
-
     typealias Output = Void
     typealias Buffer = [UInt8]
     typealias Failure = Never
+}
 
+extension RepeatedComma {
     borrowing func serialize(_ output: Void, into buffer: inout [UInt8]) {
         buffer.append(UInt8(ascii: ","))
     }
