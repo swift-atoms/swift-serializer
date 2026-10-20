@@ -1,4 +1,3 @@
-#if Collection
 import Serializer
 import Testing
 
@@ -73,4 +72,3 @@ extension Literal {
     }
 }
 
-#endif

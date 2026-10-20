@@ -25,7 +25,6 @@ let package = Package(
         .trait(name: "Always", description: "Discarding serialization for Always"),
         .trait(name: "Lazy", description: "Deferred serialization factories", enabledTraits: ["Either"]),
         .trait(name: "Tagged", description: "Serialization of tagged values"),
-        .trait(name: "Collection", description: "Fresh collection serialization buffers"),
         .trait(name: "Repetition", description: "Bounded and separated serialization", enabledTraits: ["Either"]),
         .trait(name: "Byte", description: "Absorbed Byte integration"),
     ],
