@@ -71,4 +71,3 @@ extension Literal {
         buffer.append(contentsOf: String(output).utf8)
     }
 }
-

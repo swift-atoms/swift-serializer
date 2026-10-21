@@ -1,9 +1,9 @@
 public import Serializer_Core
+
 extension Swift.Array {
 
     public struct Serializer<Buffer: RangeReplaceableCollection>: Serializer::Serializing
     where Buffer.Element == Element {
-
 
         public typealias Output = Void
 

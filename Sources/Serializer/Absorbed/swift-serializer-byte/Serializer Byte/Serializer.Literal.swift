@@ -1,7 +1,7 @@
 #if Byte
-public import Serializer_Core
-public import Carrier
-public import struct Byte.Byte
+    public import Serializer_Core
+    public import Carrier
+    public import struct Byte.Byte
 
     public struct Literal<Buffer: RangeReplaceableCollection>
     where Buffer.Element == Byte {
@@ -26,43 +26,41 @@ public import struct Byte.Byte
         }
     }
 
+    extension Serializer::Literal: Serializing {
 
-extension Serializer::Literal: Serializing {
+        public typealias Output = Void
 
+        public typealias Failure = Never
 
-    public typealias Output = Void
+        public typealias Body = Never
 
-    public typealias Failure = Never
-
-    public typealias Body = Never
-
-    @inlinable
-    public func serialize(_ output: Void, into buffer: inout Buffer) {
-        buffer.append(contentsOf: bytes)
+        @inlinable
+        public func serialize(_ output: Void, into buffer: inout Buffer) {
+            buffer.append(contentsOf: bytes)
+        }
     }
-}
 
-extension Serializer::Literal: ExpressibleByStringLiteral {
+    extension Serializer::Literal: ExpressibleByStringLiteral {
 
-    @inlinable
-    public init(stringLiteral value: String) {
-        self.bytes = value.utf8.map(Byte.init(bitPattern:))
+        @inlinable
+        public init(stringLiteral value: String) {
+            self.bytes = value.utf8.map(Byte.init(bitPattern:))
+        }
     }
-}
 
-extension Serializer::Literal: ExpressibleByUnicodeScalarLiteral {
+    extension Serializer::Literal: ExpressibleByUnicodeScalarLiteral {
 
-    @inlinable
-    public init(unicodeScalarLiteral value: Unicode.Scalar) {
-        self.bytes = String(value).utf8.map(Byte.init(bitPattern:))
+        @inlinable
+        public init(unicodeScalarLiteral value: Unicode.Scalar) {
+            self.bytes = String(value).utf8.map(Byte.init(bitPattern:))
+        }
     }
-}
 
-extension Serializer::Literal: ExpressibleByExtendedGraphemeClusterLiteral {
+    extension Serializer::Literal: ExpressibleByExtendedGraphemeClusterLiteral {
 
-    @inlinable
-    public init(extendedGraphemeClusterLiteral value: Character) {
-        self.bytes = String(value).utf8.map(Byte.init(bitPattern:))
+        @inlinable
+        public init(extendedGraphemeClusterLiteral value: Character) {
+            self.bytes = String(value).utf8.map(Byte.init(bitPattern:))
+        }
     }
-}
 #endif

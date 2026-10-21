@@ -42,7 +42,6 @@ struct `Serializer leaves append borrowed values and preserve typed failures` {
         #expect(token.value == 9)
     }
 
-
 }
 
 private struct Digit: Serializing {}

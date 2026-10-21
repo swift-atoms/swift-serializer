@@ -3,17 +3,20 @@ public protocol Serializing<Output, Buffer, Failure>: ~Copyable {
     associatedtype Buffer: ~Copyable & ~Escapable
     associatedtype Failure: Swift::Error = Never
     associatedtype Body: ~Copyable = Never
-    
+
     @Builder<Buffer>
     var body: Body { borrowing get }
-    
+
     borrowing func serialize(_ output: borrowing Output, into buffer: inout Buffer) throws(Failure)
 }
 
-
 extension Serializing
-where Self: ~Copyable, Output: ~Copyable & ~Escapable,
-      Buffer: ~Copyable & ~Escapable, Body == Never {
+where
+    Self: ~Copyable,
+    Output: ~Copyable & ~Escapable,
+    Buffer: ~Copyable & ~Escapable,
+    Body == Never
+{
     @inlinable
     public var body: Never {
         borrowing get {
@@ -23,11 +26,14 @@ where Self: ~Copyable, Output: ~Copyable & ~Escapable,
 }
 
 extension Serializing
-where Self: ~Copyable, Output: ~Copyable & ~Escapable,
-      Buffer: ~Copyable & ~Escapable,
-      Body: Serializing & ~Copyable,
-      Body.Output: ~Copyable & ~Escapable,
-      Body.Buffer: ~Copyable & ~Escapable {
+where
+    Self: ~Copyable,
+    Output: ~Copyable & ~Escapable,
+    Buffer: ~Copyable & ~Escapable,
+    Body: Serializing & ~Copyable,
+    Body.Output: ~Copyable & ~Escapable,
+    Body.Buffer: ~Copyable & ~Escapable
+{
     @inlinable
     public borrowing func serialize(_ output: borrowing Body.Output, into buffer: inout Body.Buffer) throws(Body.Failure) {
         try body.serialize(output, into: &buffer)
@@ -35,10 +41,11 @@ where Self: ~Copyable, Output: ~Copyable & ~Escapable,
 }
 
 extension Serializing
-where Self: ~Copyable,
-      Output: ~Copyable & ~Escapable,
-      Buffer: RangeReplaceableCollection
-{    
+where
+    Self: ~Copyable,
+    Output: ~Copyable & ~Escapable,
+    Buffer: RangeReplaceableCollection
+{
     @inlinable
     public borrowing func serialize(_ output: borrowing Output) throws(Failure) -> Buffer {
         var buffer = Buffer()

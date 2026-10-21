@@ -1,6 +1,11 @@
 public import Serializer_Core
-extension Swift::Optional where Wrapped: Serializing & ~Copyable,
-    Wrapped.Output: ~Copyable & Escapable, Wrapped.Buffer: ~Copyable & ~Escapable {
+
+extension Swift::Optional
+where
+    Wrapped: Serializing & ~Copyable,
+    Wrapped.Output: ~Copyable & Escapable,
+    Wrapped.Buffer: ~Copyable & ~Escapable
+{
 
     public struct Serializer: Serializing, ~Copyable {
 
@@ -20,5 +25,8 @@ extension Swift::Optional where Wrapped: Serializing & ~Copyable,
 }
 
 extension Swift::Optional.Serializer: Copyable
-where Wrapped: Serializing<Wrapped.Output, Wrapped.Buffer, Wrapped.Failure> & Copyable,
-      Wrapped.Output: ~Copyable & Escapable, Wrapped.Buffer: ~Copyable & ~Escapable {}
+where
+    Wrapped: Serializing<Wrapped.Output, Wrapped.Buffer, Wrapped.Failure> & Copyable,
+    Wrapped.Output: ~Copyable & Escapable,
+    Wrapped.Buffer: ~Copyable & ~Escapable
+{}

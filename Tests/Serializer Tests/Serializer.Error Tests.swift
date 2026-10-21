@@ -1,76 +1,76 @@
 #if Map
-import Serializer
-import Testing
+    import Serializer
+    import Testing
 
-@Suite
-struct `Serializer error maps transform failures and preserve successful writes` {
+    @Suite
+    struct `Serializer error maps transform failures and preserve successful writes` {
 
-    @Test
-    func `error map rewrites the upstream failure`() {
-        let serializer = NonZero().mapFailure { (_: Rejection) -> Downstream in .rejected }
-        var buffer: [UInt8] = []
-        #expect(throws: Downstream.rejected) {
-            try serializer.serialize(0, into: &buffer)
+        @Test
+        func `error map rewrites the upstream failure`() {
+            let serializer = NonZero().mapFailure { (_: Rejection) -> Downstream in .rejected }
+            var buffer: [UInt8] = []
+            #expect(throws: Downstream.rejected) {
+                try serializer.serialize(0, into: &buffer)
+            }
+            requireFailure(serializer, Downstream.self)
         }
-        requireFailure(serializer, Downstream.self)
-    }
 
-    @Test
-    func `error map leaves a successful serialization untouched`() throws(any Swift::Error) {
-        let serializer = NonZero().mapFailure { (_: Rejection) -> Downstream in .rejected }
-        var buffer: [UInt8] = []
-        try serializer.serialize(5, into: &buffer)
-        #expect(buffer == [5])
-    }
-
-    @Test
-    func `error map hands the exact upstream failure to the transform`() {
-        let serializer = NonZero().mapFailure { (failure: Rejection) -> Downstream in
-            failure == .zero ? .rejected : .other
+        @Test
+        func `error map leaves a successful serialization untouched`() throws(any Swift::Error) {
+            let serializer = NonZero().mapFailure { (_: Rejection) -> Downstream in .rejected }
+            var buffer: [UInt8] = []
+            try serializer.serialize(5, into: &buffer)
+            #expect(buffer == [5])
         }
-        var buffer: [UInt8] = []
-        #expect(throws: Downstream.rejected) {
-            try serializer.serialize(0, into: &buffer)
+
+        @Test
+        func `error map hands the exact upstream failure to the transform`() {
+            let serializer = NonZero().mapFailure { (failure: Rejection) -> Downstream in
+                failure == .zero ? .rejected : .other
+            }
+            var buffer: [UInt8] = []
+            #expect(throws: Downstream.rejected) {
+                try serializer.serialize(0, into: &buffer)
+            }
+            #expect(buffer.isEmpty)
         }
-        #expect(buffer.isEmpty)
-    }
 
-    @Test
-    func `error map composes with a second error map`() throws(any Swift::Error) {
-        let serializer = NonZero()
-            .mapFailure { (_: Rejection) -> Downstream in .rejected }
-            .mapFailure { (_: Downstream) -> Rejection in .zero }
-        var buffer: [UInt8] = []
-        #expect(throws: Rejection.zero) {
-            try serializer.serialize(0, into: &buffer)
+        @Test
+        func `error map composes with a second error map`() throws(any Swift::Error) {
+            let serializer = NonZero()
+                .mapFailure { (_: Rejection) -> Downstream in .rejected }
+                .mapFailure { (_: Downstream) -> Rejection in .zero }
+            var buffer: [UInt8] = []
+            #expect(throws: Rejection.zero) {
+                try serializer.serialize(0, into: &buffer)
+            }
+            try serializer.serialize(9, into: &buffer)
+            #expect(buffer == [9])
+            requireFailure(serializer, Rejection.self)
         }
-        try serializer.serialize(9, into: &buffer)
-        #expect(buffer == [9])
-        requireFailure(serializer, Rejection.self)
     }
-}
 
-private func requireFailure<S: Serializing, Failure: Swift::Error>(
-    _: borrowing S,
-    _: Failure.Type
-) where S.Output: ~Copyable & ~Escapable, S.Buffer: ~Copyable & ~Escapable, S.Failure == Failure {}
+    private func requireFailure<S: Serializing, Failure: Swift::Error>(
+        _: borrowing S,
+        _: Failure.Type
+    ) where S.Output: ~Copyable & ~Escapable, S.Buffer: ~Copyable & ~Escapable, S.Failure == Failure {}
 
-private enum Rejection: Swift::Error, Equatable {
-    case zero
-}
-
-private enum Downstream: Swift::Error, Equatable {
-    case rejected
-    case other
-}
-
-private struct NonZero: Serializing {}
-
-extension NonZero {
-    borrowing func serialize(_ output: UInt8, into buffer: inout [UInt8]) throws(Rejection) {
-        guard output != 0 else { throw .zero }
-        buffer.append(output)
+    private enum Rejection: Swift::Error, Equatable {
+        case zero
     }
-}
+
+    private enum Downstream: Swift::Error, Equatable {
+        case rejected
+        case other
+    }
+
+    private struct NonZero: Serializing {}
+
+    extension NonZero {
+        borrowing func serialize(_ output: UInt8, into buffer: inout [UInt8]) throws(Rejection) {
+            guard output != 0 else { throw .zero }
+            buffer.append(output)
+        }
+    }
 
 #endif

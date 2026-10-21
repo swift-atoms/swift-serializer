@@ -1,4 +1,5 @@
 public import Serializer_Core
+
 public struct Serializer<
     Output: ~Copyable & ~Escapable,
     Buffer: ~Copyable & ~Escapable,
@@ -16,8 +17,12 @@ public struct Serializer<
     @inlinable
     public init<S: Serializing & ~Copyable>(@Builder<Buffer> _ build: () -> S)
     where
-    S.Output: ~Copyable & ~Escapable, S.Buffer: ~Copyable & ~Escapable,
-    S.Output == Output, S.Buffer == Buffer, S.Failure == Failure {
+        S.Output: ~Copyable & ~Escapable,
+        S.Buffer: ~Copyable & ~Escapable,
+        S.Output == Output,
+        S.Buffer == Buffer,
+        S.Failure == Failure
+    {
         let composition = build()
         self._serialize = { output, buffer throws(Failure) in
             try composition.serialize(output, into: &buffer)

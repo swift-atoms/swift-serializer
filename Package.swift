@@ -49,7 +49,7 @@ let package = Package(
         .target(
             name: "Serializer",
             dependencies: [
-            .target(name: "Serializer Core"),
+                .target(name: "Serializer Core"),
                 .product(name: "Repetition", package: "swift-repetition"),
                 .product(name: "Cardinal", package: "swift-cardinal"),
                 .product(name: "Always", package: "swift-always"),
@@ -61,21 +61,21 @@ let package = Package(
                 .product(name: "Optic", package: "swift-optic"),
                 .product(name: "Byte", package: "swift-byte"),
                 .product(name: "Carrier", package: "swift-carrier"),
-    ],
+            ],
             path: "Sources/Serializer"
         ),
 
         .target(
             name: "Serializer Foundation Integration",
             dependencies: [
-                .target(name: "Serializer"),
+                .target(name: "Serializer")
             ],
             path: "Sources/Serializer Foundation Integration"
         ),
         .target(
             name: "Serializer Test Support",
             dependencies: [
-                .target(name: "Serializer"),
+                .target(name: "Serializer")
             ],
             path: "Tests/Support"
         ),
@@ -88,20 +88,25 @@ let package = Package(
             ],
             path: "Tests/Serializer Tests"
         ),
-        .testTarget(name: "Absorbed swift-serializer-byte Serializer Byte Tests", dependencies: [.product(name: "Byte", package: "swift-byte"), .product(name: "Carrier", package: "swift-carrier"), .target(name: "Serializer")], path: "Tests/Absorbed/swift-serializer-byte/Serializer Byte Tests"),
+        .testTarget(
+            name: "Absorbed swift-serializer-byte Serializer Byte Tests",
+            dependencies: [.product(name: "Byte", package: "swift-byte"), .product(name: "Carrier", package: "swift-carrier"), .target(name: "Serializer")],
+            path: "Tests/Absorbed/swift-serializer-byte/Serializer Byte Tests"
+        ),
     ],
     swiftLanguageModes: [.v6]
 )
 
 for target in package.targets where ![.system, .binary, .plugin, .macro].contains(target.type) {
-    target.swiftSettings = (target.swiftSettings ?? []) + [
-        .strictMemorySafety(),
-        .enableUpcomingFeature("ExistentialAny"),
-        .enableUpcomingFeature("InternalImportsByDefault"),
-        .enableUpcomingFeature("MemberImportVisibility"),
-        .enableUpcomingFeature("NonisolatedNonsendingByDefault"),
-        .enableUpcomingFeature("InferIsolatedConformances"),
-        .enableExperimentalFeature("Lifetimes"),
-        .treatAllWarnings(as: .error),
-    ]
+    target.swiftSettings =
+        (target.swiftSettings ?? []) + [
+            .strictMemorySafety(),
+            .enableUpcomingFeature("ExistentialAny"),
+            .enableUpcomingFeature("InternalImportsByDefault"),
+            .enableUpcomingFeature("MemberImportVisibility"),
+            .enableUpcomingFeature("NonisolatedNonsendingByDefault"),
+            .enableUpcomingFeature("InferIsolatedConformances"),
+            .enableExperimentalFeature("Lifetimes"),
+            .treatAllWarnings(as: .error),
+        ]
 }
