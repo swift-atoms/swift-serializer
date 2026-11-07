@@ -1,24 +1,24 @@
 public import Serializer_Core
 
 extension Swift.Array {
+
     public struct Serializer<Buffer: RangeReplaceableCollection>: Serializer::Serializing
     where Buffer.Element == Element {
+
+        public typealias Output = Void
+
+        public typealias Failure = Never
+
         public let elements: [Element]
 
         @inlinable
         public init(_ elements: [Element]) {
             self.elements = elements
         }
-    }
-}
 
-extension Swift.Array.Serializer {
-    public typealias Output = Void
-
-    public typealias Failure = Never
-
-    @inlinable
-    public borrowing func serialize(_ output: Void, into buffer: inout Buffer) {
-        buffer.append(contentsOf: elements)
+        @inlinable
+        public borrowing func serialize(_ output: Void, into buffer: inout Buffer) {
+            buffer.append(contentsOf: elements)
+        }
     }
 }
