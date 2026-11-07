@@ -3,13 +3,17 @@
     import Serializer
     import Testing
 
-    @Suite
-    struct `Always.Serializer` {
-        @Suite struct Unit {}
-        @Suite struct `Edge Case` {}
-    }
+enum `Always Integration Tests` {}
 
-    extension `Always.Serializer`.Unit {
+extension `Always Integration Tests` {
+        @Suite
+        struct `Always.Serializer` {
+            @Suite struct Unit {}
+            @Suite struct `Edge Case` {}
+        }
+}
+
+    extension `Always Integration Tests`.`Always.Serializer`.Unit {
         @Test
         func `writes nothing to the buffer`() {
             let serializer = Always<Int>.Serializer<[UInt8]>(42)
@@ -42,7 +46,7 @@
         }
     }
 
-    extension `Always.Serializer`.`Edge Case` {
+    extension `Always Integration Tests`.`Always.Serializer`.`Edge Case` {
         @Test
         func `leaves an empty buffer empty`() {
             let serializer = Always<String>.Serializer<[UInt8]>("hello")

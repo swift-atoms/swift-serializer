@@ -3,45 +3,49 @@
     import Serializer
     import Testing
 
-    @Suite
-    struct `Either Serializer` {
+enum `Either Integration Tests` {}
 
-        @Test
-        func `serializes through the selected left serializer`() throws(any Swift.Error) {
-            var buffer: [UInt8] = []
+extension `Either Integration Tests` {
+        @Suite
+        struct `Either Serializer` {
 
-            try branch(true).serializer().serialize("a", into: &buffer)
+            @Test
+            func `serializes through the selected left serializer`() throws(any Swift.Error) {
+                var buffer: [UInt8] = []
 
-            #expect(buffer == Array("a".utf8))
-        }
+                try branch(true).serializer().serialize("a", into: &buffer)
 
-        @Test
-        func `serializes through the selected right serializer`() throws(any Swift.Error) {
-            var buffer: [UInt8] = []
+                #expect(buffer == Array("a".utf8))
+            }
 
-            try branch(false).serializer().serialize("b", into: &buffer)
+            @Test
+            func `serializes through the selected right serializer`() throws(any Swift.Error) {
+                var buffer: [UInt8] = []
 
-            #expect(buffer == Array("b".utf8))
-        }
+                try branch(false).serializer().serialize("b", into: &buffer)
 
-        @Test
-        func `attributes the left failure to Either left`() {
-            var buffer: [UInt8] = []
+                #expect(buffer == Array("b".utf8))
+            }
 
-            #expect(throws: Either<LiteralError, LiteralError>.left(.expected("a"))) {
-                try branch(true).serializer().serialize("z", into: &buffer)
+            @Test
+            func `attributes the left failure to Either left`() {
+                var buffer: [UInt8] = []
+
+                #expect(throws: Either<LiteralError, LiteralError>.left(.expected("a"))) {
+                    try branch(true).serializer().serialize("z", into: &buffer)
+                }
+            }
+
+            @Test
+            func `attributes the right failure to Either right`() {
+                var buffer: [UInt8] = []
+
+                #expect(throws: Either<LiteralError, LiteralError>.right(.expected("b"))) {
+                    try branch(false).serializer().serialize("z", into: &buffer)
+                }
             }
         }
-
-        @Test
-        func `attributes the right failure to Either right`() {
-            var buffer: [UInt8] = []
-
-            #expect(throws: Either<LiteralError, LiteralError>.right(.expected("b"))) {
-                try branch(false).serializer().serialize("z", into: &buffer)
-            }
-        }
-    }
+}
 
     private func branch(_ useLeft: Bool) -> Either<Literal, Literal> {
         useLeft ? .left(Literal("a")) : .right(Literal("b"))

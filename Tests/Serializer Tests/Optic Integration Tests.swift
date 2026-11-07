@@ -4,100 +4,104 @@
     import Serializer
     import Testing
 
-    @Suite
-    struct `Optic Serializer Tests` {
+enum `Optic Integration Tests` {}
 
-        @Test
-        func `maps backward through an Isomorphism`() {
-            let serializer = Text().map(backward: textWrapper)
+extension `Optic Integration Tests` {
+        @Suite
+        struct `Optic Serializer Tests` {
 
-            var buffer: [UInt8] = []
-            serializer.serialize(TextValue(rawValue: "42"), into: &buffer)
+            @Test
+            func `maps backward through an Isomorphism`() {
+                let serializer = Text().map(backward: textWrapper)
 
-            #expect(buffer == Array("42".utf8))
-        }
+                var buffer: [UInt8] = []
+                serializer.serialize(TextValue(rawValue: "42"), into: &buffer)
 
-        @Test
-        func `maps backward through a total Adapter`() {
-            let serializer = Text().map(backward: totalAdapter)
+                #expect(buffer == Array("42".utf8))
+            }
 
-            var buffer: [UInt8] = []
-            serializer.serialize(7, into: &buffer)
+            @Test
+            func `maps backward through a total Adapter`() {
+                let serializer = Text().map(backward: totalAdapter)
 
-            #expect(buffer == Array("7".utf8))
-        }
+                var buffer: [UInt8] = []
+                serializer.serialize(7, into: &buffer)
 
-        @Test
-        func `maps backward through a partial Adapter`() throws(any Swift.Error) {
-            let serializer = Text().map(backward: nonNegativeAdapter)
+                #expect(buffer == Array("7".utf8))
+            }
 
-            var buffer: [UInt8] = []
-            try serializer.serialize(7, into: &buffer)
+            @Test
+            func `maps backward through a partial Adapter`() throws(any Swift.Error) {
+                let serializer = Text().map(backward: nonNegativeAdapter)
 
-            #expect(buffer == Array("7".utf8))
-        }
+                var buffer: [UInt8] = []
+                try serializer.serialize(7, into: &buffer)
 
-        @Test
-        func `surfaces a partial Adapter's backward failure`() {
-            let serializer = Text().map(backward: nonNegativeAdapter)
+                #expect(buffer == Array("7".utf8))
+            }
 
-            var buffer: [UInt8] = []
-            do {
-                try serializer.serialize(-1, into: &buffer)
-                Issue.record("Expected the backward direction to fail")
-            } catch {
-                switch error {
-                case .left:
-                    Issue.record("Expected a right failure")
-                case .right(let backward):
-                    #expect(backward == .negative)
+            @Test
+            func `surfaces a partial Adapter's backward failure`() {
+                let serializer = Text().map(backward: nonNegativeAdapter)
+
+                var buffer: [UInt8] = []
+                do {
+                    try serializer.serialize(-1, into: &buffer)
+                    Issue.record("Expected the backward direction to fail")
+                } catch {
+                    switch error {
+                    case .left:
+                        Issue.record("Expected a right failure")
+                    case .right(let backward):
+                        #expect(backward == .negative)
+                    }
+                }
+                #expect(buffer.isEmpty)
+            }
+
+            @Test
+            func `embeds through a Prism`() {
+                let serializer = NodeText().map(embedding: leaf)
+
+                var buffer: [UInt8] = []
+                serializer.serialize(3, into: &buffer)
+
+                #expect(buffer == Array("leaf(3)".utf8))
+            }
+
+            @Test
+            func `matches through a Prism into an Either output`() {
+                let serializer = BranchText().map(matching: leaf)
+
+                var buffer: [UInt8] = []
+                serializer.serialize(.leaf(5), into: &buffer)
+
+                #expect(buffer == Array("right(5)".utf8))
+            }
+
+            @Test
+            func `matches through a Prism and fails on a mismatch`() throws(any Swift.Error) {
+                let serializer = Decimal().map(matching: leaf, failure: MatchFailure.mismatch)
+
+                var buffer: [UInt8] = []
+                try serializer.serialize(.leaf(9), into: &buffer)
+
+                #expect(buffer == Array("9".utf8))
+
+                do {
+                    try serializer.serialize(.empty, into: &buffer)
+                    Issue.record("Expected the match to fail")
+                } catch {
+                    switch error {
+                    case .left:
+                        Issue.record("Expected a right failure")
+                    case .right(.mismatch(let node)):
+                        #expect(node == .empty)
+                    }
                 }
             }
-            #expect(buffer.isEmpty)
         }
-
-        @Test
-        func `embeds through a Prism`() {
-            let serializer = NodeText().map(embedding: leaf)
-
-            var buffer: [UInt8] = []
-            serializer.serialize(3, into: &buffer)
-
-            #expect(buffer == Array("leaf(3)".utf8))
-        }
-
-        @Test
-        func `matches through a Prism into an Either output`() {
-            let serializer = BranchText().map(matching: leaf)
-
-            var buffer: [UInt8] = []
-            serializer.serialize(.leaf(5), into: &buffer)
-
-            #expect(buffer == Array("right(5)".utf8))
-        }
-
-        @Test
-        func `matches through a Prism and fails on a mismatch`() throws(any Swift.Error) {
-            let serializer = Decimal().map(matching: leaf, failure: MatchFailure.mismatch)
-
-            var buffer: [UInt8] = []
-            try serializer.serialize(.leaf(9), into: &buffer)
-
-            #expect(buffer == Array("9".utf8))
-
-            do {
-                try serializer.serialize(.empty, into: &buffer)
-                Issue.record("Expected the match to fail")
-            } catch {
-                switch error {
-                case .left:
-                    Issue.record("Expected a right failure")
-                case .right(.mismatch(let node)):
-                    #expect(node == .empty)
-                }
-            }
-        }
-    }
+}
 
     private enum Node: Equatable {
         case leaf(Int)

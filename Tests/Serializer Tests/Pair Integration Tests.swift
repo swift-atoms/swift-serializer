@@ -4,66 +4,70 @@
     import Serializer
     import Testing
 
-    @Suite
-    struct `Pair Serializer Tests` {
+enum `Pair Integration Tests` {}
 
-        @Test
-        func `serializes both halves of a nominal Pair in order`() throws(any Swift.Error) {
-            var buffer: [UInt8] = []
-            let serializer: Pair::Pair<Literal, OtherLiteral>.Serializer<Either<LiteralError, OtherError>> =
-                Pair::Pair(Literal("a"), OtherLiteral("b")).serializer()
+extension `Pair Integration Tests` {
+        @Suite
+        struct `Pair Serializer Tests` {
 
-            try serializer.serialize(Pair::Pair("a", "b"), into: &buffer)
+            @Test
+            func `serializes both halves of a nominal Pair in order`() throws(any Swift.Error) {
+                var buffer: [UInt8] = []
+                let serializer: Pair::Pair<Literal, OtherLiteral>.Serializer<Either<LiteralError, OtherError>> =
+                    Pair::Pair(Literal("a"), OtherLiteral("b")).serializer()
 
-            #expect(buffer == Array("ab".utf8))
-        }
+                try serializer.serialize(Pair::Pair("a", "b"), into: &buffer)
 
-        @Test
-        func `attributes first failure to Either left`() {
-            var buffer: [UInt8] = []
-            let serializer: Pair::Pair<Literal, OtherLiteral>.Serializer<Either<LiteralError, OtherError>> =
-                Pair::Pair(Literal("a"), OtherLiteral("b")).serializer()
-
-            #expect(throws: Either<LiteralError, OtherError>.left(.expected("a"))) {
-                try serializer.serialize(Pair::Pair("x", "b"), into: &buffer)
+                #expect(buffer == Array("ab".utf8))
             }
-            #expect(buffer.isEmpty)
-        }
 
-        @Test
-        func `attributes second failure to Either right`() {
-            var buffer: [UInt8] = []
-            let serializer: Pair::Pair<Literal, OtherLiteral>.Serializer<Either<LiteralError, OtherError>> =
-                Pair::Pair(Literal("a"), OtherLiteral("b")).serializer()
+            @Test
+            func `attributes first failure to Either left`() {
+                var buffer: [UInt8] = []
+                let serializer: Pair::Pair<Literal, OtherLiteral>.Serializer<Either<LiteralError, OtherError>> =
+                    Pair::Pair(Literal("a"), OtherLiteral("b")).serializer()
 
-            #expect(throws: Either<LiteralError, OtherError>.right(.expected("b"))) {
-                try serializer.serialize(Pair::Pair("a", "x"), into: &buffer)
+                #expect(throws: Either<LiteralError, OtherError>.left(.expected("a"))) {
+                    try serializer.serialize(Pair::Pair("x", "b"), into: &buffer)
+                }
+                #expect(buffer.isEmpty)
             }
-            #expect(buffer == Array("a".utf8))
+
+            @Test
+            func `attributes second failure to Either right`() {
+                var buffer: [UInt8] = []
+                let serializer: Pair::Pair<Literal, OtherLiteral>.Serializer<Either<LiteralError, OtherError>> =
+                    Pair::Pair(Literal("a"), OtherLiteral("b")).serializer()
+
+                #expect(throws: Either<LiteralError, OtherError>.right(.expected("b"))) {
+                    try serializer.serialize(Pair::Pair("a", "x"), into: &buffer)
+                }
+                #expect(buffer == Array("a".utf8))
+            }
+
+            @Test
+            func `equally typed failures collapse`() throws(any Swift.Error) {
+                var buffer: [UInt8] = []
+                let serializer: Pair::Pair<Literal, Literal>.Serializer<LiteralError> =
+                    Pair::Pair(Literal("a"), Literal("b")).serializer()
+
+                try serializer.serialize(Pair::Pair("a", "b"), into: &buffer)
+
+                #expect(buffer == Array("ab".utf8))
+            }
+
+            @Test
+            func `Never plus Never collapses to Never and requires no try`() {
+                var buffer: [UInt8] = []
+                let serializer: Pair::Pair<AnyCharacter, AnyCharacter>.Serializer<Never> =
+                    Pair::Pair(AnyCharacter(), AnyCharacter()).serializer()
+
+                serializer.serialize(Pair::Pair("a", "b"), into: &buffer)
+
+                #expect(buffer == Array("ab".utf8))
+            }
         }
-
-        @Test
-        func `equally typed failures collapse`() throws(any Swift.Error) {
-            var buffer: [UInt8] = []
-            let serializer: Pair::Pair<Literal, Literal>.Serializer<LiteralError> =
-                Pair::Pair(Literal("a"), Literal("b")).serializer()
-
-            try serializer.serialize(Pair::Pair("a", "b"), into: &buffer)
-
-            #expect(buffer == Array("ab".utf8))
-        }
-
-        @Test
-        func `Never plus Never collapses to Never and requires no try`() {
-            var buffer: [UInt8] = []
-            let serializer: Pair::Pair<AnyCharacter, AnyCharacter>.Serializer<Never> =
-                Pair::Pair(AnyCharacter(), AnyCharacter()).serializer()
-
-            serializer.serialize(Pair::Pair("a", "b"), into: &buffer)
-
-            #expect(buffer == Array("ab".utf8))
-        }
-    }
+}
 
     private struct AnyCharacter: Serializer::Serializing {}
 

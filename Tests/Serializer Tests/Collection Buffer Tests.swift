@@ -1,33 +1,37 @@
 import Serializer
 import Testing
 
-@Suite
-struct `Collection Serializer Buffer Tests` {
+enum `Collection Buffer Tests` {}
 
-    @Test
-    func `builds a fresh buffer for a nonfailing serializer`() {
-        let serializer = Character.Serializer()
+extension `Collection Buffer Tests` {
+    @Suite
+    struct `Collection Serializer Buffer Tests` {
 
-        let buffer: [UInt8] = serializer.serialize("a")
+        @Test
+        func `builds a fresh buffer for a nonfailing serializer`() {
+            let serializer = Character.Serializer()
 
-        #expect(buffer == Array("a".utf8))
-    }
+            let buffer: [UInt8] = serializer.serialize("a")
 
-    @Test
-    func `builds a fresh buffer for a failing serializer`() throws(any Swift::Error) {
-        let serializer = Literal("a")
+            #expect(buffer == Array("a".utf8))
+        }
 
-        let buffer: [UInt8] = try serializer.serialize("a")
+        @Test
+        func `builds a fresh buffer for a failing serializer`() throws(any Swift::Error) {
+            let serializer = Literal("a")
 
-        #expect(buffer == Array("a".utf8))
-    }
+            let buffer: [UInt8] = try serializer.serialize("a")
 
-    @Test
-    func `propagates the failure instead of returning a buffer`() {
-        let serializer = Literal("a")
+            #expect(buffer == Array("a".utf8))
+        }
 
-        #expect(throws: LiteralError.expected("a")) {
-            let _: [UInt8] = try serializer.serialize("b")
+        @Test
+        func `propagates the failure instead of returning a buffer`() {
+            let serializer = Literal("a")
+
+            #expect(throws: LiteralError.expected("a")) {
+                let _: [UInt8] = try serializer.serialize("b")
+            }
         }
     }
 }

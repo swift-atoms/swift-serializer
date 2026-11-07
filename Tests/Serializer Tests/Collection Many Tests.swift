@@ -3,13 +3,17 @@
     import Serializer
     import Testing
 
-    @Suite
-    struct `Collection Serializer Many Tests` {
-        @Suite struct Unit {}
-        @Suite struct `Edge Case` {}
-    }
+enum `Collection Many Tests` {}
 
-    extension `Collection Serializer Many Tests`.Unit {
+extension `Collection Many Tests` {
+        @Suite
+        struct `Collection Serializer Many Tests` {
+            @Suite struct Unit {}
+            @Suite struct `Edge Case` {}
+        }
+}
+
+    extension `Collection Many Tests`.`Collection Serializer Many Tests`.Unit {
 
         @Test
         func `emits every element in order`() throws(any Swift::Error) {
@@ -32,7 +36,7 @@
         }
     }
 
-    extension `Collection Serializer Many Tests`.`Edge Case` {
+    extension `Collection Many Tests`.`Collection Serializer Many Tests`.`Edge Case` {
 
         @Test
         func `rejects fewer elements than the minimum`() {
