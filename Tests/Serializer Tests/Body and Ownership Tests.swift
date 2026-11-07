@@ -45,7 +45,7 @@ import Testing
     }
 }
 
-private enum Rejection: Error, Equatable { case negative }
+private enum Rejection: Swift.Error, Equatable { case negative }
 private struct Infallible: Serializing {}
 
 extension Infallible {

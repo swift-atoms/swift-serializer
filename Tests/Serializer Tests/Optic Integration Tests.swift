@@ -28,7 +28,7 @@
         }
 
         @Test
-        func `maps backward through a partial Adapter`() throws(any Swift::Error) {
+        func `maps backward through a partial Adapter`() throws(any Swift.Error) {
             let serializer = Text().map(backward: nonNegativeAdapter)
 
             var buffer: [UInt8] = []
@@ -77,7 +77,7 @@
         }
 
         @Test
-        func `matches through a Prism and fails on a mismatch`() throws(any Swift::Error) {
+        func `matches through a Prism and fails on a mismatch`() throws(any Swift.Error) {
             let serializer = Decimal().map(matching: leaf, failure: MatchFailure.mismatch)
 
             var buffer: [UInt8] = []
@@ -104,11 +104,11 @@
         case empty
     }
 
-    private enum MatchFailure: Error {
+    private enum MatchFailure: Swift.Error {
         case mismatch(Node)
     }
 
-    private enum BackwardFailure: Error, Equatable {
+    private enum BackwardFailure: Swift.Error, Equatable {
         case negative
     }
 

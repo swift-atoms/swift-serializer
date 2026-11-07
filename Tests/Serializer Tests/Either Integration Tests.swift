@@ -7,7 +7,7 @@
     struct `Either Serializer` {
 
         @Test
-        func `serializes through the selected left serializer`() throws(any Swift::Error) {
+        func `serializes through the selected left serializer`() throws(any Swift.Error) {
             var buffer: [UInt8] = []
 
             try branch(true).serializer().serialize("a", into: &buffer)
@@ -16,7 +16,7 @@
         }
 
         @Test
-        func `serializes through the selected right serializer`() throws(any Swift::Error) {
+        func `serializes through the selected right serializer`() throws(any Swift.Error) {
             var buffer: [UInt8] = []
 
             try branch(false).serializer().serialize("b", into: &buffer)
@@ -47,7 +47,7 @@
         useLeft ? .left(Literal("a")) : .right(Literal("b"))
     }
 
-    private enum LiteralError: Error, Equatable {
+    private enum LiteralError: Swift.Error, Equatable {
         case expected(Character)
     }
 

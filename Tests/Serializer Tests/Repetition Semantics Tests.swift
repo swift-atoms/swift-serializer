@@ -70,8 +70,8 @@
         }
     }
 
-    private enum ElementError: Error, Equatable { case rejected }
-    private enum SeparatorError: Error, Equatable { case failed }
+    private enum ElementError: Swift.Error, Equatable { case rejected }
+    private enum SeparatorError: Swift.Error, Equatable { case failed }
     private struct Element: Serializing {}
 
     extension Element {

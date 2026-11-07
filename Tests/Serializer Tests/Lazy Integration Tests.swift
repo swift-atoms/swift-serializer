@@ -7,7 +7,7 @@
     struct `Lazy Serializer Tests` {
 
         @Test
-        func `defers serializer construction until serialize time`() throws(any Swift::Error) {
+        func `defers serializer construction until serialize time`() throws(any Swift.Error) {
             final class Box {
                 var built = 0
             }
@@ -27,7 +27,7 @@
         }
 
         @Test
-        func `re-invokes the thunk on every serialize`() throws(any Swift::Error) {
+        func `re-invokes the thunk on every serialize`() throws(any Swift.Error) {
             final class Box {
                 var built = 0
             }
@@ -58,7 +58,7 @@
         }
     }
 
-    private enum LiteralError: Error, Equatable {
+    private enum LiteralError: Swift.Error, Equatable {
         case expected(Character)
     }
 
@@ -113,7 +113,7 @@
             #expect(buffer == [3])
         }
     }
-    private enum FactoryError: Error, Equatable { case unavailable }
+    private enum FactoryError: Swift.Error, Equatable { case unavailable }
     private final class FactoryState {
         var built = 0
         var destroyed = 0

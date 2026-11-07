@@ -8,7 +8,7 @@
     struct `Pair Serializer Tests` {
 
         @Test
-        func `serializes both halves of a nominal Pair in order`() throws(any Swift::Error) {
+        func `serializes both halves of a nominal Pair in order`() throws(any Swift.Error) {
             var buffer: [UInt8] = []
             let serializer: Pair::Pair<Literal, OtherLiteral>.Serializer<Either<LiteralError, OtherError>> =
                 Pair::Pair(Literal("a"), OtherLiteral("b")).serializer()
@@ -43,7 +43,7 @@
         }
 
         @Test
-        func `equally typed failures collapse`() throws(any Swift::Error) {
+        func `equally typed failures collapse`() throws(any Swift.Error) {
             var buffer: [UInt8] = []
             let serializer: Pair::Pair<Literal, Literal>.Serializer<LiteralError> =
                 Pair::Pair(Literal("a"), Literal("b")).serializer()
@@ -73,11 +73,11 @@
         }
     }
 
-    private enum LiteralError: Error, Equatable {
+    private enum LiteralError: Swift.Error, Equatable {
         case expected(Character)
     }
 
-    private enum OtherError: Error, Equatable {
+    private enum OtherError: Swift.Error, Equatable {
         case expected(Character)
     }
 
