@@ -6,7 +6,6 @@ enum `Collection Buffer Tests` {}
 extension `Collection Buffer Tests` {
     @Suite
     struct `Collection Serializer Buffer Tests` {
-
         @Test
         func `builds a fresh buffer for a nonfailing serializer`() {
             let serializer = Character.Serializer()
@@ -17,7 +16,7 @@ extension `Collection Buffer Tests` {
         }
 
         @Test
-        func `builds a fresh buffer for a failing serializer`() throws(any Swift::Error) {
+        func `builds a fresh buffer for a failing serializer`() throws(any Swift.Error) {
             let serializer = Literal("a")
 
             let buffer: [UInt8] = try serializer.serialize("a")
@@ -37,9 +36,7 @@ extension `Collection Buffer Tests` {
 }
 
 extension Character {
-
     fileprivate struct Serializer: Serializing {
-
         typealias Output = Character
         typealias Buffer = [UInt8]
         typealias Failure = Never
@@ -50,7 +47,7 @@ extension Character {
     }
 }
 
-private enum LiteralError: Error, Equatable {
+private enum LiteralError: Swift.Error, Equatable {
     case expected(Character)
 }
 
