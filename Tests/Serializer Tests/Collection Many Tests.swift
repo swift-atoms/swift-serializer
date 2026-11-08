@@ -71,7 +71,7 @@ extension `Collection Many Tests` {
         }
     }
 
-    struct RepeatedCharacter: Serializing {
+    fileprivate struct RepeatedCharacter: Serializing {
         typealias Output = Character
         typealias Buffer = [UInt8]
         typealias Failure = Never
@@ -83,7 +83,7 @@ extension `Collection Many Tests` {
         }
     }
 
-    struct RepeatedComma: Serializing {
+    fileprivate struct RepeatedComma: Serializing {
         typealias Output = Void
         typealias Buffer = [UInt8]
         typealias Failure = Never
