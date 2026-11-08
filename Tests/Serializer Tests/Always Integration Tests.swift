@@ -3,15 +3,15 @@
     import Serializer
     import Testing
 
-enum `Always Integration Tests` {}
+    enum `Always Integration Tests` {}
 
-extension `Always Integration Tests` {
+    extension `Always Integration Tests` {
         @Suite
         struct `Always.Serializer` {
             @Suite struct Unit {}
             @Suite struct `Edge Case` {}
         }
-}
+    }
 
     extension `Always Integration Tests`.`Always.Serializer`.Unit {
         @Test

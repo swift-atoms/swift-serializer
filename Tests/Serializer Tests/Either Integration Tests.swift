@@ -3,9 +3,9 @@
     import Serializer
     import Testing
 
-enum `Either Integration Tests` {}
+    enum `Either Integration Tests` {}
 
-extension `Either Integration Tests` {
+    extension `Either Integration Tests` {
         @Suite
         struct `Either Serializer` {
 
@@ -45,7 +45,7 @@ extension `Either Integration Tests` {
                 }
             }
         }
-}
+    }
 
     private func branch(_ useLeft: Bool) -> Either<Literal, Literal> {
         useLeft ? .left(Literal("a")) : .right(Literal("b"))

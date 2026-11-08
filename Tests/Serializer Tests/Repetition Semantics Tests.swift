@@ -2,9 +2,9 @@
     import Serializer
     import Testing
 
-enum `Repetition Semantics Tests` {}
+    enum `Repetition Semantics Tests` {}
 
-extension `Repetition Semantics Tests` {
+    extension `Repetition Semantics Tests` {
         @Suite struct `Repeated serialization validates bounds before writes` {
             @Test func `empty cardinal bounds reject even an empty array`() {
                 let serializer = Repetition(Cardinal.zero..<Cardinal.zero, operation: Element()).serializer()
@@ -72,7 +72,7 @@ extension `Repetition Semantics Tests` {
                 #expect(lifetime.destroyed == 1)
             }
         }
-}
+    }
 
     private enum ElementError: Swift.Error, Equatable { case rejected }
     private enum SeparatorError: Swift.Error, Equatable { case failed }

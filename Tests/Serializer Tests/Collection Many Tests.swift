@@ -3,15 +3,15 @@
     import Serializer
     import Testing
 
-enum `Collection Many Tests` {}
+    enum `Collection Many Tests` {}
 
-extension `Collection Many Tests` {
+    extension `Collection Many Tests` {
         @Suite
         struct `Collection Serializer Many Tests` {
             @Suite struct Unit {}
             @Suite struct `Edge Case` {}
         }
-}
+    }
 
     extension `Collection Many Tests`.`Collection Serializer Many Tests`.Unit {
 
@@ -71,7 +71,7 @@ extension `Collection Many Tests` {
         }
     }
 
-    fileprivate struct RepeatedCharacter: Serializing {
+    private struct RepeatedCharacter: Serializing {
         typealias Output = Character
         typealias Buffer = [UInt8]
         typealias Failure = Never
@@ -83,7 +83,7 @@ extension `Collection Many Tests` {
         }
     }
 
-    fileprivate struct RepeatedComma: Serializing {
+    private struct RepeatedComma: Serializing {
         typealias Output = Void
         typealias Buffer = [UInt8]
         typealias Failure = Never

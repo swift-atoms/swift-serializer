@@ -3,9 +3,9 @@
     import Serializer
     import Testing
 
-enum `Serializer.Map Ownership Tests` {}
+    enum `Serializer.Map Ownership Tests` {}
 
-extension `Serializer.Map Ownership Tests` {
+    extension `Serializer.Map Ownership Tests` {
         @Suite
         struct `Serializer mapping preserves its owned resource` {
             @Test
@@ -159,7 +159,7 @@ extension `Serializer.Map Ownership Tests` {
                 #expect(buffer.values == [1, 2, 3, 3])
             }
         }
-}
+    }
 
     private func transform(_ value: borrowing Value) throws(TransformError) -> Int {
         guard value.number >= 0 else { throw .negative(value.number) }

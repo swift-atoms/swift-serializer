@@ -2,9 +2,9 @@
     import Serializer
     import Testing
 
-enum `Serializer.Error Tests` {}
+    enum `Serializer.Error Tests` {}
 
-extension `Serializer.Error Tests` {
+    extension `Serializer.Error Tests` {
         @Suite
         struct `Serializer error maps transform failures and preserve successful writes` {
 
@@ -52,7 +52,7 @@ extension `Serializer.Error Tests` {
                 requireFailure(serializer, Rejection.self)
             }
         }
-}
+    }
 
     private func requireFailure<S: Serializing, Failure: Swift::Error>(
         _: borrowing S,

@@ -3,9 +3,9 @@
     import Tagged
     import Testing
 
-enum `Tagged Integration Tests` {}
+    enum `Tagged Integration Tests` {}
 
-extension `Tagged Integration Tests` {
+    extension `Tagged Integration Tests` {
         @Suite struct `Tagged Serializer Tests` {
 
             @Test
@@ -47,7 +47,7 @@ extension `Tagged Integration Tests` {
                 #expect(buffer.isEmpty)
             }
         }
-}
+    }
 
     private enum IdentifierTag {}
 
@@ -78,7 +78,7 @@ extension `Tagged Integration Tests` {
 #endif
 
 #if Tagged
-extension `Tagged Integration Tests` {
+    extension `Tagged Integration Tests` {
         @Suite struct `Tagged serialization borrows noncopyable underlying values` {
             @Test func `tagged owned values can be printed repeatedly`() {
                 typealias Token = Tagged<IdentifierTag, OwnedValue>
@@ -91,7 +91,7 @@ extension `Tagged Integration Tests` {
                 #expect(token.underlying.rawValue == 9)
             }
         }
-}
+    }
     private struct OwnedValue: ~Copyable {
         let rawValue: Int
     }

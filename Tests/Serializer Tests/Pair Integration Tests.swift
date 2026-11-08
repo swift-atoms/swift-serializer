@@ -4,9 +4,9 @@
     import Serializer
     import Testing
 
-enum `Pair Integration Tests` {}
+    enum `Pair Integration Tests` {}
 
-extension `Pair Integration Tests` {
+    extension `Pair Integration Tests` {
         @Suite
         struct `Pair Serializer Tests` {
 
@@ -67,7 +67,7 @@ extension `Pair Integration Tests` {
                 #expect(buffer == Array("ab".utf8))
             }
         }
-}
+    }
 
     private struct AnyCharacter: Serializer::Serializing {}
 

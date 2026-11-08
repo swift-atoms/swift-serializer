@@ -3,9 +3,9 @@
     import Serializer
     import Testing
 
-enum `Serializer.Map Tests` {}
+    enum `Serializer.Map Tests` {}
 
-extension `Serializer.Map Tests` {
+    extension `Serializer.Map Tests` {
         @Suite
         struct `Serializer contramaps borrow transformed values and distinguish stage failures` {
 
@@ -59,7 +59,7 @@ extension `Serializer.Map Tests` {
                 #expect(token.value == 8)
             }
         }
-}
+    }
 
     private func requireFailure<S: Serializing, Failure: Swift::Error>(
         _: borrowing S,

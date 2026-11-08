@@ -4,9 +4,9 @@
     import Serializer
     import Testing
 
-enum `Optic Integration Tests` {}
+    enum `Optic Integration Tests` {}
 
-extension `Optic Integration Tests` {
+    extension `Optic Integration Tests` {
         @Suite
         struct `Optic Serializer Tests` {
 
@@ -101,7 +101,7 @@ extension `Optic Integration Tests` {
                 }
             }
         }
-}
+    }
 
     private enum Node: Equatable {
         case leaf(Int)

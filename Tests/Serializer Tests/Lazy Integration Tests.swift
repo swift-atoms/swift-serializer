@@ -3,9 +3,9 @@
     import Serializer
     import Testing
 
-enum `Lazy Integration Tests` {}
+    enum `Lazy Integration Tests` {}
 
-extension `Lazy Integration Tests` {
+    extension `Lazy Integration Tests` {
         @Suite
         struct `Lazy Serializer Tests` {
 
@@ -60,7 +60,7 @@ extension `Lazy Integration Tests` {
                 #expect(buffer.isEmpty)
             }
         }
-}
+    }
 
     private enum LiteralError: Swift.Error, Equatable {
         case expected(Character)
@@ -91,7 +91,7 @@ extension `Lazy Integration Tests` {
 #endif
 
 #if Lazy
-extension `Lazy Integration Tests` {
+    extension `Lazy Integration Tests` {
         @Suite struct `Lazy serializer ownership and failure stages` {
             @Test func `throwing factory is retried and creates fresh owned serializers`() throws {
                 let state = FactoryState()
@@ -118,7 +118,7 @@ extension `Lazy Integration Tests` {
                 #expect(buffer == [3])
             }
         }
-}
+    }
     private enum FactoryError: Swift.Error, Equatable { case unavailable }
     private final class FactoryState {
         var built = 0

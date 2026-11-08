@@ -90,7 +90,7 @@ extension Owned {
 }
 
 #if Pair
-extension `Body and Ownership Tests` {
+    extension `Body and Ownership Tests` {
         @Suite struct `Serializer structural builder borrows product fields` {
             @Test func `noncopyable fields survive repeated serialization`() {
                 let value = Pair(Field(value: 2), Field(value: 7))
@@ -117,7 +117,7 @@ extension `Body and Ownership Tests` {
                 #expect(first.destroyed == 0 && second.destroyed == 0)
             }
         }
-}
+    }
     private struct Field: ~Copyable { let value: Int }
     private struct FieldSerializer: Serializing {}
 
@@ -129,7 +129,7 @@ extension `Body and Ownership Tests` {
 #endif
 
 #if Either
-extension `Body and Ownership Tests` {
+    extension `Body and Ownership Tests` {
         @Suite struct `Serializer conditional construction chooses one branch` {
             @Test func `condition is decided during construction`() throws {
                 var chooseFirst = true
@@ -154,5 +154,5 @@ extension `Body and Ownership Tests` {
                 #expect(buffer.isEmpty)
             }
         }
-}
+    }
 #endif
