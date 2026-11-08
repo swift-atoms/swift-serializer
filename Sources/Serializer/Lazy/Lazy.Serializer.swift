@@ -9,7 +9,12 @@
         Value.Buffer: ~Copyable & ~Escapable,
         Value.Output: ~Copyable & ~Escapable
     {
+
         public struct Serializer<Failure: Swift::Error>: Serializing {
+
+            public typealias Buffer = Value.Buffer
+            public typealias Output = Value.Output
+
             public let wrapped: Lazy::Lazy<Value, FactoryFailure>
             @usableFromInline internal let factoryFailure: (FactoryFailure) -> Failure
             @usableFromInline internal let serializeFailure: (Value.Failure) -> Failure
@@ -29,6 +34,21 @@
                 self.factoryFailure = { .left($0) }
                 self.serializeFailure = { .right($0) }
             }
+
+            @inlinable
+            public borrowing func serialize(_ output: borrowing Output, into buffer: inout Buffer) throws(Failure) {
+                let parser: Value
+                do throws(FactoryFailure) {
+                    parser = try wrapped()
+                } catch {
+                    throw factoryFailure(error)
+                }
+                do throws(Value.Failure) {
+                    try parser.serialize(output, into: &buffer)
+                } catch {
+                    throw serializeFailure(error)
+                }
+            }
         }
 
         @inlinable
@@ -41,25 +61,4 @@
             .init(self)
         }
     }
-
-extension Lazy.Serializer {
-        public typealias Buffer = Value.Buffer
-
-        public typealias Output = Value.Output
-
-        @inlinable
-        public borrowing func serialize(_ output: borrowing Output, into buffer: inout Buffer) throws(Failure) {
-            let parser: Value
-            do throws(FactoryFailure) {
-                parser = try wrapped()
-            } catch {
-                throw factoryFailure(error)
-            }
-            do throws(Value.Failure) {
-                try parser.serialize(output, into: &buffer)
-            } catch {
-                throw serializeFailure(error)
-            }
-        }
-}
 #endif
