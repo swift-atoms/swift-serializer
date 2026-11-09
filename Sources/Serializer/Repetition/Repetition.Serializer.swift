@@ -22,10 +22,10 @@
             public init(_ wrapped: consuming Repetition<Bounds, Operation>) { self.wrapped = wrapped }
 
             public borrowing func serialize(_ output: borrowing Output, into buffer: inout Buffer) throws(Failure) {
-                guard wrapped.bounds.contains(wrapped.bounds.minimum) else { throw .left(.emptyBounds) }
+                guard wrapped.bounds.bounds != .empty else { throw .left(.emptyBounds) }
                 let count = Cardinal(UInt(output.count))
                 guard wrapped.bounds.contains(count) else {
-                    throw .left(count < wrapped.bounds.minimum ? .insufficient(actual: count) : .excessive(actual: count))
+                    throw .left(wrapped.bounds.permitsAnother(after: count) ? .insufficient(actual: count) : .excessive(actual: count))
                 }
                 for index in output.indices {
                     do throws(Operation.Failure) { try wrapped.operation.serialize(output[index], into: &buffer) } catch { throw .right(error) }

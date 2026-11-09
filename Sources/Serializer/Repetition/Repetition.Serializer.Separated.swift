@@ -31,10 +31,10 @@
             }
 
             public borrowing func serialize(_ output: borrowing Output, into buffer: inout Buffer) throws(Failure) {
-                guard wrapped.bounds.contains(wrapped.bounds.minimum) else { throw .left(.emptyBounds) }
+                guard wrapped.bounds.bounds != .empty else { throw .left(.emptyBounds) }
                 let count = Cardinal(UInt(output.count))
                 guard wrapped.bounds.contains(count) else {
-                    throw .left(count < wrapped.bounds.minimum ? .insufficient(actual: count) : .excessive(actual: count))
+                    throw .left(wrapped.bounds.permitsAnother(after: count) ? .insufficient(actual: count) : .excessive(actual: count))
                 }
                 for index in output.indices {
                     if index > 0 {
