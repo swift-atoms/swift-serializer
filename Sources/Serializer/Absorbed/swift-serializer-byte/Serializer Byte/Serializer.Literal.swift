@@ -10,7 +10,7 @@
 
         @inlinable
         public init<Bytes: Swift::Sequence>(_ bytes: Bytes) where Bytes.Element: Carrier.`Protocol`, Bytes.Element.Underlying == UInt8 {
-            self.bytes = Swift::Array(bytes.lazy.map(\.byte))
+            self.bytes = Swift::Array(bytes.lazy.map({ $0.byte }))
         }
 
         @inlinable
